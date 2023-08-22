@@ -1,0 +1,159 @@
+{
+  "result": {
+    "active_time": 1662038521,
+    "category": "zndb",
+    "category_name": "Smart Electric Meter",
+    "create_time": 1662038521,
+    "gateway_id": "",
+    "icon": "smart/icon/bay1598402984069otRu/cfb4cf487849340935ff015a20c3465a.jpg",
+    "id": "bf98165d0196497bdcr0du",
+    "ip": "77.0.137.83",
+    "lat": "51.9096",
+    "local_key": "81541e4c0bc57b2d",
+    "lon": "8.3725",
+    "model": "AT4PW/ES1-100A",
+    "name": "Smart Energy Meter(AT4P)",
+    "online": true,
+    "owner_id": "64717262",
+    "product_id": "2gieccf4oefewusc",
+    "product_name": "Smart Energy Meter(AT4P)",
+    "sub": false,
+    "time_zone": "+02:00",
+    "update_time": 1663827421,
+    "uuid": "47b49d1680c12dd4"
+  },
+  "success": true,
+  "t": 1672922806269,
+  "tid": "038104a28cf711ed84f4f6d732894979"
+}
+
+
+
+
+
+
+
+
+attr:
+
+
+{
+  "result": {
+    "category": "zndb",
+    "functions": [
+      {
+        "code": "forward_energy_total",
+        "dp_id": 1,
+        "type": "Integer",
+        "values": "{\"unit\":\"kW·h\",\"min\":0,\"max\":99999999,\"scale\":2,\"step\":1}"
+      },
+      {
+        "code": "switch_prepayment",
+        "dp_id": 12,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "clear_energy",
+        "dp_id": 14,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "charge_energy",
+        "dp_id": 15,
+        "type": "Integer",
+        "values": "{\"unit\":\"kW·h\",\"min\":0,\"max\":500000,\"scale\":2,\"step\":1}"
+      },
+      {
+        "code": "switch",
+        "dp_id": 16,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "alarm_set_2",
+        "dp_id": 17,
+        "type": "Json",
+        "values": "{}"
+      },
+      {
+        "code": "event_clear",
+        "dp_id": 20,
+        "type": "Boolean",
+        "values": "{}"
+      }
+    ],
+    "status": [
+      {
+        "code": "forward_energy_total",
+        "dp_id": 1,
+        "type": "Integer",
+        "values": "{\"unit\":\"kW·h\",\"min\":0,\"max\":99999999,\"scale\":2,\"step\":1}"
+      },
+      {
+        "code": "phase_a",
+        "dp_id": 6,
+        "type": "Json",
+        "values": "{}"
+      },
+      {
+        "code": "fault",
+        "dp_id": 10,
+        "type": "Bitmap",
+        "values": "{\"label\":[\"ov_cr\",\"unbalance_alarm\",\"ov_vol\",\"undervoltage_alarm\",\"miss_phase_alarm\",\"outage_alarm\",\"magnetism_alarm\",\"terminal_alarm\",\"cover_alarm\",\"credit_alarm\",\"no_balance_alarm\",\"battery_alarm\",\"meter_hardware_alarm\"]}"
+      },
+      {
+        "code": "switch_prepayment",
+        "dp_id": 12,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "balance_energy",
+        "dp_id": 13,
+        "type": "Integer",
+        "values": "{\"unit\":\"kW·h\",\"min\":0,\"max\":500000,\"scale\":2,\"step\":1}"
+      },
+      {
+        "code": "clear_energy",
+        "dp_id": 14,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "charge_energy",
+        "dp_id": 15,
+        "type": "Integer",
+        "values": "{\"unit\":\"kW·h\",\"min\":0,\"max\":500000,\"scale\":2,\"step\":1}"
+      },
+      {
+        "code": "switch",
+        "dp_id": 16,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "alarm_set_2",
+        "dp_id": 17,
+        "type": "Json",
+        "values": "{}"
+      },
+      {
+        "code": "event_clear",
+        "dp_id": 20,
+        "type": "Boolean",
+        "values": "{}"
+      },
+      {
+        "code": "for_energy_tal_stamp",
+        "dp_id": 29,
+        "type": "String",
+        "values": "{}"
+      }
+    ]
+  },
+  "success": true,
+  "t": 1672922882019,
+  "tid": "30a96e0d8cf711edbdcf768159807b40"
+}

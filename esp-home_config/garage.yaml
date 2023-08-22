@@ -1,0 +1,878 @@
+esp32:
+  board: nodemcu-32s
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+  baud_rate: 0
+  level: DEBUG
+  logs:
+    api.service: WARN
+    sensor: WARN
+    homeassistant.sensor: WARN
+    text_sensor: WARN
+    jk_bms_ble: WARN
+    soyosource_display: WARN
+    soyosource_virtual_meter: WARN
+#    ads1115: WARN
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+  on_begin:
+    then:
+      - logger.log: "OTA start, disabling BMS bluetooth."
+      - switch.turn_off: ble_jk
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pw
+  manual_ip:
+    static_ip: 192.168.1.20
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+    dns1: 192.168.1.25
+
+time:
+  - platform: sntp
+
+esphome:
+  name: garage-controller
+  comment: "ESP32 in der Garage"
+  project:
+    name: "garage.controller"
+    version: 1.0.0
+preferences:
+  flash_write_interval: 10min
+
+globals:
+  - id: api_connection
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  - id: max_demand
+    type: int 
+    restore_value: no
+    initial_value: '920'
+
+interval:
+  - interval: 5s
+    then:
+      - if:
+          condition:
+            # check last connection state
+            - lambda: 'return { (id(api_connection) != true) };'
+          then:
+            - if:
+                condition:
+                  api.connected:
+                then:
+                  # just connected now
+                  - lambda: "id(api_connection) = true;"
+          else:
+            - if:
+                condition:
+                  not:
+                    api.connected:
+                then:
+                  # just disconnected now
+                  - lambda: "id(api_connection) = false;"
+      - lambda: |-
+          if (id(soyo_operation_mode).state == "PV") {
+            id(max_demand) = 1120;
+          } else {
+            id(max_demand) = 920;
+          }
+
+          int md = id(soyo_max_demand).state;
+
+          if ((md == 920.0 || md == 1120.0) && md != id(max_demand)) {
+            auto numberF = id(soyo_max_demand).make_call();
+            numberF.set_value(id(max_demand));
+            numberF.perform();
+          }
+
+  - interval: 100s
+    then:
+      - if:
+          condition:
+            - lambda: "return { id(soyo_output_limit).state != 900.0 };"
+          then:
+            - number.set:
+                id: soyo_output_limit
+                value: 900
+      - if:
+          condition:
+            - lambda: "return { id(soyo_start_delay).state != 3.0 };"
+          then:
+            - number.set:
+                id: soyo_start_delay
+                value: 3
+      - if:
+          condition:
+            - lambda: "return { id(soyo_operation_mode).state == \"Battery Constant Power\" };"
+          then:
+            - select.set:
+                id: soyo_operation_select
+                option: "Battery Limit"
+
+  - interval: 180s
+    then:
+      - switch.turn_on: ntc_vcc
+      - component.update: adc1
+      - component.update: adc2
+      - switch.turn_off: ntc_vcc
+
+substitutions:
+  name: jk-bms
+  device_description: "Monitor and control a JK-BMS via bluetooth"
+  external_components_source_jk: github://syssi/esphome-jk-bms@main
+  mac_address: C8:47:8C:E9:44:3F
+  protocol_version: JK02_32S
+
+  name_soyo: soyo
+  device_description_soyo: "Soyosource GTN control the power output on demand both via RS485"
+  external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
+
+
+external_components:
+  - source: ${external_components_source_jk}
+    refresh: 0s
+  - source: github://kev300/esphome-soyosource-gtn-virtual-meter@overshoot_compensation
+    refresh: 0s
+      #- source: ${external_components_source_soyo}
+      #refresh: 7d
+
+
+esp32_ble_tracker:
+  scan_parameters:
+    interval: 500ms
+  on_ble_advertise:
+    then:
+      - lambda: |-
+          if (x.get_name().rfind("JK-", 0) == 0) {
+            ESP_LOGI("ble_adv", "New JK-BMS found");
+            ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
+            ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str().c_str());
+            ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
+            for (auto uuid : x.get_service_uuids()) {
+              ESP_LOGD("ble_adv", "    - %s", uuid.to_string().c_str());
+            }
+          }
+
+ble_client:
+  - mac_address: ${mac_address}
+    id: client0
+
+jk_bms_ble:
+  - ble_client_id: client0
+    protocol_version: ${protocol_version}
+    throttle: 5s
+    id: bms0
+
+i2c:
+  sda: GPIO14
+  scl: GPIO27
+  scan: true
+
+ads1115:
+  - address: 0x4A
+
+uart:
+  #- id: uart0
+  #  baud_rate: 115200
+  #  rx_buffer_size: 384
+  #  tx_pin: ${tx_pin}
+  #  rx_pin: ${rx_pin}
+
+  - id: uart_powerd
+    baud_rate: 4800
+    tx_pin: GPIO18
+    rx_pin: GPIO19
+  - id: uart_display
+    baud_rate: 9600
+    tx_pin: GPIO16
+    rx_pin: GPIO17
+
+soyosource_modbus:
+  - id: modbus1
+    uart_id: uart_powerd
+
+    # Optional settings
+    #
+    # The name is used as prefix for some log messages and should
+    # help to distinguish between different instances/devices
+    name: garage_inverter
+
+soyosource_virtual_meter:
+  - id: virtualmeter0
+    soyosource_modbus_id: modbus1
+
+    # The state of this sensor (instantaneous power in watt) is used as source
+    power_id: powermeter_with_fallback
+
+    # Optional settings
+    power_sensor_inactivity_timeout: 20s
+    power_demand_calculation: NEGATIVE_MEASUREMENTS_REQUIRED
+    min_power_demand: 65
+    max_power_demand: 1120
+    # Split/distribute the power demand if you have multiple inverters attached to the same RS485 bus
+    power_demand_divider: 1
+    # A positive buffer value (10) tries to avoid exporting power to the grid (demand - 10 watts)
+    # A negative buffer value (-10) exports power to the grid (demand + 10 watts)
+    buffer: 0
+    zero_output_on_min_power_demand: false
+    max_power_sensor_latency_ms: 5000 
+
+    # The operation_status_id sensor is expected here. Passing the operation_status won't work
+    # The state is used to suspend the limiter if the operation status of the inverter isn't 0x0 (normal)
+    # operation_status_id: operation_status_id0
+    update_interval: never
+
+soyosource_display:
+  - id: soyo_display
+    uart_id: uart_display
+    protocol_version: SOYOSOURCE_DISPLAY_VERSION
+    update_interval: 3s
+
+
+binary_sensor:
+  - platform: jk_bms_ble
+    balancing:
+      name: "${name} balancing"
+    online_status:
+      name: "${name} online status"
+  - platform: soyosource_display
+    limiter_connected:
+      name: "${name_soyo} limiter connected"
+
+button:
+  - platform: soyosource_display
+    restart:
+      name: "${name_soyo} restart"
+  - platform: jk_bms_ble
+    retrieve_settings:
+      name: "${name} retrieve settings"
+    retrieve_device_info:
+      name: "${name} retrieve device info"
+
+
+number:
+  - platform: soyosource_virtual_meter
+    soyosource_virtual_meter_id: virtualmeter0
+    manual_power_demand:
+      name: "${name_soyo} manual power demand"
+      max_value: 1300
+    max_power_demand:
+      name: "${name_soyo} max power demand"
+      id: soyo_max_demand
+      initial_value: 920
+      max_value: 1120
+      restore_value: false
+    buffer:
+      name: "${name_soyo} buffer"
+      id: soyo_buffer
+      initial_value: 0
+      restore_value: true
+
+  - platform: soyosource_display
+    start_voltage:
+      name: "${name_soyo} start voltage"
+    shutdown_voltage:
+      name: "${name_soyo} shutdown voltage"
+    # Maximum output power in limiter mode / Output power in constant power mode
+    output_power_limit:
+      name: "${name_soyo} output power limit"
+      id: soyo_output_limit
+    start_delay:
+      name: "${name_soyo} start delay"
+      id: soyo_start_delay
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    balance_trigger_voltage:
+      name: "${name} balance trigger voltage"
+    total_battery_capacity:
+      name: "${name} total battery capacity"
+    cell_voltage_overvoltage_protection:
+      name: "${name} cell voltage overvoltage protection"
+    cell_voltage_overvoltage_recovery:
+      name: "${name} cell voltage overvoltage recovery"
+    cell_voltage_undervoltage_protection:
+      name: "${name} cell voltage undervoltage protection"
+    cell_voltage_undervoltage_recovery:
+      name: "${name} cell voltage undervoltage recovery"
+    balance_starting_voltage:
+      name: "${name} balance starting voltage"
+#    voltage_calibration:
+#      name: "${name} voltage calibration"
+#    current_calibration:
+#      name: "${name} current calibration"
+    power_off_voltage:
+      name: "${name} power off voltage"
+    max_balance_current:
+      name: "${name} max balance current"
+    max_charge_current:
+      name: "${name} max charge current"
+    max_discharge_current:
+      name: "${name} max discharge current"
+
+select:
+  - platform: soyosource_display
+    operation_mode:
+      name: "${name_soyo} operation mode"
+      id: soyo_operation_select
+      optionsmap:
+        1: "PV"
+        2: "Battery Constant Power"
+        16: "Battery Limit"
+
+#debug:
+#  update_interval: 5s
+
+sensor:
+  #  - platform: debug
+  #    free:
+  #      name: "Heap Free"
+  #    block:
+  #      name: "Heap Max Block"
+  #    loop_time:
+  #      name: "Loop Time"
+
+  - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
+    name: "WiFi Signal %"
+    update_interval: 120s
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+
+  - platform: dht
+    pin: GPIO26
+    temperature:
+      name: "Garage Temperatur"
+      id: garage_temp
+    humidity:
+      name: "Garage Feuchtigkeit"
+      id: garage_humid
+    update_interval: 120s
+
+  - platform: ina226
+    address: 0x40
+    shunt_resistance: 0.0015 ohm
+    current:
+      #name: "Inverter amps"
+      id: inverter_amps
+      filters:
+        - offset: 0.058608
+    bus_voltage:
+      #name: "Batt Volt"
+      id: batt_voltage
+      filters:
+        - calibrate_linear:
+          - 0.0 -> 0.0
+          - 16.98 -> 53.47
+      on_value:
+        then:
+          - component.update: soyo_power
+    max_current: 40A
+    update_interval: 1s
+
+  - platform: ina226
+    address: 0x41
+    shunt_resistance: 0.0015 ohm
+    current:
+      #name: "charging amps"
+      id: charging_amps
+      filters:
+        - multiply: -1
+      on_value:
+        then:
+          - component.update: solar_power_only
+    max_current: 40A
+    update_interval: 1s
+
+# import smartmeter reading from homeassistant
+#   # requires the "api" component see above
+  - platform: homeassistant
+    id: powermeter0
+    entity_id: sensor.power_consumption
+    filters:
+      - lambda: if (x < -800) return -800; return x; #some times the meter reports very low values!? + slow down ramp down
+
+  - platform: template
+    id: powermeter_with_fallback
+    update_interval: 250ms
+    internal: true
+    unit_of_measurement: W
+    lambda: |-
+      if (id(api_connection)) {
+        return id(powermeter0).state;
+      } else {
+        return id(jk_bms_power).raw_state - 50; 
+      }
+
+  - platform: template
+    id: soyo_power
+    name: "soyo power"
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+    lambda: |-
+      return id(batt_voltage).state * id(inverter_amps).state;
+    update_interval: never
+    filters:
+      - throttle: 5s
+
+  - platform: template
+    internal: true
+      #name: "sol power test"
+    id: solar_power_only
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+    lambda: |-
+      return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state) * id(charging_amps).state;
+    update_interval: never #updated by charging amps
+    on_value:
+      then:
+        - component.update: charging_power
+        - component.update: discharging_power
+
+  - platform: template
+    id: charging_power
+    unit_of_measurement: W
+    lambda: |-
+      auto w = id(solar_power_only).raw_state - id(soyo_power).raw_state;
+      return w < 0 ? 0 : w;
+    update_interval: never
+
+  - platform: template
+    id: discharging_power
+    unit_of_measurement: W
+    lambda: |-
+       auto w = id(soyo_power).raw_state - id(solar_power_only).raw_state;
+       return w < 0 ? 0 : w;
+    update_interval: never
+
+# throttled for HA:
+  - platform: template
+    name: "Garage System Power"
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 2
+    update_interval: 7s
+    lambda: |-
+      return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+
+  - platform: template
+    name: "solarstrom power"
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+    entity_category: diagnostic
+    accuracy_decimals: 2
+    icon: mdi:solar-power-variant
+    lambda: return id(solar_power_only).state;
+    update_interval: 7s
+
+  - platform: template
+    name: "Batt Volt"
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+    accuracy_decimals: 2
+    lambda: return id(batt_voltage).state;
+    update_interval: 7s
+
+  - platform: soyosource_virtual_meter
+    soyosource_virtual_meter_id: virtualmeter0
+    power_demand:
+      name: "${name_soyo} power demand"
+      unit_of_measurement: W
+      device_class: power
+      state_class: measurement
+      entity_category: diagnostic
+
+  - platform: total_daily_energy
+    name: "${name} charging energy today"
+    icon: mdi:counter
+    power_id: charging_power
+    accuracy_decimals: 3
+    unit_of_measurement: kWh
+    restore: true
+    filters:
+      - multiply: 0.001
+      - throttle: 120s
+
+  - platform: total_daily_energy
+    name: "${name} discharging energy today"
+    icon: mdi:counter
+    power_id: discharging_power
+    accuracy_decimals: 3
+    unit_of_measurement: kWh
+    restore: true
+    filters:
+      - multiply: 0.001
+      - throttle: 120s
+
+  - platform: total_daily_energy
+    name: "solarstrom energy"
+    icon: mdi:counter
+    power_id: solar_power_only
+    accuracy_decimals: 3
+    unit_of_measurement: kWh
+    restore: true
+    filters:
+      - multiply: 0.001
+      - throttle: 120s 
+
+  - platform: ads1115
+    multiplexer: 'A0_GND'
+    gain: 4.096
+    id: adc1
+    update_interval: never
+
+  - platform: ads1115
+    multiplexer: 'A1_GND'
+    gain: 4.096
+    id: adc2
+    update_interval: never
+
+  - platform: resistance
+    id: resistance_sensor_1
+    sensor: adc1
+    configuration: DOWNSTREAM
+    resistor: 5.6kOhm
+  - platform: resistance
+    id: resistance_sensor_2
+    sensor: adc2
+    configuration: DOWNSTREAM
+    resistor: 5.6kOhm
+
+  - platform: ntc
+    sensor: resistance_sensor_1
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 10kOhm
+    name: "Batt Temp 3"
+  - platform: ntc
+    sensor: resistance_sensor_2
+    calibration:
+      b_constant: 3950
+      reference_temperature: 25°C
+      reference_resistance: 10kOhm
+    name: "Batt Temp 4"
+
+
+  - platform: soyosource_display
+    error_bitmask:
+      name: "${name_soyo} error bitmask"
+#    operation_status_id:
+#      name: "${name_soyo} operation status id"
+#      id: operation_status_id0
+    battery_voltage:
+      name: "${name_soyo} battery voltage"
+      id: soyo_batt_voltage
+      filters:
+        - throttle: 10s
+    battery_current:
+      name: "${name_soyo} battery current"
+      id: soyo_batt_current
+      filters:
+        - throttle: 10s
+        - multiply: 0.933 #calibrate too high values
+    battery_power:
+      name: "${name_soyo} battery power"
+      filters:
+        - throttle: 10s
+    ac_voltage:
+      name: "${name_soyo} ac voltage"
+      filters:
+        - throttle: 30s
+    ac_frequency:
+      name: "${name_soyo} ac frequency"
+      filters:
+        - throttle: 120s
+    temperature:
+      name: "${name_soyo} temperature"
+      filters:
+        - throttle: 30s
+  
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+#    charging_power:
+#      name: "${name} charging power"
+#      id: jk_bms_charging_power
+#      unit_of_measurement: W
+#      device_class: power
+#      state_class: measurement
+#      entity_category: diagnostic
+#      filters:
+#        - throttle_average: 10s
+#    discharging_power:
+#      name: "${name} discharging power"
+#      id: jk_bms_discharging_power
+#      unit_of_measurement: W
+#      device_class: power
+#      state_class: measurement
+#      entity_category: diagnostic
+#      filters:
+#        - throttle_average: 10s
+    power:
+      name: "${name} power"
+      id: "jk_bms_power"
+      unit_of_measurement: W
+      device_class: power
+      state_class: measurement
+      entity_category: diagnostic
+      filters:
+        - throttle: 7s
+
+    min_cell_voltage:
+      name: "${name} min cell voltage"
+      filters:
+      - throttle: 10s
+    max_cell_voltage:
+      name: "${name} max cell voltage"
+      filters:
+      - throttle: 10s
+    min_voltage_cell:
+      name: "${name} min voltage cell"
+      filters:
+      - throttle: 10s
+    max_voltage_cell:
+      name: "${name} max voltage cell"
+      filters:
+      - throttle: 10s
+    delta_cell_voltage:
+      name: "${name} delta cell voltage"
+      filters:
+      - throttle: 10s
+    average_cell_voltage:
+      name: "${name} average cell voltage"
+      filters:
+      - throttle: 10s
+    cell_voltage_1:
+      name: "${name} cell voltage 1"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_2:
+      name: "${name} cell voltage 2"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_3:
+      name: "${name} cell voltage 3"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_4:
+      name: "${name} cell voltage 4"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_5:
+      name: "${name} cell voltage 5"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_6:
+      name: "${name} cell voltage 6"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_7:
+      name: "${name} cell voltage 7"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_8:
+      name: "${name} cell voltage 8"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_9:
+      name: "${name} cell voltage 9"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_10:
+      name: "${name} cell voltage 10"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_11:
+      name: "${name} cell voltage 11"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_12:
+      name: "${name} cell voltage 12"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    cell_voltage_13:
+      name: "${name} cell voltage 13"
+      icon: mdi:battery-charging
+      filters:
+      - throttle: 10s
+    power_tube_temperature:
+      name: "${name} BMS temperature"
+      filters:
+      - throttle: 10s
+    temperature_sensor_1:
+      name: "${name} temperature sensor 1"
+      filters:
+      - throttle: 10s
+    temperature_sensor_2:
+      name: "${name} temperature sensor 2"
+      filters:
+      - throttle: 10s
+    total_voltage:
+      name: "${name} total voltage"
+      id: jk_bms_total_voltage
+      filters:
+        - throttle: 10s
+      on_value_range:
+        - above: 44.5
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: !lambda |-
+                  return id(max_demand);
+        - below: 43.5
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: 250
+    current:
+      name: "${name} current"
+      filters:
+        - throttle: 10s
+    charging_cycles:
+      name: "${name} charging cycles"
+      filters:
+        - throttle: 120s
+    errors_bitmask:
+      name: "${name} errors bitmask"
+    state_of_charge:
+      name: "${name} state of charge"
+      on_value_range:
+        - above: 99
+          then:
+            - number.set:
+                id: soyo_buffer
+                value: -80
+        - below: 98
+          then:
+            - number.set:
+                id: soyo_buffer
+                value: -2
+    balancing_current:
+      name: "${name} balancing current"
+      filters:
+      - throttle: 5s
+
+
+switch:
+  - platform: soyosource_virtual_meter
+    soyosource_virtual_meter_id: virtualmeter0
+    manual_mode:
+      name: "${name_soyo} manual mode"
+      restore_mode: RESTORE_DEFAULT_ON
+    emergency_power_off:
+      name: "${name_soyo} emergency power off"
+      restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: gpio
+    pin: GPIO22
+    name: "Garage lüften"
+    id: garage_tilt_switch
+    inverted: true 
+    restore_mode: ALWAYS_OFF
+    interlock: [garage_toggle_switch]
+    on_turn_on:
+    - delay: 200ms
+    - switch.turn_off: garage_tilt_switch
+    - delay: 500ms
+
+  - platform: gpio
+    pin: GPIO23
+    name: "Garagentor auf/zu"
+    id: garage_toggle_switch
+    inverted: true
+    internal: true
+    restore_mode: ALWAYS_OFF
+    interlock: [garage_tilt_switch]
+    on_turn_on:
+    - delay: 200ms
+    - switch.turn_off: garage_toggle_switch
+    - delay: 500ms
+
+  - platform: gpio
+    pin: GPIO13
+    id: ntc_vcc
+    internal: true
+
+  - platform: jk_bms_ble
+    charging:
+      name: "${name} charging"
+    discharging:
+      name: "${name} discharging"
+    balancer:
+      name: "${name} balancer"
+
+  - platform: ble_client
+    ble_client_id: client0
+    id: ble_jk
+    name: "${name} enable bluetooth connection"
+
+  - platform: restart
+    name: "reboot"
+
+cover:
+  - platform: template
+    name: "Garagentor"
+    open_action:
+      - switch.turn_on: garage_toggle_switch
+    close_action:
+      - switch.turn_on: garage_toggle_switch
+    stop_action:
+      - switch.turn_on: garage_toggle_switch
+    optimistic: true
+    assumed_state: true
+
+text_sensor:
+  - platform: soyosource_virtual_meter
+    soyosource_virtual_meter_id: virtualmeter0
+    operation_mode:
+      name: "${name_soyo} limiter operation mode"
+  - platform: soyosource_display
+    errors:
+      name: "${name_soyo} errors"
+    operation_mode:
+      name: "${name_soyo} operation mode"
+      id: soyo_operation_mode
+    operation_status:
+      name: "${name_soyo} operation status"
+
+  - platform: jk_bms_ble
+    errors:
+      name: "${name} errors"
+    total_runtime_formatted:
+      name: "${name} total runtime formatted"
+        #  - platform: debug
+        #    device:
+        #      name: "Device Info"
+        #    reset_reason:
+        #      name: "Reset Reason"
+#  - platform: ble_scanner
+#    name: "BLE Devices Scanner"

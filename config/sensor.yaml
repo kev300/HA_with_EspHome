@@ -1,0 +1,67 @@
+
+  - platform: sql
+    sql:
+      name: DB size
+      db_url: postgresql://hass:hassPw321@192.168.1.25/smart_home
+      query: "SELECT (pg_database_size('hass')/1024/1024) as db_size;"
+      column: "db_size"
+      unit_of_measurement: MB
+
+  - platform: filter
+    name: "filtered power consumption"
+    entity_id: sensor.power_consumption
+    filters:
+      - filter: time_simple_moving_average
+        window_size: "00:00:07"
+      - filter: time_throttle
+        window_size: "00:00:07"
+
+          #  - platform: filter
+          #    name: "filtered solarstrom power"
+          #    entity_id: sensor.solarstrom_power
+          #    filters:
+      #      - filter: outlier
+      #        window_size: 5
+      #        radius: 50.0
+      #        precision: 0
+      #      - filter: time_simple_moving_average
+      #        window_size: "00:00:10"
+      #
+      #
+
+  - platform: template
+    sensors:
+       hum_abs_outside:
+         value_template: >-
+           {% set h, t = states('sensor.openweathermap_humidity') | float, states('sensor.openweathermap_temperature') %}
+           {% if not h or t == 'unknown' or t == 'unavailable' -%}
+             'unknown'
+           {%- else %}
+            {% set t = t | float %}
+            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+           {% endif %}
+         unit_of_measurement: 'g/m³'
+         friendly_name: 'abs. Feuchtigkeit draußen'
+
+       hum_abs_garage:
+         value_template: >-
+           {% set h, t = states('sensor.garage_feuchtigkeit') | float, states('sensor.garage_temperatur') %}
+           {% if not h or t == 'unknown' or t == 'unavailable' -%}
+             'unknown'
+           {%- else %}
+            {% set t = t | float %}
+            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+           {% endif %}
+         unit_of_measurement: 'g/m³'
+         friendly_name: 'abs. Feuchtigkeit Garage'
+       hum_abs_keller:
+         value_template: >-
+           {% set h, t = states('sensor.kellertemp_humidity') | float, states('sensor.kellertemp_temperature') %}
+           {% if not h or t == 'unknown' or t == 'unavailable' -%}
+             'unknown'
+           {%- else %}
+            {% set t = t | float %}
+            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+           {% endif %}
+         unit_of_measurement: 'g/m³'
+         friendly_name: 'abs. Feuchtigkeit Keller'

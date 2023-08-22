@@ -1,0 +1,599 @@
+blueprint:
+  name: Sensor Light
+  description: "# Sensor Light\n**Version: 2.6**\n\nThe most common automation used
+    for a sensor light. The good thing is, with this automation you can turn ON as
+    many lights as you like by selecting an Area, a Device, an Entity or just any
+    combination you like using just one sensor to do it. BE CAREFUL when selecting
+    an Area or a Device as it will turn On and OFF everything attached, lights, switches,
+    etc.\n\nLet us know what you think of this blueprint and for community support
+    including updates: [Click Here](https://community.home-assistant.io/t/sensor-light/481048)\n\n**The
+    Automation Process:**\n - In this example we will use a Motion sensor as the trigger
+    but you can use one or multiple [Binary Sensors](https://www.home-assistant.io/integrations/binary_sensor/)
+    as the trigger/s.\n - Triggers on a motion sensor and turns the lights ON. \n
+    - When no motion is detected, a time delay is activated and turns the lights OFF
+    Automatically.\n - The lights will stay ON if the motion sensor detects motion
+    before the time delay turns the lights OFF. It will then reset the time delay
+    after last motion is detected.\n - You have the option to select scenes. This
+    allows you to turn ON a scene when motion is detected and turn OFF a scene when
+    the time delay has ended.\n - You have the option to use the \"Light Control\".
+    This allows you to set a brightness level for your lights.\n - You have the option
+    to use the \"Trigger Sensor By-pass\". This allows you to add a switch to manually
+    By-pass the trigger sensor so you can use the lights as normal by turning them
+    ON and OFF manually.\n - You have the option to use the \"Sun Elevation\". This
+    is used for adding a condition to only work when it is dark by setting the suns
+    position to the horizon.\n - You have the option to set an Ambient Light Sensor
+    and set the LUX value. This is used for adding a condition to only work when it
+    is dark or below the Ambient Light LUX Value.\n - You have the option to set a
+    start time, an end time and select weekdays. This will only allow the automation
+    to run between the time periods.\n - You have the option to use the \"Zone - Device
+    Tracker\". This can be useful if you have pets triggering the trigger sensor turning
+    your lights ON and OFF when no one is home.\n - You have the option to use \"Night
+    Lights\". It is normally used for having lower softer lights come ON when going
+    to the bathroom at night.\n \n Note: If you turn the light on manually and the
+    motion sensor detects motion the light will turn off automatically. It is recommended
+    to use the \"Trigger Sensor By-pass\" option if you would like to keep the lights
+    ON or OFF for extended time periods.\n \n Required = *\n \n **Need help?** See
+    our FAQ: [Click Here](https://community.home-assistant.io/t/sensor-light-motion-sensor-sun-elevation-lux-value-scenes-time/481048/6)\n"
+  domain: automation
+  input:
+    motion_trigger:
+      name: Trigger Sensor - Binary Sensors *
+      description: The Sensor/s that turns the lights ON and OFF. The trigger can
+        be any [Binary Sensors](https://www.home-assistant.io/integrations/binary_sensor/)
+        you like.
+      selector:
+        entity:
+          domain: binary_sensor
+          multiple: true
+    light_switch:
+      name: Lights - Switches - Scenes *
+      description: The lights that get turned on by the trigger sensor/s. You can
+        also add switches and scenes. If adding a scene please read "Scenes To Turn
+        OFF" below.
+      selector:
+        target:
+          entity:
+            domain:
+            - light
+            - switch
+            - scene
+    end_scenes:
+      name: Scenes To Turn OFF
+      description: If you have selected a scene to be turned ON above in "Lights -
+        Switches - Scenes" or below in "Night Lights" and you would like it to be
+        turned OFF after the time delay, you must create another identical scene with
+        everything OFF and select it here.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          domain:
+          - scene
+    time_delay:
+      name: Time Delay
+      description: The delay time to leave the lights on after the last trigger from
+        ON to OFF state is detected.
+      default: 5
+      selector:
+        number:
+          min: 0.0
+          max: 30.0
+          step: 0.5
+          unit_of_measurement: minutes
+          mode: slider
+    include_light_control:
+      name: Light Control
+      description: Select the options you would like to use. It will only control
+        a "light" entity that has a brightness setting.
+      default: dont_use_brightness
+      selector:
+        select:
+          options:
+          - label: Use brightness
+            value: use_brightness
+          - label: Dont use brightness
+            value: dont_use_brightness
+          multiple: false
+          custom_value: false
+    light_brightness:
+      name: Brightness
+      description: Brightness of the lights when they are turned ON.
+      default: 100
+      selector:
+        number:
+          min: 1.0
+          max: 100.0
+          mode: slider
+          step: 1.0
+          unit_of_measurement: '%'
+    include_bypass:
+      name: Use The Trigger Sensor By-pass Option (Optional)
+      description: Select enable or disable. Both of the enable options will allow
+        manual control of your lights. The enable options are only for selecting what
+        should happen when you turn the by-pass ON and the lights are already ON.
+      default: bypass_disabled
+      selector:
+        select:
+          options:
+          - label: Enable the By-pass - If lights are ON, turn lights OFF
+            value: bypass_enabled
+          - label: Enable the By-pass - If lights are ON, leave lights ON
+            value: bypass_enabled_stop
+          - label: Disable the By-pass option
+            value: bypass_disabled
+          multiple: false
+          custom_value: false
+    motion_bypass:
+      name: Trigger Sensor By-pass
+      description: Select a switch that will By-pass the trigger sensor and make your
+        lights function as normal. The entity cannot be included in, "Lights - Switches
+        - Scenes" and or "Night Lights" selections.
+      default: []
+      selector:
+        entity: {}
+    include_sun:
+      name: Use The Sun Option (Optional)
+      description: Select enable or disable.
+      default: sun_disabled
+      selector:
+        select:
+          options:
+          - label: Enable the sun option
+            value: sun_enabled
+          - label: Disable the sun option
+            value: sun_disabled
+          multiple: false
+          custom_value: false
+    sun_elevation:
+      name: Sun Elevation
+      description: This is the angle between the sun and the horizon. Negative values
+        mean the sun is BELOW the horizon. Guide is -1.5 (dusk) and -4.0 (dawn).
+      default: -1.5
+      selector:
+        number:
+          min: -10.0
+          max: 5.0
+          step: 0.5
+          unit_of_measurement: degrees
+          mode: slider
+    include_ambient:
+      name: Use The Ambient Options (Optional)
+      description: Select enable or disable.
+      default: ambient_disabled
+      selector:
+        select:
+          options:
+          - label: Enable the ambient options
+            value: ambient_enabled
+          - label: Disable the ambient options
+            value: ambient_disabled
+          multiple: false
+          custom_value: false
+    ambient_light_sensor:
+      name: Ambient Light Sensor
+      description: This is used for adding a condition to only work when it is dark
+        or below the Ambient Light LUX Value.
+      default: []
+      selector:
+        entity:
+          domain: sensor
+          device_class: illuminance
+          multiple: false
+    ambient_light_options:
+      name: Ambient Light Sensor - Site Conditions
+      description: In some cases when your lights turn ON your ambient light sensor
+        is affected increasing its LUX value. This can cause the lights to go OFF
+        prematurely. Please select an option that best suits your installation.
+      default: ambient_light_option_disabled
+      selector:
+        select:
+          options:
+          - label: YES - My Ambient Light Sensor is affected by the Lights
+            value: ambient_light_option_enabled
+          - label: NO - My Ambient Light Sensor is not affected by the Lights
+            value: ambient_light_option_disabled
+          multiple: false
+          custom_value: false
+    ambient_light_value:
+      name: Ambient Light LUX Value
+      description: Set the Ambient Light LUX Value. Guide is 20 lux (dusk) and 80
+        lux (dawn).
+      default: 20
+      selector:
+        number:
+          min: 0.0
+          max: 500.0
+          step: 10.0
+          unit_of_measurement: LUX
+          mode: slider
+    include_time:
+      name: Use The Time Options (Optional)
+      description: Use the "Start Time", "End Time" and the "Weekdays" values to only
+        run the automation between the time periods. This applies for "Lights - Switches
+        - Scenes" & "Night Lights".
+      default: time_disabled
+      selector:
+        select:
+          options:
+          - label: Enable the time options
+            value: time_enabled
+          - label: Disable the time options
+            value: time_disabled
+          multiple: false
+          custom_value: false
+    after_time:
+      name: Start Time
+      description: Set the start time.
+      default: 00:00:00
+      selector:
+        time: {}
+    before_time:
+      name: End Time
+      description: Set the end time.
+      default: 00:00:00
+      selector:
+        time: {}
+    weekday_options:
+      name: Weekdays
+      description: Select the days of the week you would like the automation to run.
+        You must select "Enable the time options" above for the weekdays selections
+        to work.
+      default:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      - sat
+      - sun
+      selector:
+        select:
+          multiple: true
+          mode: list
+          options:
+          - label: Monday
+            value: mon
+          - label: Tuesday
+            value: tue
+          - label: Wednesday
+            value: wed
+          - label: Thursday
+            value: thu
+          - label: Friday
+            value: fri
+          - label: Saturday
+            value: sat
+          - label: Sunday
+            value: sun
+          custom_value: false
+    include_zone:
+      name: Use The Zone Option (Optional)
+      description: Home Assistant can track your devices (mobile phones) location
+        to a set zone via the mobile app device tracker. Enabling this option will
+        only allow the automation to run if a device is in the zone. This can be useful
+        if you have pets triggering the trigger sensor turning your lights ON and
+        OFF when no one is home.
+      default: zone_disabled
+      selector:
+        select:
+          options:
+          - label: Enable the zone option
+            value: zone_enabled
+          - label: Disable the zone option
+            value: zone_disabled
+          multiple: false
+          custom_value: false
+    zone:
+      name: Zone - Device Tracker
+      description: Select the zone to track devices in. You must set up a zone and
+        your devices (mobile phones, etc) to be tracked in Home Assistant for this
+        option to work.
+      default: []
+      selector:
+        entity:
+          domain: zone
+          multiple: false
+    include_night_lights:
+      name: Use The Night Lights Options (Optional)
+      description: Use the night lights to only run between the night lights time
+        periods. This is useful for turning on different lights later in the night
+        and / or setting a lower brightness level, changing the colour setting or
+        selecting a different scene. It is normally used for having lower softer lights
+        come ON when going to the bathroom at night.
+      default: night_lights_disabled
+      selector:
+        select:
+          options:
+          - label: Enable the night lights options
+            value: night_lights_enabled
+          - label: Disable the night lights options
+            value: night_lights_disabled
+          multiple: false
+          custom_value: false
+    night_lights:
+      name: Night Lights
+      description: The night lights that get turned on by the trigger sensor/s. You
+        can also add switches and scenes. If you have selected a scene and you would
+        like it to be turned OFF after the time delay, you must create another identical
+        scene with everything OFF and enter it above in the "Scenes To Turn OFF".
+      default: {}
+      selector:
+        target:
+          entity:
+            domain:
+            - light
+            - switch
+            - scene
+    night_time_delay:
+      name: Night Lights - Time Delay
+      description: The delay time to leave the night lights on after the last trigger
+        from ON to OFF state is detected.
+      default: 5
+      selector:
+        number:
+          min: 0.0
+          max: 30.0
+          step: 0.5
+          unit_of_measurement: minutes
+          mode: slider
+    include_night_light_control:
+      name: Night Lights - Control
+      description: Select the options you would like to use. It will only control
+        a "light" entity that has a brightness setting.
+      default: dont_use_night_brightness
+      selector:
+        select:
+          options:
+          - label: Use night brightness
+            value: use_night_brightness
+          - label: Dont use night brightness
+            value: dont_use_night_brightness
+          multiple: false
+          custom_value: false
+    night_light_brightness:
+      name: Night Lights - Brightness
+      description: Brightness of the night lights when they are turned ON.
+      default: 20
+      selector:
+        number:
+          min: 1.0
+          max: 100.0
+          mode: slider
+          step: 1.0
+          unit_of_measurement: '%'
+    night_lights_after_time:
+      name: Night Lights - Start Time
+      description: Set the start time.
+      default: 00:00:00
+      selector:
+        time: {}
+    night_lights_before_time:
+      name: Night Lights - End Time
+      description: Set the end time.
+      default: 00:00:00
+      selector:
+        time: {}
+  source_url: https://gist.github.com/Blackshome/6edfec0ff6a25c5da0d07b88dc908238
+mode: restart
+max_exceeded: silent
+variables:
+  motion_trigger: !input motion_trigger
+  light_switch: !input light_switch
+  end_scenes: !input end_scenes
+  time_delay: !input time_delay
+  include_light_control: !input include_light_control
+  light_brightness: !input light_brightness
+  include_bypass: !input include_bypass
+  motion_bypass: !input motion_bypass
+  include_sun: !input include_sun
+  sun_elevation: !input sun_elevation
+  include_ambient: !input include_ambient
+  ambient_light_sensor: !input ambient_light_sensor
+  ambient_light_options: !input ambient_light_options
+  ambient_light_value: !input ambient_light_value
+  include_time: !input include_time
+  after_time: !input after_time
+  before_time: !input before_time
+  weekday_options: !input weekday_options
+  include_zone: !input include_zone
+  zone: !input zone
+  include_night_lights: !input include_night_lights
+  night_lights: !input night_lights
+  night_time_delay: !input night_time_delay
+  include_night_light_control: !input include_night_light_control
+  night_light_brightness: !input night_light_brightness
+  night_lights_after_time: !input night_lights_after_time
+  night_lights_before_time: !input night_lights_before_time
+trigger:
+- platform: state
+  id: t1
+  entity_id: !input motion_trigger
+  from: 'off'
+  to: 'on'
+- platform: numeric_state
+  id: t2
+  entity_id: sun.sun
+  attribute: elevation
+  below: !input sun_elevation
+- platform: numeric_state
+  id: t3
+  entity_id: !input ambient_light_sensor
+  below: !input ambient_light_value
+- platform: time
+  id: t4
+  at: !input after_time
+- platform: time
+  id: t5
+  at: !input night_lights_after_time
+condition:
+- condition: or
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: !input motion_trigger
+      match: any
+      state: 'on'
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: !input motion_trigger
+      state: 'on'
+    - condition: trigger
+      id: t2
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: !input motion_trigger
+      state: 'on'
+    - condition: trigger
+      id: t3
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: !input motion_trigger
+      state: 'on'
+    - condition: trigger
+      id: t4
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: !input motion_trigger
+      state: 'on'
+    - condition: trigger
+      id: t5
+- condition: or
+  conditions:
+  - '{{ include_bypass == ''bypass_disabled'' }}'
+  - '{{ motion_bypass == [] }}'
+  - '{{ (include_bypass == ''bypass_enabled'') and (states[motion_bypass].state ==
+    ''off'') }}'
+  - '{{ (include_bypass == ''bypass_enabled_stop'') and (states[motion_bypass].state
+    == ''off'') }}'
+- condition: or
+  conditions:
+  - '{{ include_sun == ''sun_disabled'' }}'
+  - '{{ (include_sun == ''sun_enabled'') and (state_attr(''sun.sun'',''elevation'')
+    <= sun_elevation | float(90)) }}'
+- condition: or
+  conditions:
+  - '{{ include_ambient == ''ambient_disabled'' }}'
+  - '{{ ambient_light_sensor == [] }}'
+  - '{{ (include_ambient == ''ambient_enabled'') and (states[ambient_light_sensor].state
+    | int < ambient_light_value | int) }}'
+  - '{{ (ambient_light_options == ''ambient_light_option_enabled'') and (expand(light_switch.entity_id)
+    | selectattr(''state'', ''=='', ''on'') | list | count > 0) }}'
+  - '{{ (ambient_light_options == ''ambient_light_option_enabled'') and (expand(night_lights.entity_id)
+    | selectattr(''state'', ''=='', ''on'') | list | count > 0) }}'
+- condition: or
+  conditions:
+  - '{{ include_time == ''time_disabled'' }}'
+  - condition: and
+    conditions:
+    - condition: time
+      after: !input after_time
+      before: !input before_time
+      weekday: !input weekday_options
+    - '{{ include_time == ''time_enabled'' }}'
+- condition: or
+  conditions:
+  - '{{ include_zone == ''zone_disabled'' }}'
+  - condition: and
+    conditions:
+    - condition: numeric_state
+      entity_id: !input zone
+      above: 0
+    - '{{ include_zone == ''zone_enabled'' }}'
+action:
+- choose:
+  - alias: Check night lights options
+    conditions:
+    - condition: time
+      after: !input night_lights_after_time
+      before: !input night_lights_before_time
+    - '{{ include_night_lights == ''night_lights_enabled'' }}'
+    sequence:
+    - choose:
+      - alias: Reset lights when trigger by night time
+        conditions:
+        - condition: trigger
+          id: t5
+        sequence:
+        - service: homeassistant.turn_off
+          target: !input light_switch
+        - service: scene.turn_on
+          entity_id: !input end_scenes
+    - alias: Turn on the night lights
+      service: homeassistant.turn_on
+      target: !input night_lights
+    - choose:
+      - alias: Set the brightness for the night light switch
+        conditions:
+        - condition: template
+          value_template: '{{ include_night_light_control == ''use_night_brightness''
+            }}'
+        sequence:
+        - service: light.turn_on
+          target: !input night_lights
+          data:
+            brightness_pct: !input night_light_brightness
+    - alias: Wait until motion sensor is off
+      wait_for_trigger:
+        platform: state
+        entity_id: !input motion_trigger
+        from: 'on'
+        to: 'off'
+    - alias: Wait the number of minutes set in the night light time delay
+      delay:
+        minutes: !input night_time_delay
+    - choose:
+      - alias: Check by-pass stop option
+        conditions:
+        - condition: template
+          value_template: '{{ (include_bypass == ''bypass_enabled_stop'') and (states[motion_bypass].state
+            == ''on'') }}'
+        sequence:
+        - stop: Stop the automation because of the by-pass option
+    - alias: Turn off the night lights
+      service: homeassistant.turn_off
+      target: !input night_lights
+    - alias: Turn off the scenes
+      service: scene.turn_on
+      entity_id: !input end_scenes
+  default:
+  - alias: Turn on the lights
+    service: homeassistant.turn_on
+    target: !input light_switch
+  - choose:
+    - alias: Set the brightness for the light switch
+      conditions:
+      - condition: template
+        value_template: '{{ include_light_control == ''use_brightness'' }}'
+      sequence:
+      - service: light.turn_on
+        target: !input light_switch
+        data:
+          brightness_pct: !input light_brightness
+  - alias: Wait until motion sensor is off
+    wait_for_trigger:
+      platform: state
+      entity_id: !input motion_trigger
+      from: 'on'
+      to: 'off'
+  - alias: Wait the number of minutes set in the light time delay
+    delay:
+      minutes: !input time_delay
+  - choose:
+    - alias: Check by-pass stop option
+      conditions:
+      - condition: template
+        value_template: '{{ (include_bypass == ''bypass_enabled_stop'') and (states[motion_bypass].state
+          == ''on'') }}'
+      sequence:
+      - stop: Stop the automation because of the by-pass option
+  - alias: Turn off the lights
+    service: homeassistant.turn_off
+    target: !input light_switch
+  - alias: Turn off the scenes
+    service: scene.turn_on
+    entity_id: !input end_scenes

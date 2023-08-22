@@ -1,0 +1,63 @@
+permit_join: false
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://192.168.1.25
+  user: hass
+  password: dummY
+homeassistant: true
+serial:
+  port: /dev/ttyACM0
+frontend:
+  port: 8080
+advanced:
+  network_key:
+    - 205
+    - 230
+    - 123
+    - 1
+    - 53
+    - 33
+    - 149
+    - 194
+    - 0
+    - 57
+    - 131
+    - 35
+    - 117
+    - 156
+    - 105
+    - 154
+  log_level: warn
+devices:
+  '0xa4c138aa6a05118d':
+    friendly_name: Stecker 2
+    power_precision: 2
+    voltage_precision: 2
+    current_precision: 2
+    energy_precision: 2
+  '0x00158d0008d8e15f':
+    friendly_name: Bewegungsmelder Haustür
+    device_temperature_calibration: -9
+    occupancy_timeout: 60
+    illuminance_lux_calibration: ''
+  '0x00158d00031d2a62':
+    friendly_name: 'Leos Lampe '
+    transition: 0
+  '0xa4c138d64ce6279f':
+    friendly_name: Haustür Lampe 1
+  '0xa4c138edecb090d8':
+    friendly_name: Haustür Lampe 2
+  '0xa4c13808bc858057':
+    friendly_name: Garagenlampe 1
+  '0xa4c1386273190b5b':
+    friendly_name: 'Bewegungsmelder Garage '
+    occupancy_timeout: 60
+  '0xa4c138676e381225':
+    friendly_name: 'Gartenpumpe '
+  '0x000d6f00101cd775':
+    friendly_name: 'Leo Licht Fernbedienung '
+  '0x00124b0029294c0a':
+    friendly_name: Kellertemp
+  '0x00124b0029295963':
+    friendly_name: Kellertemp 2
+groups: {}

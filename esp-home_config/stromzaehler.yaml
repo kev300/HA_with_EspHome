@@ -1,0 +1,102 @@
+# Enable logging
+logger:
+  baud_rate: 0
+  level: WARN
+
+# Enable Home Assistant API
+api:
+  password: ""
+
+ota:
+  password: ""
+
+captive_portal:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pw
+  manual_ip:
+    static_ip: 192.168.1.21
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+
+esphome:
+  name: smartmeter
+  comment: "Smartmeter"
+  platform: esp8266
+  board: esp01_1m
+preferences:
+  flash_write_interval: 5min
+
+
+    #external_components:
+    #  - source: github://alengwenus/esphome_components@main
+    #    refresh: 0s
+    #    components: [sml]
+
+uart:
+  id: uart_bus
+  tx_pin: GPIO01
+  rx_pin: GPIO03
+  baud_rate: 9600
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
+
+sml:
+  id: mysml
+  uart_id: uart_bus
+
+sensor:
+  - platform: sml
+    name: "Total energy out"
+    sml_id: mysml
+    obis_code: "1-0:2.8.0"
+    unit_of_measurement: kWh
+    accuracy_decimals: 4
+    device_class: energy
+    state_class: total_increasing
+    filters:
+      - multiply: 0.0001
+      - throttle: 300s
+
+  - platform: sml
+    sml_id: mysml
+    name: "Total energy in"
+    obis_code: "1-0:1.8.0"
+    unit_of_measurement: kWh
+    accuracy_decimals: 4
+    device_class: energy
+    state_class: total_increasing
+    filters:
+      - multiply: 0.0001
+      - throttle: 300s
+
+  - platform: sml
+    name: "power consumption"
+    sml_id: mysml
+    icon: "mdi:lightning-bolt"
+    obis_code: "1-0:16.7.0"
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    device_class: power
+    state_class: measurement
+
+
+      #  - platform: pulse_counter
+      #    pin: 
+      #      number: GPIO00
+#      mode: INPUT_PULLUP
+#    name: "Gasverbrauch"
+#    update_interval : 60s
+#    internal_filter: 100ms
+#    filters:
+#      - lambda: |-
+#          static float total_value = 0.0;
+#          total_value += x * 0.01;
+#          return total_value;
+#    unit_of_measurement: "m³"
+#    accuracy_decimals: 2
+#    icon: 'mdi:fire'
+
+

@@ -1,0 +1,85 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include sensor.yaml
+
+recorder:
+  purge_keep_days: 10
+  db_url: postgresql://hass:hassPw321@192.168.1.25/smart_home
+  commit_interval: 60
+  include:
+    domains:
+      #      - person
+      - sensor
+      - binary_sensor
+      - light
+      - switch
+      - lock
+      - sql
+      #      - update
+    entity_globs:
+      - sensor.jk_bms_cell_voltage_*
+      - sensor.jk_bms_temperature_sensor_*
+    entities:
+      - sensor.jk_bms_total_voltage
+      - sensor.jk_bms_charging_power
+      - sensor.jk_bms_discharging_power
+      - sensor.jk_bms_power
+      - sensor.jk_bms_charging_energy_today
+      - sensor.jk_bms_discharging_energy_today
+      - sensor.jk_bms_actual_battery_capacity
+        #      - sensor.jk_bms_balancing
+      - sensor.jk_bms_capacity_remaining
+      - sensor.jk_bms_charging_cycles
+      - sensor.jk_bms_current
+      - sensor.jk_bms_bms_temperature
+      - sensor.jk_bms_state_of_charge
+      - sensor.openwathermap_humidity
+      - sensor.openwathermap_temperature
+      - sensor.openwathermap_pressure
+     
+  exclude:
+    entity_globs:
+      - sensor.jk_bms*
+      - sensor.openweather
+    entities:
+      - sensor.power_consumption
+      - sensor.soyo_power_demand
+
+
+homeassistant:
+  customize_glob:
+    sensor.total_energy_in:
+      last_reset: 2023-01-01T00:00:00+00:00
+    sensor.total_energy_out:
+      last_reset: 2023-01-01T00:00:00+00:00
+
+
+        #homeassistant:
+        #  customize_glob:
+        #    sensor.stromz_power_total_in:
+        #      unit_of_measurement: "kWh"    
+        #      device_class: energy
+        #      state_class: total_increasing
+        #      last_reset: 2023-01-01T00:00:00+00:00
+        #    sensor.stromz_power_total_out:
+        #      unit_of_measurement: "kWh"    
+        #      device_class: energy
+        #      state_class: total_increasing
+        #      last_reset: 2023-01-01T00:00:00+00:00
+        #    sensor.stromz_power_power_curr:
+        #      unit_of_measurement: "W"    
+        #      device_class: power
+        #      state_class: measurement

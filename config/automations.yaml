@@ -1,0 +1,117 @@
+- id: '1675612618800'
+  alias: 'Haustür Bewegungsmelder '
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.bewegungsmelder_haustur_occupancy
+      light_switch:
+        entity_id: light.hausturlicht
+      ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
+      ambient_light_options: ambient_light_option_disabled
+      time_delay: 1
+      include_light_control: dont_use_brightness
+      include_ambient: ambient_disabled
+      ambient_light_value: 90
+      include_sun: sun_enabled
+- id: '1677505658484'
+  alias: 'Garagenlicht Bewegungsmelder '
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.bewegungsmelder_garage_occupancy
+      ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
+      ambient_light_options: ambient_light_option_disabled
+      time_delay: 1
+      include_light_control: dont_use_brightness
+      include_ambient: ambient_disabled
+      ambient_light_value: 120
+      light_switch:
+        device_id: 326b48d4842bd6579edde4ce6988419e
+      include_sun: sun_enabled
+- id: '1678299190989'
+  alias: Send Notification
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.hum_abs_keller
+    above: sensor.hum_abs_outside
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.hum_abs_keller
+    above: sensor.hum_abs_outside
+  - condition: numeric_state
+    entity_id: sensor.kellertemp_humidity
+    attribute: humidity
+    above: 60
+  action:
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Keller lüften wäre jetzt cool...
+      title: Keller
+- id: '1684942536663'
+  alias: Leo Licht an aus
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 15b7db31564d7217ef73154a7e933a79
+    type: action
+    subtype: circle_click
+    discovery_id: 0x000d6f00101cd775 action_circle_click
+  condition: []
+  action:
+  - type: toggle
+    device_id: 74b5e98613794d8c4f1335f3acb0e00f
+    entity_id: light.leos_lampe
+    domain: light
+  mode: single
+- id: '1684945772411'
+  alias: 'Leo Licht heller '
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 15b7db31564d7217ef73154a7e933a79
+    type: action
+    subtype: up
+    discovery_id: 0x000d6f00101cd775 action_up
+  condition: []
+  action:
+  - device_id: 74b5e98613794d8c4f1335f3acb0e00f
+    domain: light
+    entity_id: light.leos_lampe
+    type: brightness_increase
+  mode: single
+- id: '1684945893990'
+  alias: 'Leo Licht dunkler '
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 15b7db31564d7217ef73154a7e933a79
+    type: action
+    subtype: down
+    discovery_id: 0x000d6f00101cd775 action_down
+  condition: []
+  action:
+  - device_id: 74b5e98613794d8c4f1335f3acb0e00f
+    domain: light
+    entity_id: light.leos_lampe
+    type: brightness_decrease
+  mode: single
+- id: '1685730805753'
+  alias: Reboot garage controler
+  description: ''
+  trigger:
+  - platform: time
+    at: 05:00:00
+  condition: []
+  action:
+  - type: turn_on
+    device_id: e8bfdc0a3abc8bf51489993a070883a5
+    entity_id: switch.reboot
+    domain: switch
+  mode: single
