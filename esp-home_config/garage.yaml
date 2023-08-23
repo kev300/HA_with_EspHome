@@ -363,14 +363,15 @@ sensor:
 
   - platform: ina226
     address: 0x40
+    update_interval: 1s
     shunt_resistance: 0.0015 ohm
+    max_current: 50A
     current:
       #name: "Inverter amps"
       id: inverter_amps
       filters:
-        - offset: 0.058608
+        - offset: 0.057988
     bus_voltage:
-      #name: "Batt Volt"
       id: batt_voltage
       filters:
         - calibrate_linear:
@@ -379,22 +380,32 @@ sensor:
       on_value:
         then:
           - component.update: soyo_power
-    max_current: 40A
-    update_interval: 1s
+          - component.update: solar_power_only
+      on_value_range:
+        - above: 44.5
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: !lambda |-
+                  return id(max_demand);
+        - below: 43.5
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: 250
 
   - platform: ina226
     address: 0x41
     shunt_resistance: 0.0015 ohm
+    max_current: 50A
+    update_interval: 1s
     current:
-      #name: "charging amps"
       id: charging_amps
       filters:
         - multiply: -1
       on_value:
         then:
           - component.update: solar_power_only
-    max_current: 40A
-    update_interval: 1s
 
 # import smartmeter reading from homeassistant
 #   # requires the "api" component see above
@@ -413,7 +424,7 @@ sensor:
       if (id(api_connection)) {
         return id(powermeter0).state;
       } else {
-        return id(jk_bms_power).raw_state - 50; 
+        return id(solar_power_only).raw_state - 50; 
       }
 
   - platform: template
@@ -429,15 +440,13 @@ sensor:
       - throttle: 5s
 
   - platform: template
-    internal: true
-      #name: "sol power test"
     id: solar_power_only
     unit_of_measurement: W
     device_class: power
     state_class: measurement
     lambda: |-
       return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state) * id(charging_amps).state;
-    update_interval: never #updated by charging amps
+    update_interval: never #updated by batt_voltage
     on_value:
       then:
         - component.update: charging_power
@@ -467,8 +476,7 @@ sensor:
     state_class: measurement
     accuracy_decimals: 2
     update_interval: 7s
-    lambda: |-
-      return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+    lambda: return id(solar_power_only).raw_state - id(soyo_power).raw_state;
 
   - platform: template
     name: "solarstrom power"
@@ -607,24 +615,6 @@ sensor:
   
   - platform: jk_bms_ble
     jk_bms_ble_id: bms0
-#    charging_power:
-#      name: "${name} charging power"
-#      id: jk_bms_charging_power
-#      unit_of_measurement: W
-#      device_class: power
-#      state_class: measurement
-#      entity_category: diagnostic
-#      filters:
-#        - throttle_average: 10s
-#    discharging_power:
-#      name: "${name} discharging power"
-#      id: jk_bms_discharging_power
-#      unit_of_measurement: W
-#      device_class: power
-#      state_class: measurement
-#      entity_category: diagnostic
-#      filters:
-#        - throttle_average: 10s
     power:
       name: "${name} power"
       id: "jk_bms_power"
@@ -633,7 +623,7 @@ sensor:
       state_class: measurement
       entity_category: diagnostic
       filters:
-        - throttle: 7s
+        - throttle_average: 10s
 
     min_cell_voltage:
       name: "${name} min cell voltage"
@@ -741,18 +731,6 @@ sensor:
       id: jk_bms_total_voltage
       filters:
         - throttle: 10s
-      on_value_range:
-        - above: 44.5
-          then:
-            - number.set:
-                id: soyo_max_demand
-                value: !lambda |-
-                  return id(max_demand);
-        - below: 43.5
-          then:
-            - number.set:
-                id: soyo_max_demand
-                value: 250
     current:
       name: "${name} current"
       filters:
