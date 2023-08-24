@@ -6,7 +6,7 @@ services:
     image: "ghcr.io/home-assistant/home-assistant:stable"
     restart: unless-stopped
     volumes:
-      - /home/kevin/docker/homeassistant/config:/config
+      - ./config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
     privileged: true
