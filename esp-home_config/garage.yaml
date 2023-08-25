@@ -382,12 +382,24 @@ sensor:
           - component.update: soyo_power
           - component.update: solar_power_only
       on_value_range:
-        - above: 44.5
+        - above: 46
           then:
             - number.set:
                 id: soyo_max_demand
                 value: !lambda |-
                   return id(max_demand);
+        - below: 46
+          above: 45
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: 750
+        - below: 45
+          above: 44
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: 600
         - below: 43.5
           then:
             - number.set:
