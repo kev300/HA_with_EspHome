@@ -1,1 +1,2 @@
 1692697376: Warning: File /mosquitto/config/password.txt has world readable permissions. Future versions will refuse to load this file.
+1692785689: Warning: File /mosquitto/config/password.txt has world readable permissions. Future versions will refuse to load this file.
