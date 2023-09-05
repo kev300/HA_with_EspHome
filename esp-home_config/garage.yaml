@@ -308,10 +308,6 @@ number:
       name: "${name} cell voltage undervoltage recovery"
     balance_starting_voltage:
       name: "${name} balance starting voltage"
-#    voltage_calibration:
-#      name: "${name} voltage calibration"
-#    current_calibration:
-#      name: "${name} current calibration"
     power_off_voltage:
       name: "${name} power off voltage"
     max_balance_current:
@@ -382,17 +378,27 @@ sensor:
           - component.update: soyo_power
           - component.update: solar_power_only
       on_value_range:
-        - above: 44.5
+        - above: 53.4
+          then:
+            - number.set:
+                id: soyo_buffer
+                value: -80
+        - below: 53
+          then:
+            - number.set:
+                id: soyo_buffer
+                value: -2
+        - above: 44.7
           then:
             - number.set:
                 id: soyo_max_demand
                 value: !lambda |-
                   return id(max_demand);
-        - below: 43.5
+        - below: 44
           then:
             - number.set:
                 id: soyo_max_demand
-                value: 250
+                value: 220
 
   - platform: ina226
     address: 0x41
@@ -413,7 +419,7 @@ sensor:
     id: powermeter0
     entity_id: sensor.power_consumption
     filters:
-      - lambda: if (x < -800) return -800; return x; #some times the meter reports very low values!? + slow down ramp down
+      - lambda: if (x < -800) return -800; return x; #sometimes the meter reports very low values!? + slow down ramp down
 
   - platform: template
     id: powermeter_with_fallback
@@ -743,22 +749,10 @@ sensor:
       name: "${name} errors bitmask"
     state_of_charge:
       name: "${name} state of charge"
-      on_value_range:
-        - above: 99
-          then:
-            - number.set:
-                id: soyo_buffer
-                value: -80
-        - below: 98
-          then:
-            - number.set:
-                id: soyo_buffer
-                value: -2
     balancing_current:
       name: "${name} balancing current"
       filters:
       - throttle: 5s
-
 
 switch:
   - platform: soyosource_virtual_meter
