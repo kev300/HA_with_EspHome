@@ -218,14 +218,14 @@ soyosource_virtual_meter:
     # Optional settings
     power_sensor_inactivity_timeout: 20s
     power_demand_calculation: NEGATIVE_MEASUREMENTS_REQUIRED
-    min_power_demand: 65
+    min_power_demand: 50
     max_power_demand: 1120
     # Split/distribute the power demand if you have multiple inverters attached to the same RS485 bus
     power_demand_divider: 1
     # A positive buffer value (10) tries to avoid exporting power to the grid (demand - 10 watts)
     # A negative buffer value (-10) exports power to the grid (demand + 10 watts)
     buffer: 0
-    zero_output_on_min_power_demand: false
+    zero_output_on_min_power_demand: true
     max_power_sensor_latency_ms: 5000 
 
     # The operation_status_id sensor is expected here. Passing the operation_status won't work
@@ -363,7 +363,7 @@ sensor:
     shunt_resistance: 0.0015 ohm
     max_current: 50A
     current:
-      #name: "Inverter amps"
+      #      name: "Inverter amps"
       id: inverter_amps
       filters:
         - offset: 0.057988
@@ -398,7 +398,7 @@ sensor:
           then:
             - number.set:
                 id: soyo_max_demand
-                value: 220
+                value: 200
 
   - platform: ina226
     address: 0x41
@@ -428,9 +428,13 @@ sensor:
     unit_of_measurement: W
     lambda: |-
       if (id(api_connection)) {
-        return id(powermeter0).state;
+        if (id(batt_voltage_avg).state < 46 && id(solar_power_avg).state < 250) {
+          return -1100;
+        } else {
+          return id(powermeter0).state;
+        }
       } else {
-        return id(solar_power_only).raw_state - 50; 
+        return id(solar_power_only).raw_state - id(soyo_power).raw_state - 60; 
       }
 
   - platform: template
@@ -443,7 +447,7 @@ sensor:
       return id(batt_voltage).state * id(inverter_amps).state;
     update_interval: never
     filters:
-      - throttle: 5s
+      - throttle_average: 5s
 
   - platform: template
     id: solar_power_only
@@ -473,6 +477,22 @@ sensor:
        auto w = id(soyo_power).raw_state - id(solar_power_only).raw_state;
        return w < 0 ? 0 : w;
     update_interval: never
+
+  - platform: template
+    id: solar_power_avg
+    update_interval: 5s
+    lambda: return id(solar_power_only).state;
+    filters:
+      - median:
+          window_size: 180 #15 min
+
+  - platform: template
+    id: batt_voltage_avg
+    update_interval: 5s
+    lambda: return id(batt_voltage).state;
+    filters:
+      - median:
+          window_size: 120 #10min
 
 # throttled for HA:
   - platform: template
