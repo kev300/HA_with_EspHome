@@ -60,6 +60,10 @@ globals:
     type: int 
     restore_value: no
     initial_value: '920'
+  - id: protect_battery
+    type: bool
+    restore_value: no
+    initial_value: 'false'
 
 interval:
   - interval: 5s
@@ -98,6 +102,7 @@ interval:
             numberF.perform();
           }
 
+
   - interval: 100s
     then:
       - if:
@@ -128,6 +133,18 @@ interval:
       - component.update: adc1
       - component.update: adc2
       - switch.turn_off: ntc_vcc
+
+      - lambda: |-
+          int min_temp = 10;
+          int max_temp = 43;
+          
+          if (id(batt_temp1).state < min_temp || id(batt_temp2).state < min_temp || id(batt_temp3).state < min_temp || id(batt_temp4).state < min_temp) {
+            id(protect_battery) = true;
+          } else if (id(batt_temp1).state > max_temp || id(batt_temp2).state > max_temp || id(batt_temp3).state > max_temp || id(batt_temp4).state > max_temp) {
+            id(protect_battery) = true;
+          } else {
+            id(protect_battery) = false;
+          }
 
 substitutions:
   name: jk-bms
@@ -429,11 +446,11 @@ sensor:
     internal: true
     unit_of_measurement: W
     lambda: |-
-      if (id(api_connection) && (id(batt_voltage_avg).state > 46 || id(solar_energy_today).state >= 4)) {
+      if (id(api_connection) && !id(protect_battery) && (id(batt_voltage_avg).state > 46 || id(solar_energy_today).state >= 4)) {
         return id(powermeter0).state;
       } else {
         //goal: Only use solar power, 0W to or from battery. The soyo component will go to 0W demand below 50W (or whatever setting above)
-        return id(solar_power_only).raw_state - id(soyo_power).raw_state - id(soyo_buffer).state;
+        return id(solar_power_only).raw_state - id(soyo_power).raw_state -3;
       }
 
 
@@ -589,6 +606,7 @@ sensor:
       reference_temperature: 25°C
       reference_resistance: 10kOhm
     name: "Batt Temp 3"
+    id: batt_temp3
   - platform: ntc
     sensor: resistance_sensor_2
     calibration:
@@ -596,6 +614,7 @@ sensor:
       reference_temperature: 25°C
       reference_resistance: 10kOhm
     name: "Batt Temp 4"
+    id: batt_temp4
 
 
   - platform: soyosource_display
@@ -738,10 +757,12 @@ sensor:
       filters:
       - throttle: 10s
     temperature_sensor_1:
+      id: batt_temp1
       name: "${name} temperature sensor 1"
       filters:
       - throttle: 10s
     temperature_sensor_2:
+      id: batt_temp2
       name: "${name} temperature sensor 2"
       filters:
       - throttle: 10s
