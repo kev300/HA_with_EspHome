@@ -446,11 +446,14 @@ sensor:
     internal: true
     unit_of_measurement: W
     lambda: |-
-      if (id(api_connection) && !id(protect_battery) && (id(batt_voltage_avg).state > 46 || id(solar_energy_today).state >= 4)) {
+
+      auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state -3;
+
+      if (id(api_connection) && !id(protect_battery) && (solar_demand > id(powermeter0).state || id(batt_voltage_avg).state > 47 || id(solar_energy_today).state >= 4)) {
         return id(powermeter0).state;
       } else {
         //goal: Only use solar power, 0W to or from battery. The soyo component will go to 0W demand below 50W (or whatever setting above)
-        return id(solar_power_only).raw_state - id(soyo_power).raw_state -3;
+        return solar_demand;
       }
 
 
