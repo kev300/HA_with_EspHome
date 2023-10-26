@@ -39,6 +39,8 @@ wifi:
 
 time:
   - platform: sntp
+    #move time zone by 6 hours, so daily_energy monitors are reset at 06:00 (used in fallback_powermeter to decide if the battery should be emptied over night)
+    timezone: CET-7CEST,M3.5.0,M10.5.0/3
 
 esphome:
   name: garage-controller
@@ -427,15 +429,13 @@ sensor:
     internal: true
     unit_of_measurement: W
     lambda: |-
-      if (id(api_connection)) {
-        if (id(batt_voltage_avg).state < 46 && id(solar_power_avg).state < 250) {
-          return -1100;
-        } else {
-          return id(powermeter0).state;
-        }
+      if (id(api_connection) && (id(batt_voltage_avg).state > 46 || id(solar_energy_today).state >= 4)) {
+        return id(powermeter0).state;
       } else {
-        return id(solar_power_only).raw_state - id(soyo_power).raw_state - 60; 
+        //goal: Only use solar power, 0W to or from battery. The soyo component will go to 0W demand below 50W (or whatever setting above)
+        return id(solar_power_only).raw_state - id(soyo_power).raw_state - id(soyo_buffer).state;
       }
+
 
   - platform: template
     id: soyo_power
@@ -479,20 +479,12 @@ sensor:
     update_interval: never
 
   - platform: template
-    id: solar_power_avg
-    update_interval: 5s
-    lambda: return id(solar_power_only).state;
-    filters:
-      - median:
-          window_size: 180 #15 min
-
-  - platform: template
     id: batt_voltage_avg
     update_interval: 5s
     lambda: return id(batt_voltage).state;
     filters:
       - median:
-          window_size: 120 #10min
+          window_size: 240 #20min
 
 # throttled for HA:
   - platform: template
@@ -557,6 +549,7 @@ sensor:
 
   - platform: total_daily_energy
     name: "solarstrom energy"
+    id: solar_energy_today
     icon: mdi:counter
     power_id: solar_power_only
     accuracy_decimals: 3
