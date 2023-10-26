@@ -60,4 +60,8 @@ devices:
     friendly_name: Kellertemp
   '0x00124b0029295963':
     friendly_name: Kellertemp 2
+  '0xa4c138f8635aefcd':
+    friendly_name: 'Solarheizung '
+  '0x804b50fffee0efe1':
+    friendly_name: 'Steckerleiste '
 groups: {}
