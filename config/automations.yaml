@@ -115,3 +115,69 @@
     entity_id: switch.reboot
     domain: switch
   mode: single
+- id: '1698329760687'
+  alias: 'Inverter einschalten '
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: 0
+  condition: []
+  action:
+  - wait_for_trigger:
+    - platform: numeric_state
+      entity_id: sensor.soyo_power_demand
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 0
+      above: 0
+    timeout:
+      hours: 8
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  - repeat:
+      sequence:
+      - type: turn_on
+        device_id: 7c261a60cb0dd9f9f4e79f728d8524d3
+        entity_id: 8cca7c1e062ad863f4a8ef4f1e284c56
+        domain: switch
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      until:
+      - condition: state
+        entity_id: switch.stecker_2
+        state: 'on'
+  mode: single
+- id: '1698329979950'
+  alias: 'Inverter ausschalten '
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: 0
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.soyo_power_demand
+    below: 2
+  action:
+  - repeat:
+      sequence:
+      - type: turn_off
+        device_id: 7c261a60cb0dd9f9f4e79f728d8524d3
+        entity_id: 8cca7c1e062ad863f4a8ef4f1e284c56
+        domain: switch
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      until:
+      - condition: state
+        entity_id: switch.stecker_2
+        state: 'off'
+  mode: single
