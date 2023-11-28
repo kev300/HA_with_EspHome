@@ -46,7 +46,7 @@ void INA226Component::setup() {
   uint16_t config = 0x0000;
 
   // Averaging Mode AVG Bit Settings[11:9] (000 -> 1 sample, 001 -> 4 sample, 111 -> 1024 samples)
-  config |= 0b0000110000000000; // <- 110 - 512
+  config |= 0b0000101000000000; // <- 101 - 256
 
   // Bus Voltage Conversion Time VBUSCT Bit Settings [8:6] (100 -> 1.1ms, 111 -> 8.244 ms)
   config |= 0b0000000000000000;  // <- 000 - 140µs

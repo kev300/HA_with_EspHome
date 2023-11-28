@@ -11,10 +11,11 @@
       ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
       ambient_light_options: ambient_light_option_disabled
       time_delay: 1
-      include_light_control: dont_use_brightness
+      include_light_control: use_brightness
       include_ambient: ambient_disabled
       ambient_light_value: 90
       include_sun: sun_enabled
+      sun_elevation: -0.5
 - id: '1677505658484'
   alias: 'Garagenlicht Bewegungsmelder '
   description: ''
@@ -26,12 +27,13 @@
       ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
       ambient_light_options: ambient_light_option_disabled
       time_delay: 1
-      include_light_control: dont_use_brightness
+      include_light_control: use_brightness
       include_ambient: ambient_disabled
       ambient_light_value: 120
       light_switch:
         device_id: 326b48d4842bd6579edde4ce6988419e
       include_sun: sun_enabled
+      sun_elevation: -0.5
 - id: '1678299190989'
   alias: Send Notification
   trigger:
@@ -133,7 +135,7 @@
         seconds: 0
       above: 0
     timeout:
-      hours: 8
+      hours: 4
       minutes: 0
       seconds: 0
       milliseconds: 0
@@ -181,3 +183,21 @@
         entity_id: switch.stecker_2
         state: 'off'
   mode: single
+- id: '1699372497889'
+  alias: 'Gartenhaus Bewegungsmelder '
+  description: ''
+  use_blueprint:
+    path: Blackshome/sensor-light.yaml
+    input:
+      motion_trigger:
+      - binary_sensor.bewegungsmelder_gartenhaus_occupancy
+      ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
+      ambient_light_options: ambient_light_option_disabled
+      time_delay: 2
+      include_light_control: use_brightness
+      include_ambient: ambient_disabled
+      ambient_light_value: 120
+      light_switch:
+        entity_id: light.gartenhaus_lampe
+      include_sun: sun_enabled
+      sun_elevation: 0.5

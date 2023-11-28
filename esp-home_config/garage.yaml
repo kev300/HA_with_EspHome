@@ -39,8 +39,8 @@ wifi:
 
 time:
   - platform: sntp
-    #move time zone by 6 hours, so daily_energy monitors are reset at 06:00 (used in fallback_powermeter to decide if the battery should be emptied over night)
-    timezone: CET+5CEST,M3.5.0,M10.5.0/3
+    #move time zone by 6 hours, so daily_energy monitors are reset at 07:00 (used in fallback_powermeter to decide if the battery should be emptied over night)
+    timezone: CET+6CEST,M3.5.0,M10.5.0/3
 
 esphome:
   name: garage-controller
@@ -378,14 +378,14 @@ sensor:
 
   - platform: ina226
     address: 0x40
-    update_interval: 500ms
+    update_interval: 282ms
     shunt_resistance: 0.0015 ohm
     max_current: 50A
     current:
       #      name: "Inverter amps"
       id: inverter_amps
       filters:
-        - offset: 0.090034
+        - offset: 0.022890
     bus_voltage:
       id: batt_voltage
       filters:
@@ -423,7 +423,7 @@ sensor:
     address: 0x41
     shunt_resistance: 0.0015 ohm
     max_current: 50A
-    update_interval: 500ms
+    update_interval: 282ms
     current:
       id: charging_amps
       filters:
@@ -456,7 +456,7 @@ sensor:
         if (id(solar_power_only).raw_state > 65 || id(protect_battery)) {
           return solar_demand;
         } else {
-          return id(soyo_buffer).state -5; //get's to 0W demand slowly
+          return id(soyo_buffer).state -65; //get's to 0W demand slowly
         }
       }
 
@@ -485,6 +485,15 @@ sensor:
       then:
         - component.update: charging_power
         - component.update: discharging_power
+        - component.update: solar_power_positive
+
+  - platform: template
+    id: solar_power_positive
+    lambda: return id(solar_power_only).state;
+    filters:
+      - clamp:
+          min_value: 0
+    update_interval: never
 
   - platform: template
     id: charging_power
@@ -575,13 +584,13 @@ sensor:
     name: "solarstrom energy"
     id: solar_energy_today
     icon: mdi:counter
-    power_id: solar_power_only
+    power_id: solar_power_positive
     accuracy_decimals: 3
     unit_of_measurement: kWh
     restore: true
     filters:
       - multiply: 0.001
-      - throttle: 120s 
+      - throttle: 120s
 
   - platform: ads1115
     multiplexer: 'A0_GND'
