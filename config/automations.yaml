@@ -123,7 +123,7 @@
   trigger:
   - platform: sun
     event: sunrise
-    offset: 0
+    offset: -01:00:00
   condition: []
   action:
   - wait_for_trigger:

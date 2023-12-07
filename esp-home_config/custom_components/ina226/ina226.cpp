@@ -52,7 +52,7 @@ void INA226Component::setup() {
   config |= 0b0000000000000000;  // <- 000 - 140µs
 
   // Shunt Voltage Conversion Time VSHCT Bit Settings [5:3] (100 -> 1.1ms, 111 -> 8.244 ms)
-  config |= 0b0000000000100000; // <- 100 - 1.1ms
+  config |= 0b0000000000001000; // <- 001 - 204µs
 
   // Mode Settings [2:0] Combinations (111 -> Shunt and Bus, Continuous)
   config |= 0b0000000000000111;

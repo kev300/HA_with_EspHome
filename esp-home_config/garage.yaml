@@ -127,7 +127,7 @@ interval:
                 id: soyo_operation_select
                 option: "Battery Limit"
 
-  - interval: 180s
+  - interval: 90s
     then:
       - switch.turn_on: ntc_vcc
       - component.update: adc1
@@ -378,24 +378,53 @@ sensor:
 
   - platform: ina226
     address: 0x40
-    update_interval: 282ms
+    update_interval: 50ms
     shunt_resistance: 0.0015 ohm
     max_current: 50A
     current:
-      #      name: "Inverter amps"
+      #name: "Inverter amps"
       id: inverter_amps
       filters:
-        - offset: 0.022890
-    bus_voltage:
-      id: batt_voltage
-      filters:
-        - calibrate_linear:
-          - 0.0 -> 0.0
-          - 16.98 -> 53.47
+        - exponential_moving_average:
+           send_every: 5
+           alpha: 0.079
+        - offset: 0.001526
       on_value:
         then:
           - component.update: soyo_power
+    bus_voltage:
+      id: pv_voltage
+      filters:
+        - exponential_moving_average:
+           send_every: 10
+        - calibrate_linear:
+          - 0.0 -> 0.0
+          - 16.98 -> 53.47
+
+  - platform: ina226
+    address: 0x41
+    shunt_resistance: 0.0015 ohm
+    max_current: 50A
+    update_interval: 50ms
+    current:
+      id: charging_amps
+      name: cargingAmps
+      filters:
+        - exponential_moving_average:
+           send_every: 5
+        - multiply: -1
+      on_value:
+        then:
           - component.update: solar_power_only
+    bus_voltage:
+      id: batt_voltage
+      #name: bvv
+      filters:
+        - exponential_moving_average:
+           send_every: 5
+        - calibrate_linear:
+          - 0.0 -> 0.0
+          - 23.46 -> 47.04
       on_value_range:
         - above: 53.4
           then:
@@ -419,18 +448,6 @@ sensor:
                 id: soyo_max_demand
                 value: 200
 
-  - platform: ina226
-    address: 0x41
-    shunt_resistance: 0.0015 ohm
-    max_current: 50A
-    update_interval: 282ms
-    current:
-      id: charging_amps
-      filters:
-        - multiply: -1
-      on_value:
-        then:
-          - component.update: solar_power_only
 
 # import smartmeter reading from homeassistant
 #   # requires the "api" component see above
@@ -447,13 +464,13 @@ sensor:
     unit_of_measurement: W
     lambda: |-
 
-      auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state + id(soyo_buffer).state -1;
+      auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state + id(soyo_buffer).state -3;
 
       if (id(api_connection) && !id(protect_battery) && (solar_demand > id(powermeter0).state || id(batt_voltage_avg).state > 47 || id(solar_energy_today).state >= 4)) {
         return id(powermeter0).state;
       } else {
         //goal: Only use solar power, 0W to or from battery. Disable below 60W because of bad efficency, except when we protect the battery.
-        if (id(solar_power_only).raw_state > 65 || id(protect_battery)) {
+        if (id(solar_power_only).raw_state > 65 || (id(protect_battery) && id(solar_power_only).raw_state > 7)) {
           return solar_demand;
         } else {
           return id(soyo_buffer).state -65; //get's to 0W demand slowly
@@ -516,8 +533,9 @@ sensor:
     update_interval: 5s
     lambda: return id(batt_voltage).state;
     filters:
-      - median:
-          window_size: 240 #20min
+      - sliding_window_moving_average:
+          window_size: 60
+          send_every: 12
 
 # throttled for HA:
   - platform: template
@@ -547,7 +565,9 @@ sensor:
     state_class: measurement
     accuracy_decimals: 2
     lambda: return id(batt_voltage).state;
-    update_interval: 7s
+    update_interval: 1s
+    filters:
+      - throttle_average: 7s
 
   - platform: soyosource_virtual_meter
     soyosource_virtual_meter_id: virtualmeter0
@@ -608,12 +628,14 @@ sensor:
     id: resistance_sensor_1
     sensor: adc1
     configuration: DOWNSTREAM
-    resistor: 5.6kOhm
+    resistor: 5.75kOhm
+    reference_voltage: 3.2V
   - platform: resistance
     id: resistance_sensor_2
     sensor: adc2
     configuration: DOWNSTREAM
-    resistor: 5.6kOhm
+    resistor: 5.75kOhm
+    reference_voltage: 3.2V
 
   - platform: ntc
     sensor: resistance_sensor_1
@@ -623,6 +645,8 @@ sensor:
       reference_resistance: 10kOhm
     name: "Batt Temp 3"
     id: batt_temp3
+    filters:
+      - throttle_average: 270s
   - platform: ntc
     sensor: resistance_sensor_2
     calibration:
@@ -631,6 +655,8 @@ sensor:
       reference_resistance: 10kOhm
     name: "Batt Temp 4"
     id: batt_temp4
+    filters:
+      - throttle_average: 270s
 
 
   - platform: soyosource_display

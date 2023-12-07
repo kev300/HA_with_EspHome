@@ -9,7 +9,7 @@ static const char *const TAG = "ads1115";
 static const uint8_t ADS1115_REGISTER_CONVERSION = 0x00;
 static const uint8_t ADS1115_REGISTER_CONFIG = 0x01;
 
-static const uint8_t ADS1115_DATA_RATE_860_SPS = 0b001;  //16SPS
+static const uint8_t ADS1115_DATA_RATE_860_SPS = 0b010;  //32SPS
 
 void ADS1115Component::setup() {
   ESP_LOGCONFIG(TAG, "Setting up ADS1115...");

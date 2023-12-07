@@ -38,8 +38,9 @@ devices:
   '0x00158d0008d8e15f':
     friendly_name: Bewegungsmelder Haustür
     device_temperature_calibration: -9
-    occupancy_timeout: 60
+    occupancy_timeout: 30
     illuminance_lux_calibration: ''
+    illuminance_calibration: ''
   '0x00158d00031d2a62':
     friendly_name: 'Leos Lampe '
     transition: 0
