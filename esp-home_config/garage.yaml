@@ -6,15 +6,15 @@ esp32:
 # Enable logging
 logger:
   baud_rate: 0
-  level: DEBUG
-  logs:
-    api.service: WARN
-    sensor: WARN
-    homeassistant.sensor: WARN
-    text_sensor: WARN
-    jk_bms_ble: WARN
-    soyosource_display: WARN
-    soyosource_virtual_meter: WARN
+  level: WARN
+#  logs:
+#    api.service: WARN
+#    sensor: WARN
+#    homeassistant.sensor: WARN
+#    text_sensor: WARN
+#    jk_bms_ble: WARN
+#    soyosource_display: WARN
+#    soyosource_virtual_meter: WARN
 #    ads1115: WARN
 
 # Enable Home Assistant API
@@ -127,7 +127,7 @@ interval:
                 id: soyo_operation_select
                 option: "Battery Limit"
 
-  - interval: 90s
+  - interval: 45s
     then:
       - switch.turn_on: ntc_vcc
       - component.update: adc1
@@ -408,7 +408,7 @@ sensor:
     update_interval: 50ms
     current:
       id: charging_amps
-      name: cargingAmps
+      #name: cargingAmps
       filters:
         - exponential_moving_average:
            send_every: 5
@@ -464,7 +464,7 @@ sensor:
     unit_of_measurement: W
     lambda: |-
 
-      auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state + id(soyo_buffer).state -3;
+      auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
 
       if (id(api_connection) && !id(protect_battery) && (solar_demand > id(powermeter0).state || id(batt_voltage_avg).state > 47 || id(solar_energy_today).state >= 4)) {
         return id(powermeter0).state;
@@ -534,7 +534,7 @@ sensor:
     lambda: return id(batt_voltage).state;
     filters:
       - sliding_window_moving_average:
-          window_size: 60
+          window_size: 120
           send_every: 12
 
 # throttled for HA:
@@ -556,7 +556,11 @@ sensor:
     accuracy_decimals: 2
     icon: mdi:solar-power-variant
     lambda: return id(solar_power_only).state;
-    update_interval: 7s
+    update_interval: 1s
+    filters:
+      - sliding_window_moving_average:
+          window_size: 7
+          send_every: 7
 
   - platform: template
     name: "Batt Volt"
@@ -567,7 +571,9 @@ sensor:
     lambda: return id(batt_voltage).state;
     update_interval: 1s
     filters:
-      - throttle_average: 7s
+      - sliding_window_moving_average:
+          window_size: 7
+          send_every: 7
 
   - platform: soyosource_virtual_meter
     soyosource_virtual_meter_id: virtualmeter0
@@ -646,7 +652,9 @@ sensor:
     name: "Batt Temp 3"
     id: batt_temp3
     filters:
-      - throttle_average: 270s
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 2
   - platform: ntc
     sensor: resistance_sensor_2
     calibration:
@@ -656,7 +664,9 @@ sensor:
     name: "Batt Temp 4"
     id: batt_temp4
     filters:
-      - throttle_average: 270s
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 2
 
 
   - platform: soyosource_display
