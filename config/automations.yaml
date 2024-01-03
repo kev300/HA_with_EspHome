@@ -7,7 +7,9 @@
       motion_trigger:
       - binary_sensor.bewegungsmelder_haustur_occupancy
       light_switch:
-        entity_id: light.hausturlicht
+        entity_id:
+        - light.haustur_lampe_1
+        - light.haustur_lampe_2
       ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
       ambient_light_options: ambient_light_option_disabled
       time_delay: 1

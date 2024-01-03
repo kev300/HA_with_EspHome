@@ -48,6 +48,8 @@ esphome:
   project:
     name: "garage.controller"
     version: 1.0.0
+  includes:
+    - protect_battery.h
 preferences:
   flash_write_interval: 10min
 
@@ -64,9 +66,14 @@ globals:
     type: bool
     restore_value: no
     initial_value: 'false'
+  - id: soyoUpdC
+    type: short
+    restore_value: no
+    initial_value: '0'
 
 interval:
   - interval: 5s
+    startup_delay: 1s
     then:
       - if:
           condition:
@@ -104,6 +111,7 @@ interval:
 
 
   - interval: 100s
+    startup_delay: 500ms
     then:
       - if:
           condition:
@@ -128,6 +136,7 @@ interval:
                 option: "Battery Limit"
 
   - interval: 45s
+    startup_delay: 2s
     then:
       - switch.turn_on: ntc_vcc
       - component.update: adc1
@@ -135,15 +144,50 @@ interval:
       - switch.turn_off: ntc_vcc
 
       - lambda: |-
-          int min_temp = 10;
-          int max_temp = 43;
-          
-          if (id(batt_temp1).state < min_temp || id(batt_temp2).state < min_temp || id(batt_temp3).state < min_temp || id(batt_temp4).state < min_temp) {
+          //checkTmp is from protect_battery.h
+
+          if (checkTmp(id(batt_temp1).state) || checkTmp(id(batt_temp2).state) || checkTmp(id(batt_temp3).state) || checkTmp(id(batt_temp4).state)) {
             id(protect_battery) = true;
-          } else if (id(batt_temp1).state > max_temp || id(batt_temp2).state > max_temp || id(batt_temp3).state > max_temp || id(batt_temp4).state > max_temp) {
-            id(protect_battery) = true;
-          } else {
+            ESP_LOGW("interval", "Battery Protection enabled!"); 
+          }
+          else {
             id(protect_battery) = false;
+            ESP_LOGI("interval", "Battery Protection disabled!");
+          }
+
+          auto prevLatency = id(soyo_latency).state;
+
+          if (id(protect_battery) && prevLatency > 2000) {
+            auto l = id(soyo_latency).make_call();
+            l.set_value(350);
+            l.perform();
+
+            auto b = id(soyo_buffer).make_call();
+            b.set_value(5);
+            b.perform();
+          }
+          else if (!id(protect_battery) && prevLatency < 2000) {
+            auto l = id(soyo_latency).make_call();
+            l.set_value(4550);
+            l.perform();
+
+            auto b = id(soyo_buffer).make_call();
+            b.set_value(0);
+            b.perform();
+          }
+
+  - interval: 50ms
+    startup_delay: 1s
+    then:
+      - component.update: mpptSensor
+      - component.update: soyoSensor
+      - lambda: |-
+          if(id(soyoUpdC) >= 4) {
+            id(powermeter_with_fallback).update();
+            id(soyoUpdC) = 0;
+          }
+          else {
+            id(soyoUpdC)++;
           }
 
 substitutions:
@@ -297,6 +341,11 @@ number:
       id: soyo_buffer
       initial_value: 0
       restore_value: true
+    max_power_sensor_latency_ms:
+      name: "${name_soyo} sensor_latency"
+      id: soyo_latency
+      initial_value: 5000
+      restore_value: false
 
   - platform: soyosource_display
     start_voltage:
@@ -378,7 +427,8 @@ sensor:
 
   - platform: ina226
     address: 0x40
-    update_interval: 50ms
+    update_interval: never
+    id: soyoSensor
     shunt_resistance: 0.0015 ohm
     max_current: 50A
     current:
@@ -405,7 +455,8 @@ sensor:
     address: 0x41
     shunt_resistance: 0.0015 ohm
     max_current: 50A
-    update_interval: 50ms
+    update_interval: never
+    id: mpptSensor
     current:
       id: charging_amps
       #name: cargingAmps
@@ -459,21 +510,21 @@ sensor:
 
   - platform: template
     id: powermeter_with_fallback
-    update_interval: 250ms
+    update_interval: never
     internal: true
     unit_of_measurement: W
     lambda: |-
 
       auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
 
-      if (id(api_connection) && !id(protect_battery) && (solar_demand > id(powermeter0).state || id(batt_voltage_avg).state > 47 || id(solar_energy_today).state >= 4)) {
+      if (id(api_connection) && !id(protect_battery) && (solar_demand > id(powermeter0).state || id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state >= 4)) {
         return id(powermeter0).state;
       } else {
-        //goal: Only use solar power, 0W to or from battery. Disable below 60W because of bad efficency, except when we protect the battery.
-        if (id(solar_power_only).raw_state > 65 || (id(protect_battery) && id(solar_power_only).raw_state > 7)) {
+        //goal: Only use solar power, 0W to or from battery. Disable below 50W because of bad efficency, except when we protect the battery.
+        if (id(solar_power_only).raw_state > 50 || (id(protect_battery) && id(solar_power_only).raw_state > 7)) {
           return solar_demand;
         } else {
-          return id(soyo_buffer).state -65; //get's to 0W demand slowly
+          return id(soyo_buffer).state -55; //get's to 0W demand slowly
         }
       }
 
@@ -530,12 +581,12 @@ sensor:
 
   - platform: template
     id: batt_voltage_avg
-    update_interval: 5s
+    update_interval: 60s
     lambda: return id(batt_voltage).state;
     filters:
       - sliding_window_moving_average:
-          window_size: 120
-          send_every: 12
+          window_size: 12
+          send_every: 5
 
 # throttled for HA:
   - platform: template
