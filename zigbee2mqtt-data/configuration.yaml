@@ -63,10 +63,15 @@ devices:
     friendly_name: Kellertemp 2
   '0xa4c138f8635aefcd':
     friendly_name: 'Solarheizung '
+    power_calibration: 0
+    measurement_poll_interval: ''
+    current_calibration: 0
+    energy_calibration: 0
+    voltage_calibration: 0
   '0x804b50fffee0efe1':
     friendly_name: 'Steckerleiste '
   '0xa4c138b9d085911c':
     friendly_name: Bewegungsmelder Gartenhaus
   '0xa4c138a948c281a7':
-    friendly_name: 'Gartenhaus Lampe '
+    friendly_name: GartenhausLampe
 groups: {}

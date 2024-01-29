@@ -157,16 +157,16 @@ interval:
 
           auto prevLatency = id(soyo_latency).state;
 
-          if (id(protect_battery) && prevLatency > 2000) {
+          if (id(protect_battery) && prevLatency > 3000) {
             auto l = id(soyo_latency).make_call();
-            l.set_value(350);
+            l.set_value(2050);
             l.perform();
 
             auto b = id(soyo_buffer).make_call();
             b.set_value(5);
             b.perform();
           }
-          else if (!id(protect_battery) && prevLatency < 2000) {
+          else if (!id(protect_battery) && prevLatency < 4000) {
             auto l = id(soyo_latency).make_call();
             l.set_value(4550);
             l.perform();

@@ -200,6 +200,7 @@
       include_ambient: ambient_disabled
       ambient_light_value: 120
       light_switch:
-        entity_id: light.gartenhaus_lampe
+        entity_id:
+        - light.gartenhauslampe
       include_sun: sun_enabled
       sun_elevation: 0.5
