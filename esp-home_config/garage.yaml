@@ -20,6 +20,7 @@ logger:
 # Enable Home Assistant API
 api:
   password: ""
+  reboot_timeout: 24h
 
 ota:
   password: ""
@@ -65,8 +66,12 @@ globals:
   - id: protect_battery
     type: bool
     restore_value: no
-    initial_value: 'false'
+    initial_value: 'true'
   - id: soyoUpdC
+    type: short
+    restore_value: no
+    initial_value: '0'
+  - id: operationMode
     type: short
     restore_value: no
     initial_value: '0'
@@ -94,6 +99,55 @@ interval:
                 then:
                   # just disconnected now
                   - lambda: "id(api_connection) = false;"
+
+      - lambda: |-
+
+          if (id(protect_battery)) {
+            id(operationMode) = 0; //PV in -> Soyo out
+            
+            return;
+          }
+
+          if (!id(api_connection)) {
+            //goal: Only use solar power, 0W to or from battery. Disable below 50W because of bad efficency.
+            id(operationMode) = 1;
+            return;
+          }
+
+
+          if (id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state >= 4) {
+            //use powermeter for demand
+            id(operationMode) = 3;
+          } else {
+            //PV -> demand, but charge when PV > power consumption
+            id(operationMode) = 2;
+          }
+
+      - lambda: |-
+
+          if (id(operationMode) == 0 || id(operationMode) == 1) {
+            auto prevLatency = id(soyo_latency).state;
+            if (prevLatency > 3000) {
+              auto l = id(soyo_latency).make_call();
+              l.set_value(2050);
+              l.perform();
+            }
+
+            if (id(operationMode) == 0) {
+              auto b = id(soyo_buffer).make_call();
+              b.set_value(1);
+              b.perform();
+            }
+          }
+          else {
+            auto prevLatency = id(soyo_latency).state;
+            if (prevLatency < 3000) {
+              auto l = id(soyo_latency).make_call();
+              l.set_value(4550);
+              l.perform();
+            }
+          }
+
       - lambda: |-
           if (id(soyo_operation_mode).state == "PV") {
             id(max_demand) = 1120;
@@ -111,7 +165,7 @@ interval:
 
 
   - interval: 100s
-    startup_delay: 500ms
+    startup_delay: 5s
     then:
       - if:
           condition:
@@ -136,7 +190,7 @@ interval:
                 option: "Battery Limit"
 
   - interval: 45s
-    startup_delay: 2s
+    startup_delay: 1s
     then:
       - switch.turn_on: ntc_vcc
       - component.update: adc1
@@ -155,29 +209,9 @@ interval:
             ESP_LOGI("interval", "Battery Protection disabled!");
           }
 
-          auto prevLatency = id(soyo_latency).state;
-
-          if (id(protect_battery) && prevLatency > 3000) {
-            auto l = id(soyo_latency).make_call();
-            l.set_value(2050);
-            l.perform();
-
-            auto b = id(soyo_buffer).make_call();
-            b.set_value(5);
-            b.perform();
-          }
-          else if (!id(protect_battery) && prevLatency < 4000) {
-            auto l = id(soyo_latency).make_call();
-            l.set_value(4550);
-            l.perform();
-
-            auto b = id(soyo_buffer).make_call();
-            b.set_value(0);
-            b.perform();
-          }
 
   - interval: 50ms
-    startup_delay: 1s
+    startup_delay: 50ms
     then:
       - component.update: mpptSensor
       - component.update: soyoSensor
@@ -300,7 +334,7 @@ soyosource_display:
   - id: soyo_display
     uart_id: uart_display
     protocol_version: SOYOSOURCE_DISPLAY_VERSION
-    update_interval: 3s
+    update_interval: 5s
 
 
 binary_sensor:
@@ -515,18 +549,52 @@ sensor:
     unit_of_measurement: W
     lambda: |-
 
-      auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
+      switch (id(operationMode)) {
+        case 0:
+          //protect battery, no charging
 
-      if (id(api_connection) && !id(protect_battery) && (solar_demand > id(powermeter0).state || id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state >= 4)) {
-        return id(powermeter0).state;
-      } else {
-        //goal: Only use solar power, 0W to or from battery. Disable below 50W because of bad efficency, except when we protect the battery.
-        if (id(solar_power_only).raw_state > 50 || (id(protect_battery) && id(solar_power_only).raw_state > 7)) {
-          return solar_demand;
-        } else {
-          return id(soyo_buffer).state -55; //get's to 0W demand slowly
-        }
+          if (id(solar_power_only).raw_state > 7) {
+            return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+          }
+          else {
+            return -1;
+          }
+
+        case 1:
+          //no api connection, only solar above 60W, else charging
+
+          if (id(solar_power_only).raw_state > 60) {
+            return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+          }
+          else {
+            return id(soyo_buffer).state -65; //get's to 0W demand slowly
+          }
+
+        case 2:
+          if (id(solar_power_only).raw_state > 60) {
+            auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
+
+            if (solar_demand > id(powermeter0).state) {
+              return id(powermeter0).state;
+            }
+            else {
+              return solar_demand;
+            }
+
+          }
+          else {
+            return id(soyo_buffer).state -65; //get's to 0W demand slowly
+          }
+
+        case 3:
+          return id(powermeter0).state;
+        case 4:
+          return -100; //off / only charging
       }
+
+      //default
+      return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+
 
 
   - platform: template
@@ -585,8 +653,8 @@ sensor:
     lambda: return id(batt_voltage).state;
     filters:
       - sliding_window_moving_average:
-          window_size: 12
-          send_every: 5
+          window_size: 16
+          send_every: 6
 
 # throttled for HA:
   - platform: template
@@ -595,7 +663,7 @@ sensor:
     device_class: power
     state_class: measurement
     accuracy_decimals: 2
-    update_interval: 7s
+    update_interval: 5s
     lambda: return id(solar_power_only).raw_state - id(soyo_power).raw_state;
 
   - platform: template
@@ -610,8 +678,8 @@ sensor:
     update_interval: 1s
     filters:
       - sliding_window_moving_average:
-          window_size: 7
-          send_every: 7
+          window_size: 5
+          send_every: 5
 
   - platform: template
     name: "Batt Volt"
