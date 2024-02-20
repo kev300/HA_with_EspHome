@@ -772,8 +772,8 @@ sensor:
     id: batt_temp3
     filters:
       - sliding_window_moving_average:
-          window_size: 5
-          send_every: 2
+          window_size: 7
+          send_every: 3
   - platform: ntc
     sensor: resistance_sensor_2
     calibration:
@@ -784,8 +784,8 @@ sensor:
     id: batt_temp4
     filters:
       - sliding_window_moving_average:
-          window_size: 5
-          send_every: 2
+          window_size: 7
+          send_every: 3
 
 
   - platform: soyosource_display
