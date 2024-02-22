@@ -1,7 +1,7 @@
 # Enable logging
 logger:
   baud_rate: 0
-  level: WARN
+  level: INFO 
 
 # Enable Home Assistant API
 api:
@@ -20,11 +20,20 @@ wifi:
     gateway: 192.168.1.1
     subnet: 255.255.255.0
 
+mqtt:
+ id: mqttclient 
+ broker: 192.168.1.25
+ username: hass
+ password: dummY
+ reboot_timeout: "0s"
+ topic_prefix: smartmeter
+
 esphome:
   name: smartmeter
   comment: "Smartmeter"
   platform: esp8266
   board: esp01_1m
+  esp8266_restore_from_flash: false
 preferences:
   flash_write_interval: 5min
 
@@ -42,6 +51,17 @@ uart:
   data_bits: 8
   parity: NONE
   stop_bits: 1
+  rx_buffer_size: 512
+#  debug:
+#       direction: RX
+#       after:
+#         timeout: 250ms
+#         bytes: 512
+#       sequence:
+#         - uart.write: !lambda return bytes;
+## SML Rohdaten via MQTT
+#         - lambda: id(mqttclient).publish("smartmeter/sensor/sml/state", format_hex(bytes));
+##         - lambda: UARTDebug::log_string(direction, bytes);
 
 sml:
   id: mysml
@@ -50,6 +70,7 @@ sml:
 sensor:
   - platform: sml
     name: "Total energy out"
+    state_topic:
     sml_id: mysml
     obis_code: "1-0:2.8.0"
     unit_of_measurement: kWh
@@ -63,6 +84,7 @@ sensor:
   - platform: sml
     sml_id: mysml
     name: "Total energy in"
+    state_topic:
     obis_code: "1-0:1.8.0"
     unit_of_measurement: kWh
     accuracy_decimals: 4
@@ -75,6 +97,7 @@ sensor:
   - platform: sml
     name: "power consumption"
     sml_id: mysml
+    state_topic:
     icon: "mdi:lightning-bolt"
     obis_code: "1-0:16.7.0"
     unit_of_measurement: W
