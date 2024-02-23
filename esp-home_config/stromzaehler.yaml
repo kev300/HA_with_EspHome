@@ -52,20 +52,15 @@ uart:
   parity: NONE
   stop_bits: 1
   rx_buffer_size: 512
-#  debug:
-#       direction: RX
-#       after:
-#         timeout: 250ms
-#         bytes: 512
-#       sequence:
-#         - uart.write: !lambda return bytes;
-## SML Rohdaten via MQTT
-#         - lambda: id(mqttclient).publish("smartmeter/sensor/sml/state", format_hex(bytes));
-##         - lambda: UARTDebug::log_string(direction, bytes);
 
 sml:
   id: mysml
   uart_id: uart_bus
+  on_data:
+    - lambda: !lambda |-
+        if (valid) {
+          id(mqttclient).publish("smartmeter/sensor/sml/state", format_hex(bytes));
+        } 
 
 sensor:
   - platform: sml
