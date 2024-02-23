@@ -675,11 +675,7 @@ sensor:
     accuracy_decimals: 2
     icon: mdi:solar-power-variant
     lambda: return id(solar_power_only).state;
-    update_interval: 1s
-    filters:
-      - sliding_window_moving_average:
-          window_size: 5
-          send_every: 5
+    update_interval: 5s
 
   - platform: template
     name: "Batt Volt"
@@ -688,11 +684,7 @@ sensor:
     state_class: measurement
     accuracy_decimals: 2
     lambda: return id(batt_voltage).state;
-    update_interval: 1s
-    filters:
-      - sliding_window_moving_average:
-          window_size: 7
-          send_every: 7
+    update_interval: 5s
 
   - platform: soyosource_virtual_meter
     soyosource_virtual_meter_id: virtualmeter0
