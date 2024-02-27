@@ -49,8 +49,8 @@ esphome:
   project:
     name: "garage.controller"
     version: 1.0.0
-  includes:
-    - protect_battery.h
+#  includes:
+#    - protect_battery.h
 preferences:
   flash_write_interval: 10min
 
@@ -135,7 +135,7 @@ interval:
 
             if (id(operationMode) == 0) {
               auto b = id(soyo_buffer).make_call();
-              b.set_value(1);
+              b.set_value(2);
               b.perform();
             }
           }
@@ -145,6 +145,13 @@ interval:
               auto l = id(soyo_latency).make_call();
               l.set_value(4550);
               l.perform();
+            }
+
+            auto prevBuffer = id(soyo_buffer).state;
+            if (prevBuffer == 2) {
+              auto b = id(soyo_buffer).make_call();
+              b.set_value(0);
+              b.perform();
             }
           }
 
@@ -198,11 +205,10 @@ interval:
       - switch.turn_off: ntc_vcc
 
       - lambda: |-
-          //checkTmp is from protect_battery.h
 
-          if (checkTmp(id(batt_temp1).state) || checkTmp(id(batt_temp2).state) || checkTmp(id(batt_temp3).state) || checkTmp(id(batt_temp4).state)) {
+          if (id(min_batt_temp).state < 9.9 || id(max_batt_temp).state > 43) {
             id(protect_battery) = true;
-            ESP_LOGW("interval", "Battery Protection enabled!"); 
+            ESP_LOGW("interval", "Battery Protection enabled!");
           }
           else {
             id(protect_battery) = false;
@@ -779,6 +785,23 @@ sensor:
           window_size: 7
           send_every: 3
 
+  - platform: combination
+    type: min
+    id: min_batt_temp
+    sources:
+      - source: batt_temp1
+      - source: batt_temp2
+      - source: batt_temp3
+      - source: batt_temp4
+
+  - platform: combination
+    type: max
+    id: max_batt_temp
+    sources:
+      - source: batt_temp1
+      - source: batt_temp2
+      - source: batt_temp3
+      - source: batt_temp4
 
   - platform: soyosource_display
     error_bitmask:
