@@ -63,15 +63,15 @@ globals:
     type: int 
     restore_value: no
     initial_value: '920'
-  - id: protect_battery
-    type: bool
-    restore_value: no
-    initial_value: 'true'
   - id: soyoUpdC
     type: short
     restore_value: no
     initial_value: '0'
   - id: operationMode
+    type: short
+    restore_value: no
+    initial_value: '0'
+  - id: maxChargeW
     type: short
     restore_value: no
     initial_value: '0'
@@ -102,7 +102,7 @@ interval:
 
       - lambda: |-
 
-          if (id(protect_battery)) {
+          if (id(min_batt_temp).state < 6 || id(max_batt_temp).state > 43) {
             id(operationMode) = 0; //PV in -> Soyo out
             
             return;
@@ -155,6 +155,31 @@ interval:
             }
           }
 
+          if (id(min_batt_temp).state > 14.5) {
+            id(maxChargeW) = 2300;
+          }
+          else if (id(min_batt_temp).state < 7) {
+            id(maxChargeW) = 100;
+          }
+          else if (id(min_batt_temp).state < 8) {
+            id(maxChargeW) = 200;
+          }
+          else if (id(min_batt_temp).state < 9) {
+            id(maxChargeW) = 300;
+          }
+          else if (id(min_batt_temp).state < 10) {
+            id(maxChargeW) = 400;
+          }
+          else if (id(min_batt_temp).state < 11) {
+            id(maxChargeW) = 550;
+          }
+          else if (id(min_batt_temp).state < 12) {
+            id(maxChargeW) = 700;
+          }
+          else {
+            id(maxChargeW) = 850;
+          }
+
       - lambda: |-
           if (id(soyo_operation_mode).state == "PV") {
             id(max_demand) = 1120;
@@ -203,18 +228,6 @@ interval:
       - component.update: adc1
       - component.update: adc2
       - switch.turn_off: ntc_vcc
-
-      - lambda: |-
-
-          if (id(min_batt_temp).state < 9.9 || id(max_batt_temp).state > 43) {
-            id(protect_battery) = true;
-            ESP_LOGW("interval", "Battery Protection enabled!");
-          }
-          else {
-            id(protect_battery) = false;
-            ESP_LOGI("interval", "Battery Protection disabled!");
-          }
-
 
   - interval: 50ms
     startup_delay: 50ms
@@ -526,7 +539,7 @@ sensor:
           then:
             - number.set:
                 id: soyo_buffer
-                value: -2
+                value: 0
         - above: 44.7
           then:
             - number.set:
@@ -546,7 +559,7 @@ sensor:
     id: powermeter0
     entity_id: sensor.power_consumption
     filters:
-      - lambda: if (x < -800) return -800; return x; #sometimes the meter reports very low values!? + slow down ramp down
+      - lambda: if (x < -700) return -700; return x; #sometimes the meter reports very low values!? + slow down ramp down
 
   - platform: template
     id: powermeter_with_fallback
@@ -555,52 +568,48 @@ sensor:
     unit_of_measurement: W
     lambda: |-
 
-      switch (id(operationMode)) {
-        case 0:
-          //protect battery, no charging
+      auto demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
+      auto chargingW = demand;
 
+      switch (id(operationMode)) {
+        case 1:
+          //no api connection, only solar above 60W, else charging
+
+          if (id(solar_power_only).raw_state < 60) {
+            demand = id(soyo_buffer).state -35; //get's to 0W demand slowly
+          }
+          break;
+        case 2:
+          if (id(solar_power_only).raw_state > 60) {
+            if (demand > id(powermeter0).state) {
+              demand = id(powermeter0).state;
+            }
+          }
+          else {
+            demand = id(soyo_buffer).state -35; //get's to 0W demand slowly
+          }
+          break;
+        case 3:
+          demand = id(powermeter0).state;
+          break;
+        case 4:
+          demand = -100; //off / only charging
+          break;
+        case 0:
+        default:
+          //protect battery, no charging
           if (id(solar_power_only).raw_state > 7) {
-            return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+            return demand;
           }
           else {
             return -1;
           }
-
-        case 1:
-          //no api connection, only solar above 60W, else charging
-
-          if (id(solar_power_only).raw_state > 60) {
-            return id(solar_power_only).raw_state - id(soyo_power).raw_state;
-          }
-          else {
-            return id(soyo_buffer).state -65; //get's to 0W demand slowly
-          }
-
-        case 2:
-          if (id(solar_power_only).raw_state > 60) {
-            auto solar_demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
-
-            if (solar_demand > id(powermeter0).state) {
-              return id(powermeter0).state;
-            }
-            else {
-              return solar_demand;
-            }
-
-          }
-          else {
-            return id(soyo_buffer).state -65; //get's to 0W demand slowly
-          }
-
-        case 3:
-          return id(powermeter0).state;
-        case 4:
-          return -100; //off / only charging
       }
 
-      //default
-      return id(solar_power_only).raw_state - id(soyo_power).raw_state;
-
+      if (chargingW - demand > id(maxChargeW)) {
+        return chargingW - id(maxChargeW);
+      }
+      return demand;
 
 
   - platform: template
