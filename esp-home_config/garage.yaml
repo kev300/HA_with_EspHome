@@ -174,10 +174,10 @@ interval:
             id(maxChargeW) = 550;
           }
           else if (id(min_batt_temp).state < 12) {
-            id(maxChargeW) = 700;
+            id(maxChargeW) = 750;
           }
           else {
-            id(maxChargeW) = 850;
+            id(maxChargeW) = 900;
           }
 
       - lambda: |-
