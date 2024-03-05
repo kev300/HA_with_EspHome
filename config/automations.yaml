@@ -166,7 +166,7 @@
     offset: 0
   condition:
   - condition: numeric_state
-    entity_id: sensor.soyo_power_demand
+    entity_id: sensor.soyo_power
     below: 2
   action:
   - repeat:

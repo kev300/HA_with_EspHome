@@ -32,6 +32,7 @@ ota:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_pw
+  fast_connect: true
   manual_ip:
     static_ip: 192.168.1.20
     gateway: 192.168.1.1
@@ -78,7 +79,7 @@ globals:
 
 interval:
   - interval: 5s
-    startup_delay: 1s
+    startup_delay: 5s
     then:
       - if:
           condition:
@@ -115,7 +116,7 @@ interval:
           }
 
 
-          if (id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state >= 4) {
+          if (id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state > 4.4) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
@@ -197,7 +198,7 @@ interval:
 
 
   - interval: 100s
-    startup_delay: 5s
+    startup_delay: 15s
     then:
       - if:
           condition:
@@ -222,7 +223,7 @@ interval:
                 option: "Battery Limit"
 
   - interval: 45s
-    startup_delay: 1s
+    startup_delay: 2s
     then:
       - switch.turn_on: ntc_vcc
       - component.update: adc1
@@ -230,7 +231,7 @@ interval:
       - switch.turn_off: ntc_vcc
 
   - interval: 50ms
-    startup_delay: 50ms
+    startup_delay: 1s
     then:
       - component.update: mpptSensor
       - component.update: soyoSensor
@@ -266,7 +267,7 @@ external_components:
 
 esp32_ble_tracker:
   scan_parameters:
-    interval: 500ms
+    interval: 640ms
   on_ble_advertise:
     then:
       - lambda: |-
@@ -365,6 +366,15 @@ binary_sensor:
   - platform: soyosource_display
     limiter_connected:
       name: "${name_soyo} limiter connected"
+
+  - platform: gpio
+    pin:
+      number: GPIO34
+      inverted: true
+      mode:
+        input: true
+    id: garage_is_closed
+    name: GarageZu
 
 button:
   - platform: soyosource_display
@@ -1039,17 +1049,21 @@ switch:
   - platform: restart
     name: "reboot"
 
+
 cover:
-  - platform: template
+  - platform: feedback
     name: "Garagentor"
     open_action:
       - switch.turn_on: garage_toggle_switch
+    open_duration: 30s
     close_action:
       - switch.turn_on: garage_toggle_switch
+    close_duration: 30s
     stop_action:
       - switch.turn_on: garage_toggle_switch
-    optimistic: true
-    assumed_state: true
+    has_built_in_endstop: true
+    assumed_state: false
+    close_endstop: garage_is_closed
 
 text_sensor:
   - platform: soyosource_virtual_meter
