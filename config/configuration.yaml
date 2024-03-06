@@ -28,6 +28,8 @@ recorder:
       - switch
       - lock
       - sql
+      - cover
+      - automation
       #      - update
     entity_globs:
       - sensor.jk_bms_cell_voltage_*

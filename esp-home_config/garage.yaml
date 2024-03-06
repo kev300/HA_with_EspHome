@@ -375,6 +375,16 @@ binary_sensor:
         input: true
     id: garage_is_closed
     name: GarageZu
+    on_press:
+      then:
+        - cover.template.publish:
+            id: garage_cover
+            state: CLOSED
+    on_release:
+      then:
+        - cover.template.publish:
+            id: garage_cover
+            state: OPEN
 
 button:
   - platform: soyosource_display
@@ -1051,19 +1061,34 @@ switch:
 
 
 cover:
-  - platform: feedback
+  - platform: template
+    id: garage_cover
     name: "Garagentor"
+    lambda: |-
+      if (id(garage_is_closed).state) {
+        return COVER_CLOSED;
+      } else {
+        return COVER_OPEN;
+      }
+    tilt_lambda: |-
+      if (id(garage_is_closed).state) {
+        return 0.0;
+      }
+      //else if (id(garage_is_open).state) {
+      //  return 1.0;
+      //} 
+      else {
+        //return 0.5;
+        return 1.0;
+      }
     open_action:
       - switch.turn_on: garage_toggle_switch
-    open_duration: 30s
     close_action:
       - switch.turn_on: garage_toggle_switch
-    close_duration: 30s
     stop_action:
       - switch.turn_on: garage_toggle_switch
-    has_built_in_endstop: true
-    assumed_state: false
-    close_endstop: garage_is_closed
+    tilt_action:
+      - switch.turn_on: garage_tilt_switch
 
 text_sensor:
   - platform: soyosource_virtual_meter
