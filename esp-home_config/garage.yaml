@@ -50,8 +50,6 @@ esphome:
   project:
     name: "garage.controller"
     version: 1.0.0
-#  includes:
-#    - protect_battery.h
 preferences:
   flash_write_interval: 10min
 

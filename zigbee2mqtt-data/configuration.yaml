@@ -74,4 +74,6 @@ devices:
     friendly_name: GartenhausLampe
   '0x00124b0029294c0a':
     friendly_name: Kellertemp
+  '0xa4c13878aad5d7a1':
+    friendly_name: BueroStecker
 groups: {}
