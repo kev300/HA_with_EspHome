@@ -21,15 +21,6 @@ logger:
 api:
   password: ""
   reboot_timeout: 24h
-  on_client_connected:
-    - esp32_ble_tracker.start_scan:
-       continuous: true
-    - lambda: "id(api_connection) = true;"
-    - switch.turn_on: ble_jk
-  on_client_disconnected:
-    - esp32_ble_tracker.stop_scan:
-    - lambda: "id(api_connection) = false;"
-    - switch.turn_off: ble_jk
 
 ota:
   password: ""
@@ -91,6 +82,33 @@ interval:
   - interval: 5s
     startup_delay: 5s
     then:
+      - if:
+          condition:
+            # check last connection state
+            - lambda: 'return { (id(api_connection) != true) };'
+          then:
+            - if:
+                condition:
+                  api.connected:
+                then:
+                  # just connected now
+                  - logger.log: API is connected!
+                  - lambda: "id(api_connection) = true;"
+                  - switch.turn_on: ble_jk
+                  - esp32_ble_tracker.start_scan:
+                      continuous: true
+          else:
+            - if:
+                condition:
+                  not:
+                    api.connected:
+                then:
+                  # just disconnected now
+                  - logger.log: API is disconnected!
+                  - lambda: "id(api_connection) = false;"
+                  - switch.turn_off: ble_jk
+                  - esp32_ble_tracker.stop_scan:
+
       - lambda: |-
 
           if (id(min_batt_temp).state < 6 || id(max_batt_temp).state > 43) {
