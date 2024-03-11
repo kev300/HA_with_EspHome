@@ -6,7 +6,7 @@ esp32:
 # Enable logging
 logger:
   baud_rate: 0
-  level: WARN
+  level: INFO
 #  logs:
 #    api.service: WARN
 #    sensor: WARN
@@ -21,6 +21,15 @@ logger:
 api:
   password: ""
   reboot_timeout: 24h
+  on_client_connected:
+    - esp32_ble_tracker.start_scan:
+       continuous: true
+    - lambda: "id(api_connection) = true;"
+    - switch.turn_on: ble_jk
+  on_client_disconnected:
+    - esp32_ble_tracker.stop_scan:
+    - lambda: "id(api_connection) = false;"
+    - switch.turn_off: ble_jk
 
 ota:
   password: ""
@@ -32,7 +41,6 @@ ota:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_pw
-  fast_connect: true
   manual_ip:
     static_ip: 192.168.1.20
     gateway: 192.168.1.1
@@ -50,6 +58,10 @@ esphome:
   project:
     name: "garage.controller"
     version: 1.0.0
+  on_boot:
+    priority: 400
+    then:
+      - switch.turn_off: ble_jk
 preferences:
   flash_write_interval: 10min
 
@@ -79,26 +91,6 @@ interval:
   - interval: 5s
     startup_delay: 5s
     then:
-      - if:
-          condition:
-            # check last connection state
-            - lambda: 'return { (id(api_connection) != true) };'
-          then:
-            - if:
-                condition:
-                  api.connected:
-                then:
-                  # just connected now
-                  - lambda: "id(api_connection) = true;"
-          else:
-            - if:
-                condition:
-                  not:
-                    api.connected:
-                then:
-                  # just disconnected now
-                  - lambda: "id(api_connection) = false;"
-
       - lambda: |-
 
           if (id(min_batt_temp).state < 6 || id(max_batt_temp).state > 43) {
@@ -114,7 +106,7 @@ interval:
           }
 
 
-          if (id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state > 4.4) {
+          if (id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state > 4) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
@@ -266,6 +258,7 @@ external_components:
 esp32_ble_tracker:
   scan_parameters:
     interval: 640ms
+    continuous: false
   on_ble_advertise:
     then:
       - lambda: |-
@@ -372,17 +365,58 @@ binary_sensor:
       mode:
         input: true
     id: garage_is_closed
-    name: GarageZu
     on_press:
       then:
         - cover.template.publish:
             id: garage_cover
-            state: CLOSED
+            position: !lambda 'return 0.0;'
     on_release:
       then:
         - cover.template.publish:
             id: garage_cover
-            state: OPEN
+            position: 0.5
+
+  - platform: gpio
+    pin:
+      number: GPIO35
+      inverted: false
+      mode:
+        input: true
+    id: garage_is_open
+    on_press:
+      then:
+        - cover.template.publish:
+            id: garage_cover
+            position: !lambda 'return 1.0;'
+    on_release:
+      then:
+        - cover.template.publish:
+            id: garage_cover
+            position: 0.5
+
+cover:
+  - platform: template
+    id: garage_cover
+    name: "Garagentor"
+    has_position: true
+    lambda: |-
+      if (id(garage_is_closed).state) {
+        return 0.0;
+      }
+      else if (id(garage_is_open).state) {
+        return 1.0;
+      }
+      else {
+        return 0.5;
+      }
+    open_action:
+      - switch.turn_on: garage_toggle_switch
+    close_action:
+      - switch.turn_on: garage_toggle_switch
+    stop_action:
+      - switch.turn_on: garage_toggle_switch
+    position_action:
+      - switch.turn_on: garage_tilt_switch
 
 button:
   - platform: soyosource_display
@@ -1057,36 +1091,6 @@ switch:
   - platform: restart
     name: "reboot"
 
-
-cover:
-  - platform: template
-    id: garage_cover
-    name: "Garagentor"
-    lambda: |-
-      if (id(garage_is_closed).state) {
-        return COVER_CLOSED;
-      } else {
-        return COVER_OPEN;
-      }
-    tilt_lambda: |-
-      if (id(garage_is_closed).state) {
-        return 0.0;
-      }
-      //else if (id(garage_is_open).state) {
-      //  return 1.0;
-      //} 
-      else {
-        //return 0.5;
-        return 1.0;
-      }
-    open_action:
-      - switch.turn_on: garage_toggle_switch
-    close_action:
-      - switch.turn_on: garage_toggle_switch
-    stop_action:
-      - switch.turn_on: garage_toggle_switch
-    tilt_action:
-      - switch.turn_on: garage_tilt_switch
 
 text_sensor:
   - platform: soyosource_virtual_meter
