@@ -54,7 +54,7 @@ esphome:
     then:
       - switch.turn_off: ble_jk
 preferences:
-  flash_write_interval: 20min
+  flash_write_interval: 10min
 
 globals:
   - id: api_connection
@@ -688,6 +688,7 @@ sensor:
         - component.update: charging_power
         - component.update: discharging_power
         - component.update: solar_power_positive
+        - component.update: combinedAmps
 
   - platform: template
     id: solar_power_positive
@@ -722,6 +723,9 @@ sensor:
           window_size: 16
           send_every: 6
     on_value_range:
+        - above: 53.35
+          then:
+            - sensor.integration.reset: coulomb_counter
         - above: 53.1
           then:
             - number.set:
@@ -745,6 +749,35 @@ sensor:
                 id: soyo_max_demand
                 value: 200
             - lambda: id(battWasFull) = false;
+
+  - platform: template
+    id: combinedAmps
+    lambda: return id(charging_amps).state - id(inverter_amps).state;
+    update_interval: never
+
+  - platform: integration
+    id: coulomb_counter
+    sensor: combinedAmps
+    accuracy_decimals: 0
+    time_unit: s
+    restore: true
+    filters:
+      - clamp:
+          min_value: -342000 #95Ah *60 *60 -> As
+          max_value: 0
+
+  - platform: template
+    name: PV Batt SOC
+    lambda: return(id(coulomb_counter).state);
+    update_interval: 60s
+    unit_of_measurement: '%'
+    accuracy_decimals: 1
+    device_class: battery
+    state_class: measurement
+    filters:
+      - calibrate_linear:
+          - -342000 -> 0 
+          - 0 -> 100
 
 # throttled for HA:
   - platform: template
