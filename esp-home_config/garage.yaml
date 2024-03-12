@@ -20,7 +20,7 @@ logger:
 # Enable Home Assistant API
 api:
   password: ""
-  reboot_timeout: 24h
+  reboot_timeout: 2h
 
 ota:
   password: ""
@@ -41,7 +41,7 @@ wifi:
 time:
   - platform: sntp
     #move time zone by 6 hours, so daily_energy monitors are reset at 07:00 (used in fallback_powermeter to decide if the battery should be emptied over night)
-    timezone: CET+6CEST,M3.5.0,M10.5.0/3
+    #timezone: CET+6CEST,M3.5.0,M10.5.0/3
 
 esphome:
   name: garage-controller
@@ -54,7 +54,7 @@ esphome:
     then:
       - switch.turn_off: ble_jk
 preferences:
-  flash_write_interval: 10min
+  flash_write_interval: 20min
 
 globals:
   - id: api_connection
@@ -77,6 +77,10 @@ globals:
     type: short
     restore_value: no
     initial_value: '0'
+  - id: battWasFull
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
 
 interval:
   - interval: 5s
@@ -124,7 +128,7 @@ interval:
           }
 
 
-          if (id(batt_voltage_avg).state > 47.5 || id(solar_energy_today).state > 4) {
+          if (id(battWasFull) || id(batt_voltage_avg).state > 47.5) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
@@ -132,7 +136,6 @@ interval:
             id(operationMode) = 2;
           }
 
-      - lambda: |-
 
           if (id(operationMode) == 0 || id(operationMode) == 1) {
             auto prevLatency = id(soyo_latency).state;
@@ -204,9 +207,9 @@ interval:
             numberF.perform();
           }
 
-
-  - interval: 100s
-    startup_delay: 15s
+#display settings of the soyo to set automatically:
+  - interval: 101s
+    startup_delay: 19s
     then:
       - if:
           condition:
@@ -230,8 +233,8 @@ interval:
                 id: soyo_operation_select
                 option: "Battery Limit"
 
-  - interval: 45s
-    startup_delay: 2s
+  - interval: 43s
+    startup_delay: 3s
     then:
       - switch.turn_on: ntc_vcc
       - component.update: adc1
@@ -599,28 +602,6 @@ sensor:
         - calibrate_linear:
           - 0.0 -> 0.0
           - 23.46 -> 47.04
-      on_value_range:
-        - above: 53.4
-          then:
-            - number.set:
-                id: soyo_buffer
-                value: -80
-        - below: 53
-          then:
-            - number.set:
-                id: soyo_buffer
-                value: 0
-        - above: 44.7
-          then:
-            - number.set:
-                id: soyo_max_demand
-                value: !lambda |-
-                  return id(max_demand);
-        - below: 44
-          then:
-            - number.set:
-                id: soyo_max_demand
-                value: 200
 
 
 # import smartmeter reading from homeassistant
@@ -740,6 +721,30 @@ sensor:
       - sliding_window_moving_average:
           window_size: 16
           send_every: 6
+    on_value_range:
+        - above: 53.1
+          then:
+            - number.set:
+                id: soyo_buffer
+                value: -10
+            - lambda: id(battWasFull) = true;
+        - below: 53
+          then:
+            - number.set:
+                id: soyo_buffer
+                value: 0
+        - above: 44.7
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: !lambda |-
+                  return id(max_demand);
+        - below: 44
+          then:
+            - number.set:
+                id: soyo_max_demand
+                value: 200
+            - lambda: id(battWasFull) = false;
 
 # throttled for HA:
   - platform: template
