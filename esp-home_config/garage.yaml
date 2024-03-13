@@ -136,6 +136,7 @@ interval:
             id(operationMode) = 2;
           }
 
+      - lambda: |-
 
           if (id(operationMode) == 0 || id(operationMode) == 1) {
             auto prevLatency = id(soyo_latency).state;
@@ -206,6 +207,7 @@ interval:
             numberF.set_value(id(max_demand));
             numberF.perform();
           }
+
 
 #display settings of the soyo to set automatically:
   - interval: 101s
@@ -762,12 +764,15 @@ sensor:
     time_unit: s
     restore: true
     filters:
-      - clamp:
-          min_value: -342000 #95Ah *60 *60 -> As
-          max_value: 0
+      - throttle: 10s
+    on_value_range:
+      - above: 50
+        then:
+          - sensor.integration.reset: coulomb_counter
 
   - platform: template
     name: PV Batt SOC
+    id: batt_soc
     lambda: return(id(coulomb_counter).state);
     update_interval: 60s
     unit_of_measurement: '%'
@@ -776,8 +781,11 @@ sensor:
     state_class: measurement
     filters:
       - calibrate_linear:
-          - -342000 -> 0 
+          - -342000 -> 0 #95Ah *60 *60 -> As
           - 0 -> 100
+      - clamp:
+          min_value: 0
+          max_value: 100
 
 # throttled for HA:
   - platform: template
