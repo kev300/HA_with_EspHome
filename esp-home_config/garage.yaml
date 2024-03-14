@@ -65,10 +65,6 @@ globals:
     type: int 
     restore_value: no
     initial_value: '920'
-  - id: soyoUpdC
-    type: short
-    restore_value: no
-    initial_value: '0'
   - id: operationMode
     type: short
     restore_value: no
@@ -248,14 +244,6 @@ interval:
     then:
       - component.update: mpptSensor
       - component.update: soyoSensor
-      - lambda: |-
-          if(id(soyoUpdC) >= 4) {
-            id(powermeter_with_fallback).update();
-            id(soyoUpdC) = 0;
-          }
-          else {
-            id(soyoUpdC)++;
-          }
 
 substitutions:
   name: jk-bms
@@ -314,12 +302,6 @@ ads1115:
   - address: 0x4A
 
 uart:
-  #- id: uart0
-  #  baud_rate: 115200
-  #  rx_buffer_size: 384
-  #  tx_pin: ${tx_pin}
-  #  rx_pin: ${rx_pin}
-
   - id: uart_powerd
     baud_rate: 4800
     tx_pin: GPIO18
@@ -570,6 +552,11 @@ sensor:
       on_value:
         then:
           - component.update: soyo_power
+          - component.update: powermeter_with_fallback
+          - component.update: charging_power
+          - component.update: discharging_power
+          - component.update: combinedAmps
+
     bus_voltage:
       id: pv_voltage
       filters:
@@ -687,10 +674,7 @@ sensor:
     update_interval: never #updated by batt_voltage
     on_value:
       then:
-        - component.update: charging_power
-        - component.update: discharging_power
         - component.update: solar_power_positive
-        - component.update: combinedAmps
 
   - platform: template
     id: solar_power_positive
@@ -759,6 +743,7 @@ sensor:
 
   - platform: integration
     id: coulomb_counter
+    name: cc
     sensor: combinedAmps
     accuracy_decimals: 0
     time_unit: s
