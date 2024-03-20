@@ -128,7 +128,7 @@ interval:
           }
 
 
-          if (id(battWasFull) || id(batt_voltage_avg).state > 47.5) {
+          if (id(battWasFull) || id(batt_soc).state > 50) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
