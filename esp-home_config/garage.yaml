@@ -77,6 +77,10 @@ globals:
     type: bool
     restore_value: yes
     initial_value: 'false'
+  - id: garageDoorState
+    type: short
+    initial_value: '-1'
+    restore_value: no
 
 interval:
   - interval: 5s
@@ -339,7 +343,7 @@ soyosource_virtual_meter:
     # A negative buffer value (-10) exports power to the grid (demand + 10 watts)
     buffer: 0
     zero_output_on_min_power_demand: true
-    max_power_sensor_latency_ms: 5000 
+    max_power_sensor_latency_ms: 4550
 
     # The operation_status_id sensor is expected here. Passing the operation_status won't work
     # The state is used to suspend the limiter if the operation status of the inverter isn't 0x0 (normal)
@@ -375,11 +379,14 @@ binary_sensor:
         - cover.template.publish:
             id: garage_cover
             position: !lambda 'return 0.0;'
+            current_operation: IDLE
+        - lambda: id(garageDoorState) = 0;
     on_release:
       then:
         - cover.template.publish:
             id: garage_cover
             position: 0.5
+            current_operation: OPENING
 
   - platform: gpio
     pin:
@@ -393,11 +400,14 @@ binary_sensor:
         - cover.template.publish:
             id: garage_cover
             position: !lambda 'return 1.0;'
+            current_operation: IDLE
+        - lambda: id(garageDoorState) = 1;
     on_release:
       then:
         - cover.template.publish:
             id: garage_cover
             position: 0.5
+            current_operation: CLOSING
 
 cover:
   - platform: template
@@ -415,13 +425,52 @@ cover:
         return 0.5;
       }
     open_action:
-      - switch.turn_on: garage_toggle_switch
+      - if:
+          condition:
+            - lambda: 'return (!id(garage_is_closed).state && !id(garage_is_open).state && id(garageDoorState) == 0);'
+          then:
+            # closing
+            - switch.turn_on: garage_toggle_switch
+            - delay: 500ms
+            # stopping:
+            - switch.turn_on: garage_toggle_switch
+            - delay: 500ms
+            # opening:
+            - switch.turn_on: garage_toggle_switch
+          else:
+            - switch.turn_on: garage_toggle_switch
     close_action:
-      - switch.turn_on: garage_toggle_switch
+      - if:
+          condition:
+            - lambda: 'return (!id(garage_is_closed).state && !id(garage_is_open).state && id(garageDoorState) == 1);'
+          then:
+            # opening:
+            - switch.turn_on: garage_toggle_switch
+            - delay: 500ms
+            # stopping:
+            - switch.turn_on: garage_toggle_switch
+            - delay: 500ms
+            # closing:
+            - switch.turn_on: garage_toggle_switch
+          else:
+            - switch.turn_on: garage_toggle_switch
     stop_action:
       - switch.turn_on: garage_toggle_switch
     position_action:
-      - switch.turn_on: garage_tilt_switch
+      - lambda: |-
+          if (pos < 0.2) {
+            auto call = id(garage_cover).make_call();
+            call.set_command_close();
+            call.perform();
+          }
+          else if (pos > 0.8) {
+            auto call = id(garage_cover).make_call();
+            call.set_command_open();
+            call.perform();
+          }
+          else {
+            id(garage_tilt_switch).turn_on();
+          }
 
 button:
   - platform: soyosource_display
@@ -454,7 +503,7 @@ number:
     max_power_sensor_latency_ms:
       name: "${name_soyo} sensor_latency"
       id: soyo_latency
-      initial_value: 5000
+      initial_value: 4550
       restore_value: false
 
   - platform: soyosource_display
@@ -1100,7 +1149,7 @@ switch:
     on_turn_on:
     - delay: 200ms
     - switch.turn_off: garage_tilt_switch
-    - delay: 500ms
+    - delay: 400ms
 
   - platform: gpio
     pin: GPIO23
@@ -1113,7 +1162,7 @@ switch:
     on_turn_on:
     - delay: 200ms
     - switch.turn_off: garage_toggle_switch
-    - delay: 500ms
+    - delay: 400ms
 
   - platform: gpio
     pin: GPIO13
