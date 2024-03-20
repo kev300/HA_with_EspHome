@@ -590,6 +590,10 @@ sensor:
     id: soyoSensor
     shunt_resistance: 0.0015 ohm
     max_current: 50A
+    adc_time:
+      voltage: 140us
+      current: 332us
+    adc_averaging: 128
     current:
       #name: "Inverter amps"
       id: inverter_amps
@@ -619,6 +623,10 @@ sensor:
     address: 0x41
     shunt_resistance: 0.0015 ohm
     max_current: 50A
+    adc_time:
+      voltage: 140us
+      current: 332us
+    adc_averaging: 128
     update_interval: never
     id: mpptSensor
     current:
