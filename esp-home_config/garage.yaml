@@ -128,7 +128,7 @@ interval:
           }
 
 
-          if (id(battWasFull) || id(batt_soc).state > 50) {
+          if (id(battWasFull) || id(batt_soc).state > 60) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
@@ -379,14 +379,14 @@ binary_sensor:
         - cover.template.publish:
             id: garage_cover
             position: !lambda 'return 0.0;'
-            current_operation: IDLE
+#            current_operation: IDLE
         - lambda: id(garageDoorState) = 0;
     on_release:
       then:
         - cover.template.publish:
             id: garage_cover
             position: 0.5
-            current_operation: OPENING
+#            current_operation: OPENING
 
   - platform: gpio
     pin:
@@ -400,14 +400,14 @@ binary_sensor:
         - cover.template.publish:
             id: garage_cover
             position: !lambda 'return 1.0;'
-            current_operation: IDLE
+#            current_operation: IDLE
         - lambda: id(garageDoorState) = 1;
     on_release:
       then:
         - cover.template.publish:
             id: garage_cover
             position: 0.5
-            current_operation: CLOSING
+#            current_operation: CLOSING
 
 cover:
   - platform: template
@@ -812,9 +812,9 @@ sensor:
     name: PV Batt SOC
     id: batt_soc
     lambda: return(id(coulomb_counter).state);
-    update_interval: 60s
+    update_interval: 180s
     unit_of_measurement: '%'
-    accuracy_decimals: 1
+    accuracy_decimals: 0
     device_class: battery
     state_class: measurement
     filters:
