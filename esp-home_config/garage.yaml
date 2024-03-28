@@ -6,7 +6,7 @@ esp32:
 # Enable logging
 logger:
   baud_rate: 0
-  level: INFO
+  level: WARN
 #  logs:
 #    api.service: WARN
 #    sensor: WARN
@@ -53,6 +53,7 @@ esphome:
     priority: 400
     then:
       - switch.turn_off: ble_jk
+
 preferences:
   flash_write_interval: 10min
 
@@ -566,6 +567,7 @@ sensor:
   #    loop_time:
   #      name: "Loop Time"
 
+
   - platform: wifi_signal # Reports the WiFi signal strength/RSSI in dB
     name: "WiFi Signal %"
     update_interval: 120s
@@ -806,7 +808,7 @@ sensor:
       - throttle: 10s
     on_value:
       then:
-        - lambda: if (x > 50) { id(coulomb_counter).reset(); }
+        - lambda: if (x > 1) { id(coulomb_counter).reset(); }
 
   - platform: template
     name: PV Batt SOC
@@ -872,8 +874,9 @@ sensor:
     unit_of_measurement: kWh
     restore: true
     filters:
-      - multiply: 0.001
       - throttle: 120s
+      - multiply: 0.925 #dc -> ac conversion 92,5%
+      - multiply: 0.001 #Wh -> kWh
 
   - platform: total_daily_energy
     name: "${name} discharging energy today"
@@ -883,8 +886,9 @@ sensor:
     unit_of_measurement: kWh
     restore: true
     filters:
-      - multiply: 0.001
       - throttle: 120s
+      - multiply: 0.925 #dc -> ac conversion 92,5%
+      - multiply: 0.001 #Wh -> kWh
 
   - platform: total_daily_energy
     name: "solarstrom energy"
@@ -895,8 +899,10 @@ sensor:
     unit_of_measurement: kWh
     restore: true
     filters:
-      - multiply: 0.001
       - throttle: 120s
+      - multiply: 0.925 #dc -> ac conversion 92,5%
+      - multiply: 0.001 #Wh -> kWh
+
 
   - platform: ads1115
     multiplexer: 'A0_GND'
