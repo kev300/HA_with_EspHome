@@ -2,11 +2,14 @@ esp32:
   board: nodemcu-32s
   framework:
     type: esp-idf
+    sdkconfig_options:
+      CONFIG_ESP32_DEFAULT_CPU_FREQ_240: "y"
+      CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ: "240"
 
 # Enable logging
 logger:
   baud_rate: 0
-  level: WARN
+  level: INFO
 #  logs:
 #    api.service: WARN
 #    sensor: WARN
@@ -46,6 +49,9 @@ time:
 esphome:
   name: garage-controller
   comment: "ESP32 in der Garage"
+  includes: clk.h
+#  platformio_options:
+#    board_build.f_cpu: 240000000L
   project:
     name: "garage.controller"
     version: 1.0.0
@@ -209,6 +215,9 @@ interval:
             numberF.perform();
           }
 
+      - lambda: |-
+          ESP_LOGW("CPU", "CPU freq: %d", esp_clk_cpu_freq());
+
 
 #display settings of the soyo to set automatically:
   - interval: 101s
@@ -295,7 +304,7 @@ ble_client:
 jk_bms_ble:
   - ble_client_id: client0
     protocol_version: ${protocol_version}
-    throttle: 5s
+    throttle: 2s
     id: bms0
 
 i2c:
@@ -674,18 +683,18 @@ sensor:
         case 1:
           //no api connection, only solar above 60W, else charging
 
-          if (id(solar_power_only).raw_state < 60) {
-            demand = id(soyo_buffer).state -35; //get's to 0W demand slowly
+          if (id(solar_power_only).raw_state < 70) {
+            demand = id(soyo_buffer).state -20; //get's to 0W demand slowly
           }
           break;
         case 2:
-          if (id(solar_power_only).raw_state > 60) {
+          if (id(solar_power_only).raw_state > 70) {
             if (demand > id(powermeter0).state) {
               demand = id(powermeter0).state;
             }
           }
           else {
-            demand = id(soyo_buffer).state -35; //get's to 0W demand slowly
+            demand = id(soyo_buffer).state -20; //get's to 0W demand slowly
           }
           break;
         case 3:
@@ -821,7 +830,7 @@ sensor:
     state_class: measurement
     filters:
       - calibrate_linear:
-          - -342000 -> 0 #95Ah *60 *60 -> As
+          - -324000 -> 0 #90Ah *60 *60 -> As
           - 0 -> 100
       - clamp:
           min_value: 0
