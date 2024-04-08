@@ -10,10 +10,16 @@ frontend:
 tts:
   - platform: google_translate
 
+
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 sensor: !include sensor.yaml
+
+counter:
+  gaszaehler:
+    initial: 0
+    step: 1
 
 recorder:
   purge_keep_days: 10
@@ -67,6 +73,10 @@ homeassistant:
       last_reset: 2023-01-01T00:00:00+00:00
     sensor.total_energy_out:
       last_reset: 2023-01-01T00:00:00+00:00
+    sensor.gasverbrauch_m3:
+      state_class: total_increasing
+    sensor.gasverbrauch_kwh:
+      state_class: total_increasing
 
 
         #homeassistant:

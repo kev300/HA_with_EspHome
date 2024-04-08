@@ -106,19 +106,6 @@
     entity_id: light.leos_lampe
     type: brightness_decrease
   mode: single
-- id: '1685730805753'
-  alias: Reboot garage controler
-  description: ''
-  trigger:
-  - platform: time
-    at: 05:00:00
-  condition: []
-  action:
-  - type: turn_on
-    device_id: e8bfdc0a3abc8bf51489993a070883a5
-    entity_id: switch.reboot
-    domain: switch
-  mode: single
 - id: '1698329760687'
   alias: 'Inverter einschalten '
   description: ''
@@ -204,3 +191,79 @@
         - light.gartenhauslampe
       include_sun: sun_enabled
       sun_elevation: 1
+- id: '1712585051298'
+  alias: Strompreis hoch
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.***REMOVED***_strompreis
+    above: 0.3
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: cc555d3977f22d6b46b4bd50e25f08e3
+    domain: switch
+  mode: single
+- id: '1712585065239'
+  alias: Neue Automatisierung
+  description: ''
+  trigger: []
+  condition: []
+  action: []
+  mode: single
+- id: '1712585167918'
+  alias: Strompreis ok
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.***REMOVED***_strompreis
+    below: 0.28
+  - platform: numeric_state
+    entity_id:
+    - sensor.***REMOVED***_strompreis
+    above: 0.2
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: cc555d3977f22d6b46b4bd50e25f08e3
+    domain: switch
+  - type: turn_off
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: 1fb3fc353abb9ba067c9f31679ac738a
+    domain: switch
+  mode: single
+- id: '1712585184163'
+  alias: Neue Automatisierung
+  description: ''
+  trigger: []
+  condition: []
+  action: []
+  mode: single
+- id: '1712585326909'
+  alias: Strompreis niedrig
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - sensor.***REMOVED***_strompreis
+    below: 0.18
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: cc555d3977f22d6b46b4bd50e25f08e3
+    domain: switch
+  - type: turn_on
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: 1fb3fc353abb9ba067c9f31679ac738a
+    domain: switch
+  - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    domain: number
+    entity_id: 91eadeddacef5e14eb747595b1cef699
+    type: set_value
+    value: 0
+  mode: single

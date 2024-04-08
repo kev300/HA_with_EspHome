@@ -65,3 +65,19 @@
            {% endif %}
          unit_of_measurement: 'g/m³'
          friendly_name: 'abs. Feuchtigkeit Keller'
+
+       gasverbrauch_m3:
+         unique_id: gasverbrauch_m3
+         value_template: "{{ states ('counter.gaszaehler') | float*0.001 }}"
+         icon_template: mdi:fire
+         unit_of_measurement: m³
+         device_class: gas
+
+       gasverbrauch_kwh:
+         unique_id: gasverbrauch_kwh
+         value_template: "{{ states ('counter.gaszaehler') | float*0.01 }}"
+         icon_template: mdi:fire
+         unit_of_measurement: kWh
+         device_class: energy
+
+
