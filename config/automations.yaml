@@ -206,13 +206,6 @@
     entity_id: cc555d3977f22d6b46b4bd50e25f08e3
     domain: switch
   mode: single
-- id: '1712585065239'
-  alias: Neue Automatisierung
-  description: ''
-  trigger: []
-  condition: []
-  action: []
-  mode: single
 - id: '1712585167918'
   alias: Strompreis ok
   description: ''
@@ -235,13 +228,6 @@
     device_id: 4aa3fe777c6e7ab927681f22403d1c8e
     entity_id: 1fb3fc353abb9ba067c9f31679ac738a
     domain: switch
-  mode: single
-- id: '1712585184163'
-  alias: Neue Automatisierung
-  description: ''
-  trigger: []
-  condition: []
-  action: []
   mode: single
 - id: '1712585326909'
   alias: Strompreis niedrig
