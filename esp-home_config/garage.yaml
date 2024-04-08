@@ -80,7 +80,7 @@ globals:
     type: short
     restore_value: no
     initial_value: '0'
-  - id: battWasFull
+  - id: useBattery
     type: bool
     restore_value: yes
     initial_value: 'false'
@@ -122,7 +122,7 @@ interval:
 
       - lambda: |-
 
-          if (id(min_batt_temp).state < 6 || id(max_batt_temp).state > 43) {
+          if (id(min_batt_temp).state < 6 || id(max_batt_temp).state > 45) {
             id(operationMode) = 0; //PV in -> Soyo out
             
             return;
@@ -135,7 +135,7 @@ interval:
           }
 
 
-          if (id(battWasFull) || id(batt_soc).state > 60) {
+          if (id(useBattery) || id(batt_soc).state > 60) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
@@ -175,13 +175,13 @@ interval:
             }
           }
 
-          if (id(min_batt_temp).state > 14.5) {
+          if (id(min_batt_temp).state > 14.5 && id(max_batt_temp).state < 39) {
             id(maxChargeW) = 2300;
           }
           else if (id(min_batt_temp).state < 7) {
             id(maxChargeW) = 100;
           }
-          else if (id(min_batt_temp).state < 8) {
+          else if (id(min_batt_temp).state < 8 || id(max_batt_temp).state > 43) {
             id(maxChargeW) = 200;
           }
           else if (id(min_batt_temp).state < 9) {
@@ -190,7 +190,7 @@ interval:
           else if (id(min_batt_temp).state < 10) {
             id(maxChargeW) = 400;
           }
-          else if (id(min_batt_temp).state < 11) {
+          else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
             id(maxChargeW) = 550;
           }
           else if (id(min_batt_temp).state < 12) {
@@ -782,7 +782,6 @@ sensor:
             - number.set:
                 id: soyo_buffer
                 value: -10
-            - lambda: id(battWasFull) = true;
         - below: 53
           then:
             - number.set:
@@ -799,7 +798,6 @@ sensor:
             - number.set:
                 id: soyo_max_demand
                 value: 200
-            - lambda: id(battWasFull) = false;
 
   - platform: template
     id: combinedAmps
@@ -830,7 +828,7 @@ sensor:
     state_class: measurement
     filters:
       - calibrate_linear:
-          - -324000 -> 0 #90Ah *60 *60 -> As
+          - -306000 -> 0 #85Ah *60 *60 -> As
           - 0 -> 100
       - clamp:
           min_value: 0
@@ -1153,6 +1151,18 @@ sensor:
       - throttle: 5s
 
 switch:
+  - platform: template
+    name: "useBattery"
+    lambda: "return id(useBattery);"
+    turn_on_action:
+      - globals.set:
+          id: useBattery
+          value: "true"
+    turn_off_action:
+      - globals.set:
+          id: useBattery
+          value: "false"
+
   - platform: soyosource_virtual_meter
     soyosource_virtual_meter_id: virtualmeter0
     manual_mode:
