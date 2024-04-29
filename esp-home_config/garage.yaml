@@ -135,7 +135,7 @@ interval:
           }
 
 
-          if (id(useBattery) || id(batt_soc).state > 60) {
+          if (id(useBattery) || id(batt_soc).state > 57) {
             //use powermeter for demand
             id(operationMode) = 3;
           } else {
@@ -774,8 +774,8 @@ sensor:
     lambda: return id(batt_voltage).state;
     filters:
       - sliding_window_moving_average:
-          window_size: 16
-          send_every: 6
+          window_size: 6
+          send_every: 1
     on_value_range:
         - above: 53.1
           then:
@@ -793,7 +793,7 @@ sensor:
                 id: soyo_max_demand
                 value: !lambda |-
                   return id(max_demand);
-        - below: 44
+        - below: 44.2
           then:
             - number.set:
                 id: soyo_max_demand
