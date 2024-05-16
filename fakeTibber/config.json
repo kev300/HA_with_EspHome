@@ -1,0 +1,16 @@
+{
+	"broker": {
+	    "address": "192.168.1.25",
+	    "user": "hass",
+	    "password": "dummY"
+	},
+	"meter": {
+		"rawtopic": "smartmeter/sensor/sml/state"
+	},
+	"tibber": {
+		"broker": "a1zhmn1192zl1a.iot.eu-west-1.amazonaws.com",
+		"uid": "de87a159a4624c30a8566b306e0dcdea",
+		"bridgeid": "8c4b140a4f540",
+		"eui": "dc8e95fffebcade9"
+	}
+}
