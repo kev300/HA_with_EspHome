@@ -1,0 +1,13 @@
+[Unit]
+Description=Send meter data to Tibber MQTT server
+After=multi-user.target
+
+[Service]
+Type=simple
+User=kevin
+Restart=on-failure
+WorkingDirectory=/home/kevin/docker/homeassistant/fakeTibber
+ExecStart=python3 tibbersend.py
+
+[Install]
+WantedBy=multi-user.target
