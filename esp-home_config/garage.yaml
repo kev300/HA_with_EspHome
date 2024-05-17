@@ -128,7 +128,7 @@ interval:
             return;
           }
 
-          if (!id(api_connection)) {
+          if (!id(api_connection) || isnan(id(powermeter0).state)) {
             //goal: Only use solar power, 0W to or from battery. Disable below 50W because of bad efficency.
             id(operationMode) = 1;
             return;
