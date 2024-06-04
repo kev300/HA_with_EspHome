@@ -57,8 +57,6 @@ devices:
     friendly_name: 'Gartenpumpe '
   '0x000d6f00101cd775':
     friendly_name: 'Leo Licht Fernbedienung '
-  '0x00124b0029295963':
-    friendly_name: Kellertemp 2
   '0xa4c138f8635aefcd':
     friendly_name: 'Solarheizung '
     power_calibration: 0
@@ -76,4 +74,8 @@ devices:
     friendly_name: BueroStecker
   '0x00124b0029294c0a':
     friendly_name: Kellertemp
+  '0xa4c138318aad9ff1':
+    friendly_name: GartenhausPV
+  '0x00124b0029295963':
+    friendly_name: Kellertemp 2
 groups: {}
