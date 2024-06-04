@@ -78,6 +78,9 @@ homeassistant:
     sensor.gasverbrauch_kwh:
       state_class: total_increasing
 
+http:
+  use_x_forwarded_for: true
+  trusted_proxies: 10.9.8.1
 
         #homeassistant:
         #  customize_glob:
