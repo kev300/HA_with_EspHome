@@ -63,6 +63,48 @@ esphome:
 preferences:
   flash_write_interval: 10min
 
+
+substitutions:
+  name: jk-bms
+  device_description: "Monitor and control a JK-BMS via bluetooth"
+  external_components_source_jk: github://syssi/esphome-jk-bms@main
+  mac_address: C8:47:8C:E9:44:3F
+  protocol_version: JK02_32S
+
+  name_soyo: soyo
+  device_description_soyo: "Soyosource GTN control the power output on demand both via RS485"
+  #external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
+  external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@overshoot_compensation
+  
+  #GPIO
+  #  H = High; L = Low (voltage / signal) when active
+  
+  #Left Side
+  pinNtcVccH: GPIO13
+  pinSda: GPIO14
+  
+  pinDHT: GPIO26
+  pinScl: GPIO27
+  
+  pinGarageClosedL: GPIO34
+  pinGarageOpenedH: GPIO35
+  
+  #Right Side
+  pinSoyoDispTx: GPIO16
+  pinSoyoDispRx: GPIO17
+  pinSoyoTx: GPIO18
+  pinSoyoRx: GPIO19
+  
+  pinGarageTiltL: GPIO22
+  pinGarageToggleL: GPIO23    
+  
+  
+external_components:
+  - source: ${external_components_source_jk}
+    refresh: 0s
+  - source: ${external_components_source_soyo}
+    refresh: 0s
+
 globals:
   - id: api_connection
     type: bool
@@ -259,26 +301,6 @@ interval:
       - component.update: mpptSensor
       - component.update: soyoSensor
 
-substitutions:
-  name: jk-bms
-  device_description: "Monitor and control a JK-BMS via bluetooth"
-  external_components_source_jk: github://syssi/esphome-jk-bms@main
-  mac_address: C8:47:8C:E9:44:3F
-  protocol_version: JK02_32S
-
-  name_soyo: soyo
-  device_description_soyo: "Soyosource GTN control the power output on demand both via RS485"
-  external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
-
-
-external_components:
-  - source: ${external_components_source_jk}
-    refresh: 0s
-  - source: github://kev300/esphome-soyosource-gtn-virtual-meter@overshoot_compensation
-    refresh: 0s
-      #- source: ${external_components_source_soyo}
-      #refresh: 7d
-
 
 esp32_ble_tracker:
   scan_parameters:
@@ -308,8 +330,8 @@ jk_bms_ble:
     id: bms0
 
 i2c:
-  sda: GPIO14
-  scl: GPIO27
+  sda: ${pinSda}
+  scl: ${pinScl}
   scan: true
 
 ads1115:
@@ -318,12 +340,12 @@ ads1115:
 uart:
   - id: uart_powerd
     baud_rate: 4800
-    tx_pin: GPIO18
-    rx_pin: GPIO19
+    tx_pin: ${pinSoyoTx}
+    rx_pin: ${pinSoyoRx}
   - id: uart_display
     baud_rate: 9600
-    tx_pin: GPIO16
-    rx_pin: GPIO17
+    tx_pin: ${pinSoyoDispTx}
+    rx_pin: ${pinSoyoDispRx}
 
 soyosource_modbus:
   - id: modbus1
@@ -379,7 +401,7 @@ binary_sensor:
 
   - platform: gpio
     pin:
-      number: GPIO34
+      number: ${pinGarageClosedL}
       inverted: true
       mode:
         input: true
@@ -400,7 +422,7 @@ binary_sensor:
 
   - platform: gpio
     pin:
-      number: GPIO35
+      number: ${pinGarageOpenedH}
       inverted: false
       mode:
         input: true
@@ -586,7 +608,7 @@ sensor:
     entity_category: "diagnostic"
 
   - platform: dht
-    pin: GPIO26
+    pin: ${pinDHT}
     temperature:
       name: "Garage Temperatur"
       id: garage_temp
@@ -1178,7 +1200,7 @@ switch:
       restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: gpio
-    pin: GPIO22
+    pin: ${pinGarageTiltL}
     name: "Garage lüften"
     id: garage_tilt_switch
     inverted: true 
@@ -1190,7 +1212,7 @@ switch:
     - delay: 400ms
 
   - platform: gpio
-    pin: GPIO23
+    pin: ${pinGarageToggleL}
     name: "Garagentor auf/zu"
     id: garage_toggle_switch
     inverted: true
@@ -1203,7 +1225,7 @@ switch:
     - delay: 400ms
 
   - platform: gpio
-    pin: GPIO13
+    pin: ${pinNtcVccH}
     id: ntc_vcc
     internal: true
 
