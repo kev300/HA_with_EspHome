@@ -468,12 +468,12 @@ cover:
       - switch.turn_on: garage_toggle_switch
     position_action:
       - lambda: |-
-          if (pos < 0.2) {
+          if (pos < 0.1) {
             auto call = id(garage_cover).make_call();
             call.set_command_close();
             call.perform();
           }
-          else if (pos > 0.8) {
+          else if (pos > 0.9) {
             auto call = id(garage_cover).make_call();
             call.set_command_open();
             call.perform();
@@ -804,7 +804,7 @@ sensor:
     lambda: |-
       auto a = id(charging_amps).state - id(inverter_amps).state;
       if (a > 0) {
-        return a * 0.98; // reduce SOC drift by efficency loss of battery
+        return a * 0.996; // reduce SOC drift by efficency loss of battery
       }
       return a;
     update_interval: never
