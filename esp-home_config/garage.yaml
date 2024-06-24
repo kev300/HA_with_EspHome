@@ -625,8 +625,8 @@ sensor:
     max_current: 50A
     adc_time:
       voltage: 140us
-      current: 332us
-    adc_averaging: 128
+      current: 588us
+    adc_averaging: 64
     current:
       #name: "Inverter amps"
       id: inverter_amps
@@ -658,8 +658,8 @@ sensor:
     max_current: 50A
     adc_time:
       voltage: 140us
-      current: 332us
-    adc_averaging: 128
+      current: 588us
+    adc_averaging: 64
     update_interval: never
     id: mpptSensor
     current:
