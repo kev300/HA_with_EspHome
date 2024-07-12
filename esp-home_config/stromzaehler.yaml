@@ -8,6 +8,7 @@ api:
   password: ""
 
 ota:
+  platform: esphome
   password: ""
 
 captive_portal:
