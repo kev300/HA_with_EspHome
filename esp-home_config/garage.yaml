@@ -26,6 +26,7 @@ api:
   reboot_timeout: 2h
 
 ota:
+  platform: esphome
   password: ""
   on_begin:
     then:
@@ -212,7 +213,7 @@ interval:
             auto prevBuffer = id(soyo_buffer).state;
             if (prevBuffer == 2) {
               auto b = id(soyo_buffer).make_call();
-              b.set_value(0);
+              b.set_value(-2);
               b.perform();
             }
           }
@@ -808,7 +809,7 @@ sensor:
           then:
             - number.set:
                 id: soyo_buffer
-                value: 0
+                value: -2
         - above: 44.7
           then:
             - number.set:
@@ -825,7 +826,7 @@ sensor:
     id: combinedAmps
     lambda: |-
       auto a = id(charging_amps).state - id(inverter_amps).state;
-      if (a > 0) {
+      if (a > 15) {
         return a * 0.996; // reduce SOC drift by efficency loss of battery
       }
       return a;
