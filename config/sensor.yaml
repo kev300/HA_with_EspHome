@@ -40,7 +40,7 @@
       - tomorrow
     value_template: Ok
     headers:
-      Authorization: 2i2i6kfHRiqxkQ-wsJy3VquULmuFrm2rYuEOb6Z56p8
+      Authorization: apiKeyHere
       Content-Type: application/json
       User-Agent: REST
 
