@@ -825,11 +825,7 @@ sensor:
   - platform: template
     id: combinedAmps
     lambda: |-
-      auto a = id(charging_amps).state - id(inverter_amps).state;
-      if (a > 15) {
-        return a * 0.996; // reduce SOC drift by efficency loss of battery
-      }
-      return a;
+      return id(charging_amps).state - id(inverter_amps).state;
     update_interval: never
 
   - platform: integration
