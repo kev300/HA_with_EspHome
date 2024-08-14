@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "esphome.eb155cad6e185c6250c3c532fff9e076",
+  "data": {
+    "device_info": {
+      "uses_password": false,
+      "name": "cam1",
+      "friendly_name": "Cam1",
+      "mac_address": "3C:E9:0E:86:78:A8",
+      "compilation_time": "Apr 20 2023, 16:26:44",
+      "model": "esp32cam",
+      "manufacturer": "Espressif",
+      "has_deep_sleep": false,
+      "esphome_version": "2023.4.0",
+      "project_name": "",
+      "project_version": "",
+      "webserver_port": 0,
+      "bluetooth_proxy_version": 0
+    },
+    "services": [],
+    "api_version": {
+      "major": 1,
+      "minor": 7
+    },
+    "camera": [
+      {
+        "object_id": "cam1",
+        "key": 3736508471,
+        "name": "cam1",
+        "unique_id": "cam1cameracam1",
+        "disabled_by_default": false,
+        "icon": "",
+        "entity_category": 0
+      }
+    ],
+    "light": [
+      {
+        "object_id": "light",
+        "key": 1935470627,
+        "name": "light",
+        "unique_id": "cam1lightlight",
+        "disabled_by_default": false,
+        "icon": "",
+        "entity_category": 0,
+        "supported_color_modes": [
+          3
+        ],
+        "min_mireds": 0.0,
+        "max_mireds": 0.0,
+        "effects": [],
+        "legacy_supports_brightness": true,
+        "legacy_supports_rgb": false,
+        "legacy_supports_white_value": false,
+        "legacy_supports_color_temperature": false
+      }
+    ]
+  }
+}

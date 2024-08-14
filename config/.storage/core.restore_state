@@ -1,0 +1,676 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "core.restore_state",
+  "data": [
+    {
+      "state": {"entity_id":"person.kevin","state":"unknown","attributes":{"editable":true,"id":"kevin","device_trackers":["device_tracker.pixel_tablet"],"user_id":"18081f715e174c13a444ac0558876309","friendly_name":"Kevin"},"last_changed":"2024-07-12T13:49:08.065473+00:00","last_reported":"2024-07-12T13:49:12.525845+00:00","last_updated":"2024-07-12T13:49:12.525845+00:00","context":{"id":"01J2KK8YEDB2KKNJSXNAWJDRB0","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"person.janina","state":"unknown","attributes":{"editable":true,"id":"janina","device_trackers":["device_tracker.fp4"],"user_id":"81c650c560164070b4141e24bc114a3e","friendly_name":"Janina"},"last_changed":"2024-07-12T13:49:08.065999+00:00","last_reported":"2024-07-12T13:49:12.526007+00:00","last_updated":"2024-07-12T13:49:12.526007+00:00","context":{"id":"01J2KK8YEE1PTF8R1JQ7MWNYD9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"person.tesla","state":"unknown","attributes":{"editable":true,"id":"tesla","device_trackers":[],"user_id":"0d0e8e1b04fd478fa1aa0ad59bda2d65","entity_picture":"/api/image/serve/3af92f0405ea426bc62773c6a4055dba/512x512","friendly_name":"Tesla"},"last_changed":"2024-07-12T13:49:08.066234+00:00","last_reported":"2024-07-12T13:49:12.526103+00:00","last_updated":"2024-07-12T13:49:12.526103+00:00","context":{"id":"01J2KK8YEE5N91ZX797488ZTMQ","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"conversation.home_assistant","state":"unknown","attributes":{"friendly_name":"Home Assistant"},"last_changed":"2024-07-12T13:49:09.605038+00:00","last_reported":"2024-07-12T13:49:09.605038+00:00","last_updated":"2024-07-12T13:49:09.605038+00:00","context":{"id":"01J2KK8VK529G1WC4XXZR41VBF","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"counter.gaszaehler","state":"0","attributes":{"editable":false,"initial":0,"step":1},"last_changed":"2024-07-12T13:49:10.559676+00:00","last_reported":"2024-07-12T13:49:10.559676+00:00","last_updated":"2024-07-12T13:49:10.559676+00:00","context":{"id":"01J2KK8WGZ19VH2CCE3CF7V55K","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"device_tracker.fp4","state":"unknown","attributes":{"source_type":"gps","friendly_name":"FP4"},"last_changed":"2024-07-12T13:49:10.947804+00:00","last_reported":"2024-07-12T13:49:10.947804+00:00","last_updated":"2024-07-12T13:49:10.947804+00:00","context":{"id":"01J2KK8WX3PQ236CDJ6X7C6E60","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.fp4_battery_level","state":"64","attributes":{"unit_of_measurement":"%","device_class":"battery","icon":"mdi:battery-60","friendly_name":"FP4 Battery level"},"last_changed":"2024-07-12T13:50:59.694929+00:00","last_reported":"2024-07-12T13:50:59.809044+00:00","last_updated":"2024-07-12T13:50:59.694929+00:00","context":{"id":"01J2KKC73E4Q3X0ZM1B43ZVV9Z","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": 64,
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.fp4_battery_state","state":"discharging","attributes":{"options":["charging","discharging","full","not_charging"],"device_class":"enum","icon":"mdi:battery-minus","friendly_name":"FP4 Battery state"},"last_changed":"2024-07-12T13:50:59.695609+00:00","last_reported":"2024-07-12T13:50:59.809209+00:00","last_updated":"2024-07-12T13:50:59.695609+00:00","context":{"id":"01J2KKC73FZDATDE053YDHY0PM","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "discharging",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.fp4_charger_type","state":"none","attributes":{"options":["ac","usb","wireless","dock","none"],"device_class":"enum","icon":"mdi:battery","friendly_name":"FP4 Charger type"},"last_changed":"2024-07-12T13:50:59.696105+00:00","last_reported":"2024-07-12T13:50:59.809345+00:00","last_updated":"2024-07-12T13:50:59.696105+00:00","context":{"id":"01J2KKC73GJ22NK8EQX8Y7Y1F2","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "none",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"device_tracker.pixel_6","state":"unknown","attributes":{"source_type":"gps","friendly_name":"Pixel 6"},"last_changed":"2024-07-12T13:49:10.950975+00:00","last_reported":"2024-07-12T13:49:10.950975+00:00","last_updated":"2024-07-12T13:49:10.950975+00:00","context":{"id":"01J2KK8WX620DA0PE9VCFJRE14","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.pixel_6_pressure_sensor","state":"993.3","attributes":{"unit_of_measurement":"hPa","device_class":"pressure","icon":"mdi:gauge","friendly_name":"Pixel 6 Pressure sensor"},"last_changed":"2024-07-12T14:24:34.259216+00:00","last_reported":"2024-07-12T14:24:34.259216+00:00","last_updated":"2024-07-12T14:24:34.259216+00:00","context":{"id":"01J2KN9PEKF6CKPP1FS8DRKPEC","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "993.3",
+        "native_unit_of_measurement": "hPa"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"device_tracker.pixel_tablet","state":"unknown","attributes":{"source_type":"gps","friendly_name":"Pixel Tablet"},"last_changed":"2024-07-12T13:49:10.953183+00:00","last_reported":"2024-07-12T13:49:10.953183+00:00","last_updated":"2024-07-12T13:49:10.953183+00:00","context":{"id":"01J2KK8WX9SRYBCWK0MAWWWWW5","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.pixel_tablet_battery_level","state":"90","attributes":{"unit_of_measurement":"%","device_class":"battery","icon":"mdi:battery-90","friendly_name":"Pixel Tablet Battery level"},"last_changed":"2024-07-12T14:28:26.921251+00:00","last_reported":"2024-07-12T14:28:26.923130+00:00","last_updated":"2024-07-12T14:28:26.921251+00:00","context":{"id":"01J2KNGSN9YK2AX42D7FBAQY0R","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": 90,
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.pixel_tablet_battery_state","state":"not_charging","attributes":{"options":["charging","discharging","full","not_charging"],"device_class":"enum","icon":"mdi:battery","friendly_name":"Pixel Tablet Battery state"},"last_changed":"2024-07-12T14:28:26.921896+00:00","last_reported":"2024-07-12T14:28:26.923502+00:00","last_updated":"2024-07-12T14:28:26.921896+00:00","context":{"id":"01J2KNGSN94CMRPMQPE6ZEP1BZ","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "not_charging",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.pixel_tablet_charger_type","state":"dock","attributes":{"options":["ac","usb","wireless","dock","none"],"device_class":"enum","icon":"mdi:battery","friendly_name":"Pixel Tablet Charger type"},"last_changed":"2024-07-12T14:28:26.922394+00:00","last_reported":"2024-07-12T14:28:26.923651+00:00","last_updated":"2024-07-12T14:28:26.922394+00:00","context":{"id":"01J2KNGSNAVV80T23S304XVA67","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "dock",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.apexcharts_card_update","state":"off","attributes":{"auto_update":false,"installed_version":"v2.1.2","in_progress":false,"latest_version":"v2.1.2","release_summary":null,"release_url":"https://github.com/RomRider/apexcharts-card/releases/v2.1.2","skipped_version":null,"title":null,"friendly_name":"apexcharts-card update","supported_features":23},"last_changed":"2024-07-12T13:49:11.184306+00:00","last_reported":"2024-07-12T13:49:11.184306+00:00","last_updated":"2024-07-12T13:49:11.184306+00:00","context":{"id":"01J2KK8X4G693ASD0ZR45W0RKK","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.hacs_update","state":"off","attributes":{"auto_update":false,"installed_version":"1.34.0","in_progress":false,"latest_version":"1.34.0","release_summary":null,"release_url":"https://github.com/hacs/integration/releases/1.34.0","skipped_version":null,"title":null,"entity_picture":"https://brands.home-assistant.io/_/hacs/icon.png","friendly_name":"HACS update","supported_features":23},"last_changed":"2024-07-12T13:49:11.184657+00:00","last_reported":"2024-07-12T13:49:11.184657+00:00","last_updated":"2024-07-12T13:49:11.184657+00:00","context":{"id":"01J2KK8X4GH5DV00BCG21EE0V8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"notify.tibber","state":"unknown","attributes":{"icon":"mdi:message-flash","friendly_name":"tibber","supported_features":1},"last_changed":"2024-07-12T13:49:11.264221+00:00","last_reported":"2024-07-12T13:49:11.264221+00:00","last_updated":"2024-07-12T13:49:11.264221+00:00","context":{"id":"01J2KK8X70YJJFR3D9AJJAQXJH","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"button.soyo_restart","state":"2024-06-21T06:22:08.099603+00:00","attributes":{"icon":"mdi:restart","friendly_name":"soyo restart"},"last_changed":"2024-07-12T13:49:12.623505+00:00","last_reported":"2024-07-12T13:49:12.623505+00:00","last_updated":"2024-07-12T13:49:12.623505+00:00","context":{"id":"01J2KK8YHF90N3EETS3TS1Z786","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"button.jk_bms_retrieve_settings","state":"2024-06-21T06:24:47.466862+00:00","attributes":{"icon":"mdi:cog","friendly_name":"jk-bms retrieve settings"},"last_changed":"2024-07-12T13:49:12.623923+00:00","last_reported":"2024-07-12T13:49:12.623923+00:00","last_updated":"2024-07-12T13:49:12.623923+00:00","context":{"id":"01J2KK8YHFEHQM4QDJXFE3DBNE","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"button.jk_bms_retrieve_device_info","state":"2024-06-21T06:24:49.781931+00:00","attributes":{"icon":"mdi:information-variant","friendly_name":"jk-bms retrieve device info"},"last_changed":"2024-07-12T13:49:12.623752+00:00","last_reported":"2024-07-12T13:49:12.623752+00:00","last_updated":"2024-07-12T13:49:12.623752+00:00","context":{"id":"01J2KK8YHFGQNP0RW3HEH4GMBE","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.haustur_bewegungsmelder","state":"on","attributes":{"id":"1675612618800","last_triggered":"2024-06-26T21:50:57.571123+00:00","mode":"restart","current":0,"friendly_name":"Haustür Bewegungsmelder "},"last_changed":"2024-07-12T13:49:11.475824+00:00","last_reported":"2024-07-12T13:49:11.475824+00:00","last_updated":"2024-07-12T13:49:11.475824+00:00","context":{"id":"01J2KK8XDK4Q6RZ5K0Q81WT363","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.garagenlicht_bewegungsmelder","state":"on","attributes":{"id":"1677505658484","last_triggered":"2024-06-01T20:05:46.217178+00:00","mode":"restart","current":0,"friendly_name":"Garagenlicht Bewegungsmelder "},"last_changed":"2024-07-12T13:49:11.476088+00:00","last_reported":"2024-07-12T13:49:11.476088+00:00","last_updated":"2024-07-12T13:49:11.476088+00:00","context":{"id":"01J2KK8XDMWHSHQWW1X0X5D426","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.send_notification","state":"off","attributes":{"id":"1678299190989","last_triggered":"2023-07-02T07:23:30.510933+00:00","mode":"single","current":0,"friendly_name":"Send Notification"},"last_changed":"2024-07-12T13:49:11.476273+00:00","last_reported":"2024-07-12T13:49:11.476273+00:00","last_updated":"2024-07-12T13:49:11.476273+00:00","context":{"id":"01J2KK8XDMFP729W56DHPE828Y","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.leo_licht","state":"on","attributes":{"id":"1684942536663","last_triggered":"2024-07-12T13:46:38.600663+00:00","mode":"single","current":0,"friendly_name":"Leo Licht an aus"},"last_changed":"2024-07-12T13:49:11.476472+00:00","last_reported":"2024-07-12T13:49:11.476472+00:00","last_updated":"2024-07-12T13:49:11.476472+00:00","context":{"id":"01J2KK8XDM4XWHKP2AJZQRR817","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.automation_4","state":"on","attributes":{"id":"1684945772411","last_triggered":"2024-07-12T13:46:40.445703+00:00","mode":"single","current":0,"friendly_name":"Leo Licht heller "},"last_changed":"2024-07-12T13:49:11.476669+00:00","last_reported":"2024-07-12T13:49:11.476669+00:00","last_updated":"2024-07-12T13:49:11.476669+00:00","context":{"id":"01J2KK8XDMRSX0G8XY1EQPRR00","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.leo_licht_dunkler","state":"on","attributes":{"id":"1684945893990","last_triggered":"2024-07-12T05:16:41.259296+00:00","mode":"single","current":0,"friendly_name":"Leo Licht dunkler "},"last_changed":"2024-07-12T13:49:11.476869+00:00","last_reported":"2024-07-12T13:49:11.476869+00:00","last_updated":"2024-07-12T13:49:11.476869+00:00","context":{"id":"01J2KK8XDM90P81WF6C9PW0T34","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.inverter_einschalten","state":"on","attributes":{"id":"1698329760687","last_triggered":"2024-07-12T02:30:43.099668+00:00","mode":"single","current":0,"friendly_name":"Inverter einschalten "},"last_changed":"2024-07-12T13:49:11.477072+00:00","last_reported":"2024-07-12T13:49:11.477072+00:00","last_updated":"2024-07-12T13:49:11.477072+00:00","context":{"id":"01J2KK8XDN9HQPH8YP18XSJCAZ","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.inverter_ausschalten","state":"on","attributes":{"id":"1698329979950","last_triggered":"2024-07-07T20:05:02.438471+00:00","mode":"single","current":0,"friendly_name":"Inverter ausschalten "},"last_changed":"2024-07-12T13:49:11.477260+00:00","last_reported":"2024-07-12T13:49:11.477260+00:00","last_updated":"2024-07-12T13:49:11.477260+00:00","context":{"id":"01J2KK8XDNPJ8WJV11G7AE45CG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.gartenhaus_licht","state":"on","attributes":{"id":"1699372497889","last_triggered":"2024-07-12T01:46:40.159491+00:00","mode":"restart","current":0,"friendly_name":"Gartenhaus Bewegungsmelder "},"last_changed":"2024-07-12T13:49:11.477455+00:00","last_reported":"2024-07-12T13:49:11.477455+00:00","last_updated":"2024-07-12T13:49:11.477455+00:00","context":{"id":"01J2KK8XDN8QQJTA70KTW4JG39","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.strompreis_hoch","state":"on","attributes":{"id":"1712585051298","last_triggered":"2024-07-12T04:00:05.689540+00:00","mode":"single","current":0,"friendly_name":"Strompreis hoch"},"last_changed":"2024-07-12T13:49:11.477727+00:00","last_reported":"2024-07-12T13:49:11.477727+00:00","last_updated":"2024-07-12T13:49:11.477727+00:00","context":{"id":"01J2KK8XDNENG03CA3W1D58P6Y","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.strompreis_ok","state":"on","attributes":{"id":"1712585167918","last_triggered":"2024-07-12T11:00:06.245625+00:00","mode":"single","current":0,"friendly_name":"Strompreis ok"},"last_changed":"2024-07-12T13:49:11.477923+00:00","last_reported":"2024-07-12T13:49:11.477923+00:00","last_updated":"2024-07-12T13:49:11.477923+00:00","context":{"id":"01J2KK8XDNFR3DCEZMEA9SYE5X","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"automation.strompreis_niedrig","state":"on","attributes":{"id":"1712585326909","last_triggered":"2024-07-04T11:00:29.341513+00:00","mode":"single","current":0,"friendly_name":"Strompreis niedrig"},"last_changed":"2024-07-12T13:49:11.478117+00:00","last_reported":"2024-07-12T13:49:11.478117+00:00","last_updated":"2024-07-12T13:49:11.478117+00:00","context":{"id":"01J2KK8XDPCXV8P961E8W3JCZC","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.stecker_2","state":"on","attributes":{"child_lock":"UNLOCK","countdown":0,"current":0.09,"energy":1167.38,"indicator_mode":"off/on","linkquality":255,"power":0,"power_outage_memory":"restore","update":{"installed_version":192,"latest_version":192,"state":"idle"},"update_available":false,"voltage":235,"friendly_name":"Stecker 2"},"last_changed":"2024-07-12T13:49:13.419976+00:00","last_reported":"2024-07-12T14:33:38.732264+00:00","last_updated":"2024-07-12T14:33:38.732264+00:00","context":{"id":"01J2KNTA5C101JZGXN9P96VTKX","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.gartenpumpe","state":"off","attributes":{"child_lock":"UNLOCK","countdown":0,"current":0,"energy":44.97,"indicator_mode":"off/on","linkquality":196,"power":0,"power_outage_memory":"off","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":235,"friendly_name":"Gartenpumpe "},"last_changed":"2024-07-12T13:49:48.700661+00:00","last_reported":"2024-07-12T14:33:43.610214+00:00","last_updated":"2024-07-12T14:33:43.610214+00:00","context":{"id":"01J2KNTEXTHRFAFD1K3B9Q5WHS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.solarheizung","state":"on","attributes":{"child_lock":"UNLOCK","current":0.01,"energy":40.45,"indicator_mode":"off/on","linkquality":255,"power":3,"power_outage_memory":"on","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":237,"friendly_name":"Solarheizung "},"last_changed":"2024-07-12T13:49:15.097511+00:00","last_reported":"2024-07-12T14:30:52.021800+00:00","last_updated":"2024-07-12T14:30:52.021800+00:00","context":{"id":"01J2KNN7BNQKKSRCWD6FZ9J34A","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.steckerleiste_l1","state":"off","attributes":{"linkquality":255,"power_on_behavior":"previous","power_on_behavior_l1":"previous","state_l1":"OFF","state_l2":"OFF","state_l3":"OFF","friendly_name":"Steckerleiste  L1"},"last_changed":"2024-07-12T13:49:48.714370+00:00","last_reported":"2024-07-12T13:49:48.714370+00:00","last_updated":"2024-07-12T13:49:48.714370+00:00","context":{"id":"01J2KKA1SAG811V6ZV7K3EZGXS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.steckerleiste_l2","state":"off","attributes":{"linkquality":255,"power_on_behavior":"previous","power_on_behavior_l1":"previous","state_l1":"OFF","state_l2":"OFF","state_l3":"OFF","friendly_name":"Steckerleiste  L2"},"last_changed":"2024-07-12T13:49:48.714282+00:00","last_reported":"2024-07-12T13:49:48.714282+00:00","last_updated":"2024-07-12T13:49:48.714282+00:00","context":{"id":"01J2KKA1SA8ZG48784CKV2CYQ9","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.steckerleiste_l3","state":"off","attributes":{"linkquality":255,"power_on_behavior":"previous","power_on_behavior_l1":"previous","state_l1":"OFF","state_l2":"OFF","state_l3":"OFF","friendly_name":"Steckerleiste  L3"},"last_changed":"2024-07-12T13:49:48.714450+00:00","last_reported":"2024-07-12T13:49:48.714450+00:00","last_updated":"2024-07-12T13:49:48.714450+00:00","context":{"id":"01J2KKA1SAQ1E1WRP13CPNCE90","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.zigbee2mqtt_bridge_permit_join","state":"off","attributes":{"icon":"mdi:human-greeting-proximity","friendly_name":"Zigbee2MQTT Bridge Permit join"},"last_changed":"2024-07-12T13:49:12.814902+00:00","last_reported":"2024-07-12T13:49:12.814902+00:00","last_updated":"2024-07-12T13:49:12.814902+00:00","context":{"id":"01J2KK8YQEVHET19AB71MDGG82","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.haustur_lampe_1_do_not_disturb","state":"off","attributes":{"brightness":254,"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":null,"linkquality":255,"friendly_name":"Haustür Lampe 1 Do not disturb"},"last_changed":"2024-07-12T13:49:48.705994+00:00","last_reported":"2024-07-12T13:49:48.705994+00:00","last_updated":"2024-07-12T13:49:48.705994+00:00","context":{"id":"01J2KKA1S13DBD78JGAATJ9KXK","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.haustur_lampe_2_do_not_disturb","state":"off","attributes":{"brightness":254,"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":null,"linkquality":255,"friendly_name":"Haustür Lampe 2 Do not disturb"},"last_changed":"2024-07-12T13:49:48.707190+00:00","last_reported":"2024-07-12T13:49:48.707190+00:00","last_updated":"2024-07-12T13:49:48.707190+00:00","context":{"id":"01J2KKA1S3SPHYDNGQGPMKE506","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.garagenlampe_1_do_not_disturb","state":"off","attributes":{"brightness":254,"color":{"x":0.5267,"y":0.4133},"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":false,"linkquality":248,"friendly_name":"Garagenlampe 1 Do not disturb"},"last_changed":"2024-07-12T13:49:48.709472+00:00","last_reported":"2024-07-12T13:49:48.709472+00:00","last_updated":"2024-07-12T13:49:48.709472+00:00","context":{"id":"01J2KKA1S5G8N7HBG7F0PCPA02","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.gartenhauslampe_do_not_disturb","state":"off","attributes":{"brightness":254,"color":{"x":0.313,"y":0.21},"color_mode":"xy","color_power_on_behavior":null,"color_temp":75,"do_not_disturb":null,"linkquality":252,"friendly_name":"GartenhausLampe Do not disturb"},"last_changed":"2024-07-12T13:49:48.717902+00:00","last_reported":"2024-07-12T13:49:48.717902+00:00","last_updated":"2024-07-12T13:49:48.717902+00:00","context":{"id":"01J2KKA1SD842Q7FYA6G0GQ1GG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.buerostecker","state":"on","attributes":{"child_lock":"UNLOCK","current":0.32,"energy":42.85,"indicator_mode":"off/on","linkquality":255,"power":51,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":236,"friendly_name":"BueroStecker"},"last_changed":"2024-07-12T13:49:47.529351+00:00","last_reported":"2024-07-12T14:34:04.711072+00:00","last_updated":"2024-07-12T14:34:04.711072+00:00","context":{"id":"01J2KNV3H7643AN3HD15TEEW8E","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"switch.gartenhauspv","state":"on","attributes":{"child_lock":"UNLOCK","current":1.5,"energy":229.01,"indicator_mode":"off/on","linkquality":244,"power":412,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":241,"friendly_name":"GartenhausPV"},"last_changed":"2024-07-12T13:49:22.957738+00:00","last_reported":"2024-07-12T14:34:10.714943+00:00","last_updated":"2024-07-12T14:34:10.714943+00:00","context":{"id":"01J2KNV9CTJJ3N87YVA4152K7B","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.stecker_2_power","state":"0","attributes":{"state_class":"measurement","child_lock":"UNLOCK","countdown":0,"current":0.09,"energy":1167.38,"indicator_mode":"off/on","linkquality":255,"power":0,"power_outage_memory":"restore","update":{"installed_version":192,"latest_version":192,"state":"idle"},"update_available":false,"voltage":235,"unit_of_measurement":"W","device_class":"power","friendly_name":"Stecker 2 Leistung"},"last_changed":"2024-07-12T14:33:38.732424+00:00","last_reported":"2024-07-12T14:33:38.732424+00:00","last_updated":"2024-07-12T14:33:38.732424+00:00","context":{"id":"01J2KNTA5CD62M8EBF95SAN7K5","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "0",
+        "native_unit_of_measurement": "W"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.stecker_2_energy","state":"1167.38","attributes":{"state_class":"total_increasing","child_lock":"UNLOCK","countdown":0,"current":0.09,"energy":1167.38,"indicator_mode":"off/on","linkquality":255,"power":0,"power_outage_memory":"restore","update":{"installed_version":192,"latest_version":192,"state":"idle"},"update_available":false,"voltage":235,"unit_of_measurement":"kWh","device_class":"energy","friendly_name":"Stecker 2 Energie"},"last_changed":"2024-07-12T14:33:17.341069+00:00","last_reported":"2024-07-12T14:33:38.731819+00:00","last_updated":"2024-07-12T14:33:38.731819+00:00","context":{"id":"01J2KNTA5B6072A3F5FVGNQX3M","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "1167.38",
+        "native_unit_of_measurement": "kWh"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.gartenpumpe_power","state":"0","attributes":{"state_class":"measurement","child_lock":"UNLOCK","countdown":0,"current":0,"energy":44.97,"indicator_mode":"off/on","linkquality":196,"power":0,"power_outage_memory":"off","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":235,"unit_of_measurement":"W","device_class":"power","friendly_name":"Gartenpumpe  Leistung"},"last_changed":"2024-07-12T13:49:48.700948+00:00","last_reported":"2024-07-12T14:33:43.610416+00:00","last_updated":"2024-07-12T14:33:43.610416+00:00","context":{"id":"01J2KNTEXT0BCTENRPVYSYQTEZ","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "0",
+        "native_unit_of_measurement": "W"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.gartenpumpe_energy","state":"44.97","attributes":{"state_class":"total_increasing","child_lock":"UNLOCK","countdown":0,"current":0,"energy":44.97,"indicator_mode":"off/on","linkquality":196,"power":0,"power_outage_memory":"off","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":235,"unit_of_measurement":"kWh","device_class":"energy","friendly_name":"Gartenpumpe  Energie"},"last_changed":"2024-07-12T13:49:48.700382+00:00","last_reported":"2024-07-12T14:33:43.609924+00:00","last_updated":"2024-07-12T14:33:43.609924+00:00","context":{"id":"01J2KNTEXS8A1YZ61TDRFAM33T","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "44.97",
+        "native_unit_of_measurement": "kWh"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.bewegungsmelder_haustur_battery","state":"90","attributes":{"state_class":"measurement","battery":90,"device_temperature":25,"illuminance":1000,"illuminance_lux":1000,"linkquality":255,"occupancy":false,"power_outage_count":37,"voltage":2985,"unit_of_measurement":"%","device_class":"battery","friendly_name":"Bewegungsmelder Haustür Batterie"},"last_changed":"2024-07-12T13:54:08.521482+00:00","last_reported":"2024-07-12T13:55:36.264393+00:00","last_updated":"2024-07-12T13:55:36.264393+00:00","context":{"id":"01J2KKMN68SYY23C8HSJ23N9DA","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "90",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.bewegungsmelder_haustur_device_temperature","state":"25","attributes":{"state_class":"measurement","battery":90,"device_temperature":25,"illuminance":1000,"illuminance_lux":1000,"linkquality":255,"occupancy":false,"power_outage_count":37,"voltage":2985,"unit_of_measurement":"°C","device_class":"temperature","friendly_name":"Bewegungsmelder Haustür Temperatur"},"last_changed":"2024-07-12T13:54:08.521390+00:00","last_reported":"2024-07-12T13:55:36.264042+00:00","last_updated":"2024-07-12T13:55:36.264042+00:00","context":{"id":"01J2KKMN68MWW44RSQRNS44E4V","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "25",
+        "native_unit_of_measurement": "°C"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.bewegungsmelder_haustur_illuminance_lux","state":"1000","attributes":{"state_class":"measurement","battery":90,"device_temperature":25,"illuminance":1000,"illuminance_lux":1000,"linkquality":255,"occupancy":false,"power_outage_count":37,"voltage":2985,"unit_of_measurement":"lx","device_class":"illuminance","friendly_name":"Bewegungsmelder Haustür Beleuchtungsstärke"},"last_changed":"2024-07-12T13:49:48.702553+00:00","last_reported":"2024-07-12T13:55:36.264805+00:00","last_updated":"2024-07-12T13:55:36.264805+00:00","context":{"id":"01J2KKMN682MEMKR81NP1DS03M","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "1000",
+        "native_unit_of_measurement": "lx"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.bewegungsmelder_haustur_power_outage_count","state":"37","attributes":{"battery":90,"device_temperature":25,"illuminance":1000,"illuminance_lux":1000,"linkquality":255,"occupancy":false,"power_outage_count":37,"voltage":2985,"icon":"mdi:counter","friendly_name":"Bewegungsmelder Haustür Power outage count"},"last_changed":"2024-07-12T13:49:48.702422+00:00","last_reported":"2024-07-12T13:55:36.264597+00:00","last_updated":"2024-07-12T13:55:36.264597+00:00","context":{"id":"01J2KKMN68E5FFDD1BYPZ639VR","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "37",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.bewegungsmelder_garage_battery","state":"21","attributes":{"state_class":"measurement","battery":21,"battery_low":false,"linkquality":208,"occupancy":false,"tamper":false,"voltage":null,"unit_of_measurement":"%","device_class":"battery","friendly_name":"Bewegungsmelder Garage  Batterie"},"last_changed":"2024-07-12T13:49:48.710302+00:00","last_reported":"2024-07-12T13:49:48.710302+00:00","last_updated":"2024-07-12T13:49:48.710302+00:00","context":{"id":"01J2KKA1S60C0S57JZ0TC35DMS","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "21",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.0x000d6f00101cd775_battery","state":"80","attributes":{"state_class":"measurement","action":null,"battery":80,"battery_low":false,"linkquality":255,"update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":2900,"unit_of_measurement":"%","device_class":"battery","friendly_name":"Leo Licht Fernbedienung  Batterie"},"last_changed":"2024-07-12T13:49:48.698948+00:00","last_reported":"2024-07-12T13:57:24.049582+00:00","last_updated":"2024-07-12T13:57:24.049582+00:00","context":{"id":"01J2KKQYEHY8JE9Y1V05QKV19Q","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "80",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.0x000d6f00101cd775_action","state":"None","attributes":{"action":null,"battery":80,"battery_low":false,"linkquality":255,"update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":2900,"icon":"mdi:gesture-double-tap","friendly_name":"Leo Licht Fernbedienung  Action"},"last_changed":"2024-07-12T13:49:48.698560+00:00","last_reported":"2024-07-12T13:57:24.049358+00:00","last_updated":"2024-07-12T13:57:24.049358+00:00","context":{"id":"01J2KKQYEH4RWEWB6MJYPEZ3GX","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "None",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.solarheizung_power","state":"3","attributes":{"state_class":"measurement","child_lock":"UNLOCK","current":0.01,"energy":40.45,"indicator_mode":"off/on","linkquality":255,"power":3,"power_outage_memory":"on","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":237,"unit_of_measurement":"W","device_class":"power","friendly_name":"Solarheizung  Leistung"},"last_changed":"2024-07-12T14:22:46.113876+00:00","last_reported":"2024-07-12T14:30:52.022006+00:00","last_updated":"2024-07-12T14:30:52.022006+00:00","context":{"id":"01J2KNN7BPH2P5JAT2G740VN8M","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "3",
+        "native_unit_of_measurement": "W"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.solarheizung_energy","state":"40.45","attributes":{"state_class":"total_increasing","child_lock":"UNLOCK","current":0.01,"energy":40.45,"indicator_mode":"off/on","linkquality":255,"power":3,"power_outage_memory":"on","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":237,"unit_of_measurement":"kWh","device_class":"energy","friendly_name":"Solarheizung  Energie"},"last_changed":"2024-07-12T13:49:15.098221+00:00","last_reported":"2024-07-12T14:30:52.021505+00:00","last_updated":"2024-07-12T14:30:52.021505+00:00","context":{"id":"01J2KNN7BN4V1R04VV7AB11W6J","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "40.45",
+        "native_unit_of_measurement": "kWh"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.bewegungsmelder_gartenhaus_battery","state":"12","attributes":{"state_class":"measurement","battery":12,"battery_low":false,"linkquality":255,"occupancy":false,"tamper":false,"voltage":2500,"unit_of_measurement":"%","device_class":"battery","friendly_name":"Bewegungsmelder Gartenhaus Batterie"},"last_changed":"2024-07-12T13:49:36.897812+00:00","last_reported":"2024-07-12T13:49:39.596805+00:00","last_updated":"2024-07-12T13:49:39.596805+00:00","context":{"id":"01J2KK9RWCZ2BQR9BDQ319QF0Q","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "12",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.zigbee2mqtt_bridge_version","state":"1.39.0","attributes":{"icon":"mdi:zigbee","friendly_name":"Zigbee2MQTT Bridge Version"},"last_changed":"2024-07-12T13:49:12.814802+00:00","last_reported":"2024-07-12T13:49:12.814802+00:00","last_updated":"2024-07-12T13:49:12.814802+00:00","context":{"id":"01J2KK8YQE36HC6YA2TPYYMMK4","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "1.39.0",
+        "native_unit_of_measurement": null
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.zigbee2mqtt_bridge_permit_join_timeout","state":"unknown","attributes":{"unit_of_measurement":"s","device_class":"duration","friendly_name":"Zigbee2MQTT Bridge Permit join timeout"},"last_changed":"2024-07-12T13:49:12.809761+00:00","last_reported":"2024-07-12T13:49:12.809761+00:00","last_updated":"2024-07-12T13:49:12.809761+00:00","context":{"id":"01J2KK8YQ9NFJXY08NVMKSD0AF","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": null,
+        "native_unit_of_measurement": "s"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.buerostecker_power","state":"51","attributes":{"state_class":"measurement","child_lock":"UNLOCK","current":0.32,"energy":42.85,"indicator_mode":"off/on","linkquality":255,"power":51,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":236,"unit_of_measurement":"W","device_class":"power","friendly_name":"BueroStecker Leistung"},"last_changed":"2024-07-12T14:34:01.984056+00:00","last_reported":"2024-07-12T14:34:04.711634+00:00","last_updated":"2024-07-12T14:34:04.711634+00:00","context":{"id":"01J2KNV3H75DR4Y9PPYAGSFBKE","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "51",
+        "native_unit_of_measurement": "W"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.buerostecker_energy","state":"42.85","attributes":{"state_class":"total_increasing","child_lock":"UNLOCK","current":0.32,"energy":42.85,"indicator_mode":"off/on","linkquality":255,"power":51,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":236,"unit_of_measurement":"kWh","device_class":"energy","friendly_name":"BueroStecker Energie"},"last_changed":"2024-07-12T14:27:48.242182+00:00","last_reported":"2024-07-12T14:34:04.711542+00:00","last_updated":"2024-07-12T14:34:04.711542+00:00","context":{"id":"01J2KNV3H7N8E0ZBGWFHJZ0YK0","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "42.85",
+        "native_unit_of_measurement": "kWh"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.kellertemp_battery","state":"100","attributes":{"state_class":"measurement","battery":100,"humidity":66.09,"linkquality":255,"temperature":18.35,"voltage":3000,"unit_of_measurement":"%","device_class":"battery","friendly_name":"Kellertemp Batterie"},"last_changed":"2024-07-12T13:49:13.908336+00:00","last_reported":"2024-07-12T14:29:13.426024+00:00","last_updated":"2024-07-12T14:29:13.426024+00:00","context":{"id":"01J2KNJ72JZH07A15XYDVRMQW3","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "100",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.kellertemp_temperature","state":"18.35","attributes":{"state_class":"measurement","battery":100,"humidity":66.09,"linkquality":255,"temperature":18.35,"voltage":3000,"unit_of_measurement":"°C","device_class":"temperature","friendly_name":"Kellertemp Temperatur"},"last_changed":"2024-07-12T14:29:13.426266+00:00","last_reported":"2024-07-12T14:29:13.426266+00:00","last_updated":"2024-07-12T14:29:13.426266+00:00","context":{"id":"01J2KNJ72JYG4WBD1MZAJFV0P1","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "18.35",
+        "native_unit_of_measurement": "°C"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.kellertemp_humidity","state":"66.09","attributes":{"state_class":"measurement","battery":100,"humidity":66.09,"linkquality":255,"temperature":18.35,"voltage":3000,"unit_of_measurement":"%","device_class":"humidity","friendly_name":"Kellertemp Luftfeuchtigkeit"},"last_changed":"2024-07-12T14:24:14.507603+00:00","last_reported":"2024-07-12T14:29:13.426868+00:00","last_updated":"2024-07-12T14:29:13.426868+00:00","context":{"id":"01J2KNJ72JV9HWG3TSHWQDKM3N","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "66.09",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.gartenhauspv_power","state":"412","attributes":{"state_class":"measurement","child_lock":"UNLOCK","current":1.5,"energy":229.01,"indicator_mode":"off/on","linkquality":244,"power":412,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":241,"unit_of_measurement":"W","device_class":"power","friendly_name":"GartenhausPV Leistung"},"last_changed":"2024-07-12T14:34:08.720824+00:00","last_reported":"2024-07-12T14:34:10.714398+00:00","last_updated":"2024-07-12T14:34:10.714398+00:00","context":{"id":"01J2KNV9CTATBN6FMZNNTWQPZV","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "412",
+        "native_unit_of_measurement": "W"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.gartenhauspv_voltage","state":"241","attributes":{"state_class":"measurement","child_lock":"UNLOCK","current":1.5,"energy":229.01,"indicator_mode":"off/on","linkquality":244,"power":412,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":241,"unit_of_measurement":"V","device_class":"voltage","friendly_name":"GartenhausPV Spannung"},"last_changed":"2024-07-12T14:27:07.693894+00:00","last_reported":"2024-07-12T14:34:10.714690+00:00","last_updated":"2024-07-12T14:34:10.714690+00:00","context":{"id":"01J2KNV9CTDPRVGARVH3SZ7ZNE","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "241",
+        "native_unit_of_measurement": "V"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.gartenhauspv_energy","state":"229.01","attributes":{"state_class":"total_increasing","child_lock":"UNLOCK","current":1.5,"energy":229.01,"indicator_mode":"off/on","linkquality":244,"power":412,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":241,"unit_of_measurement":"kWh","device_class":"energy","friendly_name":"GartenhausPV Energie"},"last_changed":"2024-07-12T14:32:36.145640+00:00","last_reported":"2024-07-12T14:34:10.715033+00:00","last_updated":"2024-07-12T14:34:10.715033+00:00","context":{"id":"01J2KNV9CVFYFDZ0ZQR0T6DD0P","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "229.01",
+        "native_unit_of_measurement": "kWh"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.kellertemp_2_battery","state":"100","attributes":{"state_class":"measurement","battery":100,"humidity":60.6,"linkquality":255,"temperature":19.39,"voltage":3000,"unit_of_measurement":"%","device_class":"battery","friendly_name":"Kellertemp 2 Batterie"},"last_changed":"2024-07-12T13:49:48.711353+00:00","last_reported":"2024-07-12T14:31:01.215576+00:00","last_updated":"2024-07-12T14:31:01.215576+00:00","context":{"id":"01J2KNNGAZGQX3G0DYBAG74722","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "100",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.kellertemp_2_temperature","state":"19.39","attributes":{"state_class":"measurement","battery":100,"humidity":60.6,"linkquality":255,"temperature":19.39,"voltage":3000,"unit_of_measurement":"°C","device_class":"temperature","friendly_name":"Kellertemp 2 Temperatur"},"last_changed":"2024-07-12T13:54:02.546486+00:00","last_reported":"2024-07-12T14:31:01.215461+00:00","last_updated":"2024-07-12T14:31:01.215461+00:00","context":{"id":"01J2KNNGAZCDBJZ4TR9T7EHYDR","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "19.39",
+        "native_unit_of_measurement": "°C"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"sensor.kellertemp_2_humidity","state":"60.6","attributes":{"state_class":"measurement","battery":100,"humidity":60.6,"linkquality":255,"temperature":19.39,"voltage":3000,"unit_of_measurement":"%","device_class":"humidity","friendly_name":"Kellertemp 2 Luftfeuchtigkeit"},"last_changed":"2024-07-12T14:31:01.215156+00:00","last_reported":"2024-07-12T14:31:01.215156+00:00","last_updated":"2024-07-12T14:31:01.215156+00:00","context":{"id":"01J2KNNGAZEMETVN4BDHVPBEZ8","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_value": "60.6",
+        "native_unit_of_measurement": "%"
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.stecker_2_power_outage_memory","state":"restore","attributes":{"options":["on","off","restore"],"child_lock":"UNLOCK","countdown":0,"current":0.09,"energy":1167.38,"indicator_mode":"off/on","linkquality":255,"power":0,"power_outage_memory":"restore","update":{"installed_version":192,"latest_version":192,"state":"idle"},"update_available":false,"voltage":235,"icon":"mdi:power-settings","friendly_name":"Stecker 2 Power outage memory"},"last_changed":"2024-07-12T13:49:13.419766+00:00","last_reported":"2024-07-12T14:33:38.731980+00:00","last_updated":"2024-07-12T14:33:38.731980+00:00","context":{"id":"01J2KNTA5B1RGXM2M2MF1Y5B21","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.stecker_2_indicator_mode","state":"off/on","attributes":{"options":["off","off/on","on/off","on"],"child_lock":"UNLOCK","countdown":0,"current":0.09,"energy":1167.38,"indicator_mode":"off/on","linkquality":255,"power":0,"power_outage_memory":"restore","update":{"installed_version":192,"latest_version":192,"state":"idle"},"update_available":false,"voltage":235,"friendly_name":"Stecker 2 Indicator mode"},"last_changed":"2024-07-12T13:49:13.420217+00:00","last_reported":"2024-07-12T14:33:38.732121+00:00","last_updated":"2024-07-12T14:33:38.732121+00:00","context":{"id":"01J2KNTA5CKW3DTZSR9MFT6A53","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.gartenpumpe_power_outage_memory","state":"off","attributes":{"options":["on","off","restore"],"child_lock":"UNLOCK","countdown":0,"current":0,"energy":44.97,"indicator_mode":"off/on","linkquality":196,"power":0,"power_outage_memory":"off","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":235,"icon":"mdi:power-settings","friendly_name":"Gartenpumpe  Power outage memory"},"last_changed":"2024-07-12T13:49:48.700849+00:00","last_reported":"2024-07-12T14:33:43.609722+00:00","last_updated":"2024-07-12T14:33:43.609722+00:00","context":{"id":"01J2KNTEXSDTWMYR5J5RCE8S5F","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.gartenpumpe_indicator_mode","state":"off/on","attributes":{"options":["off","off/on","on/off","on"],"child_lock":"UNLOCK","countdown":0,"current":0,"energy":44.97,"indicator_mode":"off/on","linkquality":196,"power":0,"power_outage_memory":"off","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":235,"friendly_name":"Gartenpumpe  Indicator mode"},"last_changed":"2024-07-12T13:49:48.700474+00:00","last_reported":"2024-07-12T14:33:43.610031+00:00","last_updated":"2024-07-12T14:33:43.610031+00:00","context":{"id":"01J2KNTEXTPQ0ACQGRV8RJNKZH","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.leos_lampe_power_on_behavior","state":"on","attributes":{"options":["off","on","toggle","previous"],"brightness":47,"color_mode":"color_temp","color_temp":306,"color_temp_startup":370,"linkquality":255,"power_on_behavior":"on","icon":"mdi:power-settings","friendly_name":"Leos Lampe  Power-on behavior"},"last_changed":"2024-07-12T13:49:48.703859+00:00","last_reported":"2024-07-12T13:49:48.703859+00:00","last_updated":"2024-07-12T13:49:48.703859+00:00","context":{"id":"01J2KKA1RZWRAA84CQ4Y599FPG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.solarheizung_power_outage_memory","state":"on","attributes":{"options":["on","off","restore"],"child_lock":"UNLOCK","current":0.01,"energy":40.45,"indicator_mode":"off/on","linkquality":255,"power":3,"power_outage_memory":"on","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":237,"icon":"mdi:power-settings","friendly_name":"Solarheizung  Power outage memory"},"last_changed":"2024-07-12T13:49:15.098439+00:00","last_reported":"2024-07-12T14:30:52.021705+00:00","last_updated":"2024-07-12T14:30:52.021705+00:00","context":{"id":"01J2KNN7BNX1F7YXW1A9F7R85Q","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.solarheizung_indicator_mode","state":"off/on","attributes":{"options":["off","off/on","on/off","on"],"child_lock":"UNLOCK","current":0.01,"energy":40.45,"indicator_mode":"off/on","linkquality":255,"power":3,"power_outage_memory":"on","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":237,"friendly_name":"Solarheizung  Indicator mode"},"last_changed":"2024-07-12T13:49:15.098333+00:00","last_reported":"2024-07-12T14:30:52.022079+00:00","last_updated":"2024-07-12T14:30:52.022079+00:00","context":{"id":"01J2KNN7BPPCQRXFWPKD8RPPQK","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.steckerleiste_power_on_behavior","state":"previous","attributes":{"options":["off","previous","on"],"linkquality":255,"power_on_behavior":"previous","power_on_behavior_l1":"previous","state_l1":"OFF","state_l2":"OFF","state_l3":"OFF","icon":"mdi:power-settings","friendly_name":"Steckerleiste  Power-on behavior"},"last_changed":"2024-07-12T13:49:48.714131+00:00","last_reported":"2024-07-12T13:49:48.714131+00:00","last_updated":"2024-07-12T13:49:48.714131+00:00","context":{"id":"01J2KKA1SAENXECCHVFA2FCAJG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.zigbee2mqtt_bridge_log_level","state":"warning","attributes":{"options":["error","warning","info","debug"],"friendly_name":"Zigbee2MQTT Bridge Log level"},"last_changed":"2024-07-12T13:49:12.814962+00:00","last_reported":"2024-07-12T13:49:12.814962+00:00","last_updated":"2024-07-12T13:49:12.814962+00:00","context":{"id":"01J2KK8YQEY7H0SWVDJYPAKSG8","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.haustur_lampe_1_effect","state":"unknown","attributes":{"options":["blink","breathe","okay","channel_change","finish_effect","stop_effect","colorloop","stop_colorloop"],"brightness":254,"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":null,"linkquality":255,"assumed_state":true,"icon":"mdi:palette","friendly_name":"Haustür Lampe 1 Effect"},"last_changed":"2024-07-12T13:49:12.809693+00:00","last_reported":"2024-07-12T13:49:48.705913+00:00","last_updated":"2024-07-12T13:49:48.705913+00:00","context":{"id":"01J2KKA1S12E2G165VSW8SCZYR","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.haustur_lampe_1_color_power_on_behavior","state":"unknown","attributes":{"options":["initial","previous","customized"],"brightness":254,"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":null,"linkquality":255,"icon":"mdi:palette","friendly_name":"Haustür Lampe 1 Color power on behavior"},"last_changed":"2024-07-12T13:49:12.811539+00:00","last_reported":"2024-07-12T13:49:48.706064+00:00","last_updated":"2024-07-12T13:49:48.706064+00:00","context":{"id":"01J2KKA1S2DEWECST93K0NZ7BS","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.haustur_lampe_2_color_power_on_behavior","state":"unknown","attributes":{"options":["initial","previous","customized"],"brightness":254,"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":null,"linkquality":255,"icon":"mdi:palette","friendly_name":"Haustür Lampe 2 Color power on behavior"},"last_changed":"2024-07-12T13:49:12.810284+00:00","last_reported":"2024-07-12T13:49:48.707079+00:00","last_updated":"2024-07-12T13:49:48.707079+00:00","context":{"id":"01J2KKA1S3WAFW9E01E4434CFK","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.garagenlampe_1_color_power_on_behavior","state":"unknown","attributes":{"options":["initial","previous","customized"],"brightness":254,"color":{"x":0.5267,"y":0.4133},"color_mode":"color_temp","color_power_on_behavior":null,"color_temp":500,"do_not_disturb":false,"linkquality":248,"icon":"mdi:palette","friendly_name":"Garagenlampe 1 Color power on behavior"},"last_changed":"2024-07-12T13:49:12.807894+00:00","last_reported":"2024-07-12T13:49:48.709296+00:00","last_updated":"2024-07-12T13:49:48.709296+00:00","context":{"id":"01J2KKA1S5BKR1SBKSRE9X26WQ","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.gartenhauslampe_color_power_on_behavior","state":"unknown","attributes":{"options":["initial","previous","customized"],"brightness":254,"color":{"x":0.313,"y":0.21},"color_mode":"xy","color_power_on_behavior":null,"color_temp":75,"do_not_disturb":null,"linkquality":252,"icon":"mdi:palette","friendly_name":"GartenhausLampe Color power on behavior"},"last_changed":"2024-07-12T13:49:12.811021+00:00","last_reported":"2024-07-12T13:49:48.717797+00:00","last_updated":"2024-07-12T13:49:48.717797+00:00","context":{"id":"01J2KKA1SDAN8MRZBM3B9YCPT6","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.buerostecker_power_outage_memory","state":"restore","attributes":{"options":["on","off","restore"],"child_lock":"UNLOCK","current":0.32,"energy":42.85,"indicator_mode":"off/on","linkquality":255,"power":51,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":236,"icon":"mdi:power-settings","friendly_name":"BueroStecker Power outage memory"},"last_changed":"2024-07-12T13:49:47.528984+00:00","last_reported":"2024-07-12T14:34:04.711716+00:00","last_updated":"2024-07-12T14:34:04.711716+00:00","context":{"id":"01J2KNV3H7YZ1JZYWDZP06GGFG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.buerostecker_indicator_mode","state":"off/on","attributes":{"options":["off","off/on","on/off","on"],"child_lock":"UNLOCK","current":0.32,"energy":42.85,"indicator_mode":"off/on","linkquality":255,"power":51,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":236,"friendly_name":"BueroStecker Indicator mode"},"last_changed":"2024-07-12T13:49:47.528522+00:00","last_reported":"2024-07-12T14:34:04.711304+00:00","last_updated":"2024-07-12T14:34:04.711304+00:00","context":{"id":"01J2KNV3H7YK2DCQZP31B1FM8T","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.gartenhauspv_power_outage_memory","state":"restore","attributes":{"options":["on","off","restore"],"child_lock":"UNLOCK","current":1.5,"energy":229.01,"indicator_mode":"off/on","linkquality":244,"power":412,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":241,"icon":"mdi:power-settings","friendly_name":"GartenhausPV Power outage memory"},"last_changed":"2024-07-12T13:49:22.957936+00:00","last_reported":"2024-07-12T14:34:10.714857+00:00","last_updated":"2024-07-12T14:34:10.714857+00:00","context":{"id":"01J2KNV9CTQQZ4K3DTP4CDA7QG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"select.gartenhauspv_indicator_mode","state":"off/on","attributes":{"options":["off","off/on","on/off","on"],"child_lock":"UNLOCK","current":1.5,"energy":229.01,"indicator_mode":"off/on","linkquality":244,"power":412,"power_outage_memory":"restore","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":241,"friendly_name":"GartenhausPV Indicator mode"},"last_changed":"2024-07-12T13:49:22.957093+00:00","last_reported":"2024-07-12T14:34:10.714780+00:00","last_updated":"2024-07-12T14:34:10.714780+00:00","context":{"id":"01J2KNV9CTK62TEK2BD4BPA7E0","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"binary_sensor.bewegungsmelder_haustur_occupancy","state":"off","attributes":{"battery":90,"device_temperature":25,"illuminance":1000,"illuminance_lux":1000,"linkquality":255,"occupancy":false,"power_outage_count":37,"voltage":2985,"device_class":"occupancy","friendly_name":"Bewegungsmelder Haustür Belegung"},"last_changed":"2024-07-12T13:55:36.265141+00:00","last_reported":"2024-07-12T13:55:36.265141+00:00","last_updated":"2024-07-12T13:55:36.265141+00:00","context":{"id":"01J2KKMN699R2JJSWVHC9GN6E6","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"binary_sensor.bewegungsmelder_garage_occupancy","state":"off","attributes":{"battery":21,"battery_low":false,"linkquality":208,"occupancy":false,"tamper":false,"voltage":null,"device_class":"occupancy","friendly_name":"Bewegungsmelder Garage  Belegung"},"last_changed":"2024-07-12T13:49:48.710493+00:00","last_reported":"2024-07-12T13:49:48.710493+00:00","last_updated":"2024-07-12T13:49:48.710493+00:00","context":{"id":"01J2KKA1S6JXSKMTSXB2A5AQT0","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"binary_sensor.bewegungsmelder_garage_battery_low","state":"off","attributes":{"battery":21,"battery_low":false,"linkquality":208,"occupancy":false,"tamper":false,"voltage":null,"device_class":"battery","friendly_name":"Bewegungsmelder Garage  Batterie"},"last_changed":"2024-07-12T13:49:48.710404+00:00","last_reported":"2024-07-12T13:49:48.710404+00:00","last_updated":"2024-07-12T13:49:48.710404+00:00","context":{"id":"01J2KKA1S6TRDFHM4HYGRSFGY7","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"binary_sensor.bewegungsmelder_gartenhaus_occupancy","state":"off","attributes":{"battery":12,"battery_low":false,"linkquality":255,"occupancy":false,"tamper":false,"voltage":2500,"device_class":"occupancy","friendly_name":"Bewegungsmelder Gartenhaus Belegung"},"last_changed":"2024-07-12T13:49:39.597420+00:00","last_reported":"2024-07-12T13:49:39.597420+00:00","last_updated":"2024-07-12T13:49:39.597420+00:00","context":{"id":"01J2KK9RWD6GJSG3E79NE8NEKD","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"binary_sensor.bewegungsmelder_gartenhaus_battery_low","state":"off","attributes":{"battery":12,"battery_low":false,"linkquality":255,"occupancy":false,"tamper":false,"voltage":2500,"device_class":"battery","friendly_name":"Bewegungsmelder Gartenhaus Batterie"},"last_changed":"2024-07-12T13:49:36.898157+00:00","last_reported":"2024-07-12T13:49:39.597200+00:00","last_updated":"2024-07-12T13:49:39.597200+00:00","context":{"id":"01J2KK9RWD9Z9KDYSEV7KFW443","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"binary_sensor.zigbee2mqtt_bridge_connection_state","state":"on","attributes":{"device_class":"connectivity","friendly_name":"Zigbee2MQTT Bridge Connection state"},"last_changed":"2024-07-12T13:49:12.811074+00:00","last_reported":"2024-07-12T13:49:12.811074+00:00","last_updated":"2024-07-12T13:49:12.811074+00:00","context":{"id":"01J2KK8YQBK3P47Y7W8J0C2E1G","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.stecker_2","state":"off","attributes":{"auto_update":false,"installed_version":"192","in_progress":false,"latest_version":"192","release_summary":null,"release_url":null,"skipped_version":null,"title":null,"device_class":"firmware","entity_picture":"https://github.com/Koenkk/zigbee2mqtt/raw/master/images/logo.png","friendly_name":"Stecker 2","supported_features":1},"last_changed":"2024-07-12T13:49:13.420610+00:00","last_reported":"2024-07-12T13:49:13.420610+00:00","last_updated":"2024-07-12T13:49:13.420610+00:00","context":{"id":"01J2KK8ZAC0X6CRS6DVTJZ6P86","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.gartenpumpe","state":"off","attributes":{"auto_update":false,"installed_version":"-1","in_progress":false,"latest_version":"-1","release_summary":null,"release_url":null,"skipped_version":null,"title":null,"device_class":"firmware","entity_picture":"https://github.com/Koenkk/zigbee2mqtt/raw/master/images/logo.png","friendly_name":"Gartenpumpe ","supported_features":1},"last_changed":"2024-07-12T13:49:48.700283+00:00","last_reported":"2024-07-12T13:49:48.700283+00:00","last_updated":"2024-07-12T13:49:48.700283+00:00","context":{"id":"01J2KKA1RWZMTV7CXFNSWVYDR6","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.0x000d6f00101cd775","state":"off","attributes":{"auto_update":false,"installed_version":"-1","in_progress":false,"latest_version":"-1","release_summary":null,"release_url":null,"skipped_version":null,"title":null,"device_class":"firmware","entity_picture":"https://github.com/Koenkk/zigbee2mqtt/raw/master/images/logo.png","friendly_name":"Leo Licht Fernbedienung ","supported_features":1},"last_changed":"2024-07-12T13:49:48.698834+00:00","last_reported":"2024-07-12T13:49:48.698834+00:00","last_updated":"2024-07-12T13:49:48.698834+00:00","context":{"id":"01J2KKA1RT3NQJZM261SVESNHG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.solarheizung","state":"off","attributes":{"auto_update":false,"installed_version":"-1","in_progress":false,"latest_version":"-1","release_summary":null,"release_url":null,"skipped_version":null,"title":null,"device_class":"firmware","entity_picture":"https://github.com/Koenkk/zigbee2mqtt/raw/master/images/logo.png","friendly_name":"Solarheizung ","supported_features":1},"last_changed":"2024-07-12T13:49:15.097933+00:00","last_reported":"2024-07-12T13:49:15.097933+00:00","last_updated":"2024-07-12T13:49:15.097933+00:00","context":{"id":"01J2KK90YS34QVHRJYJRHAW5SD","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.buerostecker","state":"off","attributes":{"auto_update":false,"installed_version":"-1","in_progress":false,"latest_version":"-1","release_summary":null,"release_url":null,"skipped_version":null,"title":null,"device_class":"firmware","entity_picture":"https://github.com/Koenkk/zigbee2mqtt/raw/master/images/logo.png","friendly_name":"BueroStecker","supported_features":1},"last_changed":"2024-07-12T13:49:47.529250+00:00","last_reported":"2024-07-12T13:49:47.529250+00:00","last_updated":"2024-07-12T13:49:47.529250+00:00","context":{"id":"01J2KKA0M9D0NA9B44GVCKMAMB","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"update.gartenhauspv","state":"off","attributes":{"auto_update":false,"installed_version":"-1","in_progress":false,"latest_version":"-1","release_summary":null,"release_url":null,"skipped_version":null,"title":null,"device_class":"firmware","entity_picture":"https://github.com/Koenkk/zigbee2mqtt/raw/master/images/logo.png","friendly_name":"GartenhausPV","supported_features":1},"last_changed":"2024-07-12T13:49:22.957517+00:00","last_reported":"2024-07-12T13:49:22.957517+00:00","last_updated":"2024-07-12T13:49:22.957517+00:00","context":{"id":"01J2KK98MD4P1Q5A752VJFJJHG","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"light.leos_lampe","state":"on","attributes":{"min_color_temp_kelvin":2702,"max_color_temp_kelvin":6535,"min_mireds":153,"max_mireds":370,"effect_list":["blink","breathe","okay","channel_change","finish_effect","stop_effect"],"supported_color_modes":["color_temp"],"effect":null,"color_mode":"color_temp","brightness":47,"color_temp_kelvin":3267,"color_temp":306,"hs_color":[27.437,50.088],"rgb_color":[255,185,127],"xy_color":[0.473,0.378],"color_temp_startup":370,"linkquality":255,"power_on_behavior":"on","friendly_name":"Leos Lampe ","supported_features":44},"last_changed":"2024-07-12T13:49:48.703757+00:00","last_reported":"2024-07-12T13:49:48.703757+00:00","last_updated":"2024-07-12T13:49:48.703757+00:00","context":{"id":"01J2KKA1RZF92YRBG9GXFZQA2N","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"light.haustur_lampe_1","state":"off","attributes":{"min_color_temp_kelvin":2000,"max_color_temp_kelvin":6535,"min_mireds":153,"max_mireds":500,"effect_list":["blink","breathe","okay","channel_change","finish_effect","stop_effect","colorloop","stop_colorloop"],"supported_color_modes":["color_temp","xy"],"effect":null,"color_mode":null,"brightness":null,"color_temp_kelvin":null,"color_temp":null,"hs_color":null,"rgb_color":null,"xy_color":null,"color_power_on_behavior":null,"do_not_disturb":null,"linkquality":255,"friendly_name":"Haustür Lampe 1","supported_features":44},"last_changed":"2024-07-12T13:49:48.705761+00:00","last_reported":"2024-07-12T13:49:48.705761+00:00","last_updated":"2024-07-12T13:49:48.705761+00:00","context":{"id":"01J2KKA1S1VNTHESTM2TZ6Z6FW","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"light.haustur_lampe_2","state":"off","attributes":{"min_color_temp_kelvin":2000,"max_color_temp_kelvin":6535,"min_mireds":153,"max_mireds":500,"effect_list":["blink","breathe","okay","channel_change","finish_effect","stop_effect","colorloop","stop_colorloop"],"supported_color_modes":["color_temp","xy"],"effect":null,"color_mode":null,"brightness":null,"color_temp_kelvin":null,"color_temp":null,"hs_color":null,"rgb_color":null,"xy_color":null,"color_power_on_behavior":null,"do_not_disturb":null,"linkquality":255,"friendly_name":"Haustür Lampe 2","supported_features":44},"last_changed":"2024-07-12T13:49:48.706952+00:00","last_reported":"2024-07-12T13:49:48.706952+00:00","last_updated":"2024-07-12T13:49:48.706952+00:00","context":{"id":"01J2KKA1S2N87A1F3SDHWA3Z02","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"light.garagenlampe_1","state":"off","attributes":{"min_color_temp_kelvin":2000,"max_color_temp_kelvin":6535,"min_mireds":153,"max_mireds":500,"effect_list":["blink","breathe","okay","channel_change","finish_effect","stop_effect","colorloop","stop_colorloop"],"supported_color_modes":["color_temp","xy"],"effect":null,"color_mode":null,"brightness":null,"color_temp_kelvin":null,"color_temp":null,"hs_color":null,"rgb_color":null,"xy_color":null,"color":{"x":0.5267,"y":0.4133},"color_power_on_behavior":null,"do_not_disturb":false,"linkquality":248,"friendly_name":"Garagenlampe 1","supported_features":44},"last_changed":"2024-07-12T13:49:48.709616+00:00","last_reported":"2024-07-12T13:49:48.709616+00:00","last_updated":"2024-07-12T13:49:48.709616+00:00","context":{"id":"01J2KKA1S5MKVRA7TD3AE2T37Y","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"light.gartenhauslampe","state":"off","attributes":{"min_color_temp_kelvin":2000,"max_color_temp_kelvin":6535,"min_mireds":153,"max_mireds":500,"effect_list":["blink","breathe","okay","channel_change","finish_effect","stop_effect","colorloop","stop_colorloop"],"supported_color_modes":["color_temp","xy"],"effect":null,"color_mode":null,"brightness":null,"color_temp_kelvin":null,"color_temp":null,"hs_color":null,"rgb_color":null,"xy_color":null,"color":{"x":0.313,"y":0.21},"color_power_on_behavior":null,"do_not_disturb":null,"linkquality":252,"friendly_name":"GartenhausLampe","supported_features":44},"last_changed":"2024-07-12T13:49:48.717618+00:00","last_reported":"2024-07-12T13:49:48.717618+00:00","last_updated":"2024-07-12T13:49:48.717618+00:00","context":{"id":"01J2KKA1SD3HD9K9W1QNFAEEJ6","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"button.zigbee2mqtt_bridge_restart","state":"unknown","attributes":{"device_class":"restart","friendly_name":"Zigbee2MQTT Bridge Restart"},"last_changed":"2024-07-12T13:49:12.811307+00:00","last_reported":"2024-07-12T13:49:12.811307+00:00","last_updated":"2024-07-12T13:49:12.811307+00:00","context":{"id":"01J2KK8YQBGRRPRWXJGB946TS3","parent_id":null,"user_id":null}},
+      "extra_data": null,
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"number.stecker_2_countdown","state":"0","attributes":{"min":0.0,"max":43200.0,"step":1.0,"mode":"auto","child_lock":"UNLOCK","countdown":0,"current":0.09,"energy":1167.38,"indicator_mode":"off/on","linkquality":255,"power":0,"power_outage_memory":"restore","update":{"installed_version":192,"latest_version":192,"state":"idle"},"update_available":false,"voltage":235,"unit_of_measurement":"s","friendly_name":"Stecker 2 Countdown"},"last_changed":"2024-07-12T13:49:13.420335+00:00","last_reported":"2024-07-12T14:33:38.732591+00:00","last_updated":"2024-07-12T14:33:38.732591+00:00","context":{"id":"01J2KNTA5CT9M919GXP9PR94F0","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_max_value": 43200.0,
+        "native_min_value": 0.0,
+        "native_step": 1.0,
+        "native_unit_of_measurement": "s",
+        "native_value": 0
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    },
+    {
+      "state": {"entity_id":"number.gartenpumpe_countdown","state":"0","attributes":{"min":0.0,"max":43200.0,"step":1.0,"mode":"auto","child_lock":"UNLOCK","countdown":0,"current":0,"energy":44.97,"indicator_mode":"off/on","linkquality":196,"power":0,"power_outage_memory":"off","update":{"installed_version":-1,"latest_version":-1,"state":null},"update_available":null,"voltage":235,"unit_of_measurement":"s","friendly_name":"Gartenpumpe  Countdown"},"last_changed":"2024-07-12T13:49:48.700763+00:00","last_reported":"2024-07-12T14:33:43.610303+00:00","last_updated":"2024-07-12T14:33:43.610303+00:00","context":{"id":"01J2KNTEXT6TK3SWZFWP1Z8KVF","parent_id":null,"user_id":null}},
+      "extra_data": {
+        "native_max_value": 43200.0,
+        "native_min_value": 0.0,
+        "native_step": 1.0,
+        "native_unit_of_measurement": "s",
+        "native_value": 0
+      },
+      "last_seen": "2024-07-12T14:34:12.528281+00:00"
+    }
+  ]
+}

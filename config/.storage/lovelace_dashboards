@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_dashboards",
+  "data": {
+    "items": [
+      {
+        "show_in_sidebar": true,
+        "icon": "mdi:desktop-tower",
+        "title": "Datenbank",
+        "require_admin": true,
+        "mode": "storage",
+        "url_path": "dashboard-datenbank",
+        "id": "dashboard_datenbank"
+      },
+      {
+        "show_in_sidebar": true,
+        "icon": "mdi:solar-power",
+        "title": "Solarkram",
+        "require_admin": true,
+        "mode": "storage",
+        "url_path": "dashboard-solarkram",
+        "id": "dashboard_solarkram"
+      },
+      {
+        "id": "map",
+        "icon": "mdi:map",
+        "title": "Karte",
+        "url_path": "map",
+        "show_in_sidebar": true,
+        "require_admin": false,
+        "mode": "storage"
+      },
+      {
+        "id": "dashboard_garage",
+        "show_in_sidebar": true,
+        "icon": "mdi:car",
+        "title": "Garage",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-garage"
+      },
+      {
+        "id": "dashboard_strompreis",
+        "show_in_sidebar": true,
+        "icon": "mdi:currency-eur",
+        "title": "Strompreis ",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-strompreis"
+      }
+    ]
+  }
+}

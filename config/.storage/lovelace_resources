@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_resources",
+  "data": {
+    "items": [
+      {
+        "id": "a993e61b7d05414cac0df28b2ff1a7ec",
+        "url": "/hacsfiles/apexcharts-card/apexcharts-card.js?hacstag=331701152212",
+        "type": "module"
+      }
+    ]
+  }
+}

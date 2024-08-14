@@ -205,6 +205,10 @@
     device_id: 4aa3fe777c6e7ab927681f22403d1c8e
     entity_id: cc555d3977f22d6b46b4bd50e25f08e3
     domain: switch
+  - type: turn_off
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: 1fb3fc353abb9ba067c9f31679ac738a
+    domain: switch
   mode: single
 - id: '1712585167918'
   alias: Strompreis ok
@@ -237,7 +241,13 @@
     entity_id:
     - sensor.***REMOVED***_strompreis
     below: 0.18
-  condition: []
+  condition:
+  - type: is_battery_level
+    condition: device
+    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+    entity_id: 38777fed0f725b8ac3776036351ae205
+    domain: sensor
+    below: 65
   action:
   - type: turn_off
     device_id: 4aa3fe777c6e7ab927681f22403d1c8e
