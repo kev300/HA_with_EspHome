@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "minor_version": 6,
+  "key": "core.area_registry",
+  "data": {
+    "areas": [
+      {
+        "aliases": [],
+        "name": "Wohnzimmer",
+        "id": "wohnzimmer",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      },
+      {
+        "aliases": [],
+        "name": "Küche",
+        "id": "kuche",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      },
+      {
+        "aliases": [],
+        "name": "Schlafzimmer",
+        "id": "schlafzimmer",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      },
+      {
+        "aliases": [],
+        "name": "Büro",
+        "id": "buro",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      },
+      {
+        "aliases": [],
+        "name": "Keller",
+        "id": "keller",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      },
+      {
+        "aliases": [],
+        "name": "Eingang",
+        "id": "eingang",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      },
+      {
+        "aliases": [],
+        "name": "Garage ",
+        "id": "garage",
+        "picture": null,
+        "icon": null,
+        "floor_id": null,
+        "labels": []
+      }
+    ]
+  }
+}

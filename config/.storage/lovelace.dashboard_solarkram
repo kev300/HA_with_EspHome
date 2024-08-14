@@ -1,0 +1,277 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_solarkram",
+  "data": {
+    "config": {
+      "title": "Home",
+      "views": [
+        {
+          "path": "default_view",
+          "title": "Home",
+          "cards": [
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "switch.solarheizung"
+                },
+                {
+                  "entity": "sensor.solarheizung_power"
+                },
+                {
+                  "entity": "switch.stecker_2"
+                },
+                {
+                  "entity": "sensor.power_consumption"
+                },
+                {
+                  "entity": "sensor.filtered_power_consumption"
+                },
+                {
+                  "entity": "sensor.soyo_power_demand"
+                },
+                {
+                  "entity": "sensor.solarstrom_power"
+                },
+                {
+                  "entity": "sensor.soyo_power"
+                },
+                {
+                  "entity": "sensor.stecker_2_power"
+                },
+                {
+                  "entity": "sensor.gartenhauspv_power"
+                }
+              ],
+              "title": "Strom",
+              "show_header_toggle": false
+            },
+            {
+              "show_name": false,
+              "show_icon": true,
+              "show_state": true,
+              "type": "glance",
+              "entities": [
+                {
+                  "entity": "sensor.pv_batt_soc"
+                },
+                {
+                  "entity": "sensor.batt_volt"
+                },
+                {
+                  "entity": "sensor.garage_system_power"
+                },
+                {
+                  "entity": "sensor.jk_bms_delta_cell_voltage"
+                },
+                {
+                  "entity": "sensor.jk_bms_temperature_sensor_1"
+                },
+                {
+                  "entity": "sensor.jk_bms_temperature_sensor_2"
+                },
+                {
+                  "entity": "sensor.batt_temp_3"
+                },
+                {
+                  "entity": "sensor.batt_temp_4"
+                },
+                {
+                  "entity": "sensor.garage_feuchtigkeit"
+                },
+                {
+                  "entity": "sensor.garage_temperatur"
+                }
+              ],
+              "title": "Akku",
+              "state_color": true
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "number.soyo_buffer"
+                },
+                {
+                  "entity": "sensor.soyo_limiter_operation_mode"
+                },
+                {
+                  "entity": "switch.usebattery"
+                },
+                {
+                  "entity": "switch.soyo_manual_mode"
+                },
+                {
+                  "entity": "number.soyo_manual_power_demand"
+                },
+                {
+                  "entity": "number.soyo_max_power_demand"
+                },
+                {
+                  "entity": "number.soyo_sensor_latency"
+                },
+                {
+                  "entity": "button.soyo_restart"
+                },
+                {
+                  "entity": "sensor.soyo_temperature"
+                },
+                {
+                  "entity": "sensor.soyo_ac_voltage"
+                },
+                {
+                  "entity": "sensor.soyo_battery_current"
+                },
+                {
+                  "entity": "binary_sensor.soyo_limiter_connected"
+                },
+                {
+                  "entity": "sensor.soyo_errors"
+                },
+                {
+                  "entity": "sensor.soyo_battery_voltage"
+                },
+                {
+                  "entity": "select.soyo_operation_mode"
+                },
+                {
+                  "entity": "sensor.soyo_operation_mode"
+                },
+                {
+                  "entity": "sensor.soyo_operation_status"
+                },
+                {
+                  "entity": "number.soyo_output_power_limit"
+                },
+                {
+                  "entity": "number.soyo_start_delay"
+                }
+              ],
+              "title": "Inverter ",
+              "state_color": true,
+              "show_header_toggle": false
+            },
+            {
+              "show_name": false,
+              "show_icon": true,
+              "show_state": true,
+              "type": "glance",
+              "entities": [
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_1"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_2"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_3"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_4"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_5"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_6"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_7"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_8"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_9"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_10"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_11"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_12"
+                },
+                {
+                  "entity": "sensor.jk_bms_cell_voltage_13"
+                },
+                {
+                  "entity": "sensor.jk_bms_balancing_current"
+                }
+              ],
+              "title": "Zellen ",
+              "state_color": true
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "switch.jk_bms_enable_bluetooth_connection"
+                },
+                {
+                  "entity": "switch.jk_bms_balancer"
+                },
+                {
+                  "entity": "switch.jk_bms_charging"
+                },
+                {
+                  "entity": "switch.jk_bms_discharging"
+                },
+                {
+                  "entity": "number.jk_bms_balance_starting_voltage"
+                },
+                {
+                  "entity": "number.jk_bms_balance_trigger_voltage"
+                },
+                {
+                  "entity": "number.jk_bms_max_charge_current"
+                },
+                {
+                  "entity": "number.jk_bms_max_discharge_current"
+                },
+                {
+                  "entity": "button.jk_bms_retrieve_settings"
+                },
+                {
+                  "entity": "button.jk_bms_retrieve_device_info"
+                }
+              ],
+              "show_header_toggle": false,
+              "title": "Akku Einstellungen ",
+              "state_color": true
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "binary_sensor.jk_bms_online_status"
+                },
+                {
+                  "entity": "sensor.soyo_error_bitmask"
+                },
+                {
+                  "entity": "sensor.wifi_signal"
+                },
+                {
+                  "entity": "sensor.jk_bms_current"
+                },
+                {
+                  "entity": "sensor.jk_bms_charging_energy_today"
+                },
+                {
+                  "entity": "sensor.jk_bms_discharging_energy_today"
+                },
+                {
+                  "entity": "sensor.solarstrom_energy"
+                }
+              ],
+              "title": "garage-controller"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

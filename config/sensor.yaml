@@ -28,6 +28,21 @@
       #        window_size: "00:00:10"
       #
       #
+  - platform: rest
+    name: "Tibber Preis"
+    resource: https://api.tibber.com/v1-beta/gql
+    method: POST
+    scan_interval: 100
+    payload: '{ "query": "{ viewer { homes { currentSubscription { priceInfo { today { total startsAt } tomorrow { total startsAt }}}}}}" }'
+    json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
+    json_attributes:
+      - today
+      - tomorrow
+    value_template: Ok
+    headers:
+      Authorization: 2i2i6kfHRiqxkQ-wsJy3VquULmuFrm2rYuEOb6Z56p8
+      Content-Type: application/json
+      User-Agent: REST
 
   - platform: template
     sensors:

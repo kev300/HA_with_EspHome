@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "energy",
+  "data": {
+    "energy_sources": [
+      {
+        "type": "grid",
+        "flow_from": [
+          {
+            "stat_energy_from": "sensor.stromz_power_total_in",
+            "stat_cost": null,
+            "entity_energy_price": null,
+            "number_energy_price": null
+          },
+          {
+            "stat_energy_from": "sensor.total_energy_in",
+            "stat_cost": null,
+            "entity_energy_price": null,
+            "number_energy_price": null
+          }
+        ],
+        "flow_to": [
+          {
+            "stat_energy_to": "sensor.stromz_power_total_out",
+            "stat_compensation": null,
+            "entity_energy_price": null,
+            "number_energy_price": null
+          },
+          {
+            "stat_energy_to": "sensor.total_energy_out",
+            "stat_compensation": null,
+            "entity_energy_price": null,
+            "number_energy_price": null
+          }
+        ],
+        "cost_adjustment_day": 0.0
+      },
+      {
+        "type": "solar",
+        "stat_energy_from": "sensor.solarstrom_energy",
+        "config_entry_solar_forecast": [
+          "f0dec006ddbe34661e9e78b8e695f4e4"
+        ]
+      },
+      {
+        "type": "battery",
+        "stat_energy_from": "sensor.jk_bms_discharging_energy_today",
+        "stat_energy_to": "sensor.jk_bms_charging_energy_today"
+      },
+      {
+        "type": "gas",
+        "stat_energy_from": "sensor.gasverbrauch_kwh",
+        "stat_cost": null,
+        "entity_energy_price": null,
+        "number_energy_price": null
+      },
+      {
+        "type": "solar",
+        "stat_energy_from": "sensor.gartenhauspv_energy",
+        "config_entry_solar_forecast": null
+      }
+    ],
+    "device_consumption": [
+      {
+        "stat_consumption": "sensor.gartenpumpe_energy"
+      },
+      {
+        "stat_consumption": "sensor.buerostecker_energy"
+      },
+      {
+        "stat_consumption": "sensor.tesla_wall_connector_energie"
+      }
+    ]
+  }
+}

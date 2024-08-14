@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.dashboard_garage",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Home",
+          "cards": [
+            {
+              "show_name": true,
+              "show_icon": true,
+              "type": "button",
+              "tap_action": {
+                "action": "toggle"
+              },
+              "entity": "cover.garagentor"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -82,19 +82,7 @@ http:
   use_x_forwarded_for: true
   trusted_proxies: 10.9.8.1
 
-        #homeassistant:
-        #  customize_glob:
-        #    sensor.stromz_power_total_in:
-        #      unit_of_measurement: "kWh"    
-        #      device_class: energy
-        #      state_class: total_increasing
-        #      last_reset: 2023-01-01T00:00:00+00:00
-        #    sensor.stromz_power_total_out:
-        #      unit_of_measurement: "kWh"    
-        #      device_class: energy
-        #      state_class: total_increasing
-        #      last_reset: 2023-01-01T00:00:00+00:00
-        #    sensor.stromz_power_power_curr:
-        #      unit_of_measurement: "W"    
-        #      device_class: power
-        #      state_class: measurement
+lovelace:
+  resources:
+    - url: /local/apexcharts-card.js?v=2.1.2
+      type: module

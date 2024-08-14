@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "minor_version": 2,
+  "key": "repairs.issue_registry",
+  "data": {
+    "issues": [
+      {
+        "created": "2024-06-12T13:57:00.567178+00:00",
+        "dismissed_version": null,
+        "domain": "openweathermap",
+        "is_persistent": false,
+        "issue_id": "deprecated_v25_63edb2157e1bde963c8f25def7e0425c"
+      }
+    ]
+  }
+}

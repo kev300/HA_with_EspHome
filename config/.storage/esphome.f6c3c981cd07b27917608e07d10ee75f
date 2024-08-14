@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "esphome.f6c3c981cd07b27917608e07d10ee75f",
+  "data": {
+    "device_info": {
+      "uses_password": false,
+      "name": "smartmeter",
+      "friendly_name": "",
+      "mac_address": "A4:CF:12:EE:CC:50",
+      "compilation_time": "May 14 2024, 15:27:40",
+      "model": "esp01_1m",
+      "manufacturer": "Espressif",
+      "has_deep_sleep": false,
+      "esphome_version": "2024.4.2",
+      "project_name": "",
+      "project_version": "",
+      "webserver_port": 0,
+      "legacy_voice_assistant_version": 0,
+      "voice_assistant_feature_flags": 0,
+      "legacy_bluetooth_proxy_version": 0,
+      "bluetooth_proxy_feature_flags": 0,
+      "suggested_area": ""
+    },
+    "services": [],
+    "api_version": {
+      "major": 1,
+      "minor": 10
+    },
+    "sensor": [
+      {
+        "object_id": "total_energy_out",
+        "key": 4077109313,
+        "name": "Total energy out",
+        "unique_id": "smartmetersensortotal_energy_out",
+        "disabled_by_default": false,
+        "icon": "",
+        "entity_category": 0,
+        "device_class": "energy",
+        "unit_of_measurement": "kWh",
+        "accuracy_decimals": 4,
+        "force_update": false,
+        "state_class": 2,
+        "last_reset_type": 0
+      },
+      {
+        "object_id": "total_energy_in",
+        "key": 899639966,
+        "name": "Total energy in",
+        "unique_id": "smartmetersensortotal_energy_in",
+        "disabled_by_default": false,
+        "icon": "",
+        "entity_category": 0,
+        "device_class": "energy",
+        "unit_of_measurement": "kWh",
+        "accuracy_decimals": 4,
+        "force_update": false,
+        "state_class": 2,
+        "last_reset_type": 0
+      },
+      {
+        "object_id": "power_consumption",
+        "key": 2897720500,
+        "name": "power consumption",
+        "unique_id": "smartmetersensorpower_consumption",
+        "disabled_by_default": false,
+        "icon": "mdi:lightning-bolt",
+        "entity_category": 0,
+        "device_class": "power",
+        "unit_of_measurement": "W",
+        "accuracy_decimals": 0,
+        "force_update": false,
+        "state_class": 1,
+        "last_reset_type": 0
+      }
+    ],
+    "text_sensor": []
+  }
+}

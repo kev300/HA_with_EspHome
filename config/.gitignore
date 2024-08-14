@@ -1,0 +1,5 @@
+.storage/auth
+.storage/person
+.storage/auth.session
+.storage/tmp*
+.storage/trace*

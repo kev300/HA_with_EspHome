@@ -1,0 +1,443 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace",
+  "data": {
+    "config": {
+      "title": "Home",
+      "views": [
+        {
+          "type": "sections",
+          "title": "Schalter",
+          "subview": false,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "switch.steckerleiste_l1",
+                  "vertical": false,
+                  "name": "Stereoanlage ",
+                  "state_content": [
+                    "state"
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.steckerleiste_l2",
+                  "name": "Tv Licht "
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.steckerleiste_l3",
+                  "name": "Babyphone "
+                }
+              ],
+              "title": "Wohnzimmer "
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "switch.gartenpumpe",
+                  "state_content": "power"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.bewegungsmelder_gartenhaus_occupancy",
+                  "state_content": [
+                    "state",
+                    "battery"
+                  ]
+                },
+                {
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ],
+                  "type": "tile",
+                  "entity": "light.gartenhauslampe",
+                  "name": "Licht"
+                }
+              ],
+              "title": "Gartenhaus"
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    },
+                    {
+                      "type": "cover-position"
+                    }
+                  ],
+                  "type": "tile",
+                  "entity": "cover.garagentor",
+                  "show_entity_picture": true,
+                  "state_content": [
+                    "state",
+                    "current_position"
+                  ],
+                  "vertical": false,
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  }
+                },
+                {
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ],
+                  "type": "tile",
+                  "entity": "light.garagenlampe_1",
+                  "show_entity_picture": false,
+                  "state_content": "state"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.garage_feuchtigkeit"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.bewegungsmelder_garage_occupancy",
+                  "state_content": [
+                    "state",
+                    "battery"
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.garage_temperatur",
+                  "state_content": "state",
+                  "vertical": false
+                }
+              ],
+              "title": "Garage "
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "type": "tile",
+                  "entity": "light.haustur_lampe_1",
+                  "name": "Lampe 1"
+                },
+                {
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "type": "tile",
+                  "entity": "light.haustur_lampe_2",
+                  "name": "Lampe 2"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.bewegungsmelder_haustur_occupancy",
+                  "state_content": [
+                    "battery",
+                    "device_temperature",
+                    "illuminance"
+                  ]
+                }
+              ],
+              "title": "Haustür"
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "switch.buerostecker",
+                  "state_content": [
+                    "power",
+                    "voltage",
+                    "energy"
+                  ]
+                }
+              ],
+              "title": "Büro "
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "sensor.kellertemp_humidity",
+                  "name": "Keller",
+                  "state_content": [
+                    "temperature",
+                    "humidity",
+                    "battery"
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.kellertemp_2_humidity",
+                  "state_content": [
+                    "temperature",
+                    "humidity",
+                    "battery"
+                  ],
+                  "name": "Keller 2"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.hum_abs_outside",
+                  "name": "abs. Draußen ",
+                  "icon": "mdi:water-percent"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.hum_abs_keller",
+                  "name": "abs. Keller",
+                  "icon": "mdi:water-percent"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.hum_abs_garage",
+                  "name": "abs. Garage "
+                }
+              ],
+              "title": "Keller "
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.leos_lampe",
+                  "name": "Licht",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ]
+                }
+              ],
+              "title": "Leos Zimmer "
+            }
+          ],
+          "cards": [],
+          "icon": "mdi:home"
+        },
+        {
+          "title": "Schalter ",
+          "path": "wohnzimmer",
+          "cards": [
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "switch.steckerleiste_l1",
+                  "name": "Stereoanlage "
+                },
+                {
+                  "entity": "switch.steckerleiste_l2",
+                  "name": "Tv Licht"
+                },
+                {
+                  "entity": "switch.steckerleiste_l3",
+                  "name": "Babyphone "
+                }
+              ],
+              "title": "Wohnzimmer "
+            },
+            {
+              "type": "tile",
+              "entity": "cover.garagentor",
+              "show_entity_picture": true,
+              "state_content": [
+                "state",
+                "current_position"
+              ],
+              "features": [
+                {
+                  "type": "cover-open-close"
+                },
+                {
+                  "type": "cover-position"
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "light.garagenlampe_1"
+                },
+                {
+                  "entity": "binary_sensor.bewegungsmelder_garage_occupancy"
+                }
+              ],
+              "title": "Garage",
+              "show_header_toggle": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "light.haustur_lampe_1"
+                },
+                {
+                  "entity": "light.haustur_lampe_2"
+                },
+                {
+                  "entity": "binary_sensor.bewegungsmelder_haustur_occupancy"
+                }
+              ],
+              "show_header_toggle": false,
+              "title": "Haustür"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "light.gartenhauslampe"
+                },
+                {
+                  "entity": "binary_sensor.bewegungsmelder_gartenhaus_occupancy"
+                },
+                {
+                  "entity": "switch.gartenpumpe"
+                }
+              ],
+              "title": "Gartenhaus ",
+              "show_header_toggle": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "light.leos_lampe"
+                }
+              ],
+              "title": "Leos zimmer",
+              "show_header_toggle": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "switch.buerostecker"
+                },
+                {
+                  "entity": "sensor.buerostecker_power"
+                },
+                {
+                  "entity": "sensor.buerostecker_energy"
+                }
+              ],
+              "title": "Büro",
+              "show_header_toggle": false
+            }
+          ],
+          "subview": false
+        },
+        {
+          "path": "default_view",
+          "title": "Infos",
+          "badges": [],
+          "cards": [
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.garage_temperatur"
+                },
+                {
+                  "entity": "sensor.garage_feuchtigkeit"
+                },
+                {
+                  "entity": "sensor.hum_abs_garage"
+                }
+              ],
+              "title": "Garage",
+              "show_header_toggle": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.kellertemp_humidity"
+                },
+                {
+                  "entity": "sensor.hum_abs_keller"
+                },
+                {
+                  "entity": "sensor.kellertemp_2_humidity"
+                }
+              ],
+              "title": "Keller",
+              "show_header_toggle": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "sensor.openweathermap_temperature"
+                },
+                {
+                  "entity": "sensor.openweathermap_humidity"
+                },
+                {
+                  "entity": "sensor.hum_abs_outside"
+                },
+                {
+                  "entity": "sensor.openweathermap_pressure"
+                }
+              ],
+              "title": "Draußen ",
+              "show_header_toggle": false
+            },
+            {
+              "type": "entities",
+              "entities": [
+                {
+                  "entity": "switch.stecker_2"
+                },
+                {
+                  "entity": "sensor.stecker_2_power"
+                },
+                {
+                  "entity": "lock.stecker_2_child_lock",
+                  "name": "Child lock"
+                }
+              ],
+              "title": "Stecker 2"
+            },
+            {
+              "type": "entities",
+              "entities": [
+                "sensor.ma2001w_kpsl"
+              ],
+              "title": "Büro"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
