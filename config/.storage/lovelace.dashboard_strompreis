@@ -9,6 +9,153 @@
           "title": "Home",
           "cards": [
             {
+              "type": "custom:apexcharts-card",
+              "apex_config": {
+                "chart": {
+                  "height": "450px"
+                }
+              },
+              "header": {
+                "show": true,
+                "title": "Strompreise",
+                "show_states": true,
+                "colorize_states": true
+              },
+              "now": {
+                "show": true,
+                "color": "white",
+                "label": "jetzt"
+              },
+              "hours_12": false,
+              "graph_span": "42h",
+              "span": {
+                "start": "day",
+                "offset": "+5h"
+              },
+              "yaxis": [
+                {
+                  "id": "kW",
+                  "decimals": 1,
+                  "opposite": true,
+                  "apex_config": {
+                    "tickAmount": 6
+                  }
+                },
+                {
+                  "id": "EUR",
+                  "decimals": 3
+                }
+              ],
+              "series": [
+                {
+                  "entity": "sensor.tibber_pulse_***REMOVED***_kumulierter_verbrauch",
+                  "show": {
+                    "legend_value": false,
+                    "extremas": true
+                  },
+                  "stroke_width": 5,
+                  "name": "Verbraucht",
+                  "curve": "smooth",
+                  "color": "#64511c",
+                  "opacity": 0.8,
+                  "yaxis_id": "kW",
+                  "extend_to": "now",
+                  "type": "column",
+                  "group_by": {
+                    "func": "avg",
+                    "duration": "30min"
+                  }
+                },
+                {
+                  "entity": "sensor.tibber_preis",
+                  "stroke_width": 2,
+                  "color": "blue",
+                  "curve": "stepline",
+                  "show": {
+                    "legend_value": false,
+                    "extremas": true,
+                    "in_header": false
+                  },
+                  "extend_to": "now",
+                  "yaxis_id": "EUR",
+                  "float_precision": 3,
+                  "name": "kommender Preis",
+                  "data_generator": "var a = entity.attributes.today.map((entry) => {\n  return [new Date(entry.startsAt), entry.total];\n}); \nvar b= entity.attributes.tomorrow.map((entry) => {\n  return [new Date(entry.startsAt), entry.total];\n});\nreturn a.concat(b);\n"
+                },
+                {
+                  "entity": "sensor.***REMOVED***_strompreis",
+                  "extend_to": "now",
+                  "show": {
+                    "legend_value": false,
+                    "extremas": true
+                  },
+                  "curve": "stepline",
+                  "color": "#ffa500",
+                  "stroke_width": 5,
+                  "yaxis_id": "EUR",
+                  "name": "Preis akt.",
+                  "float_precision": 3
+                },
+                {
+                  "entity": "sensor.***REMOVED***_strompreis",
+                  "stroke_width": 2,
+                  "show": {
+                    "legend_value": false,
+                    "extremas": true
+                  },
+                  "curve": "smooth",
+                  "attribute": "min_price",
+                  "name": "Min",
+                  "color": "green",
+                  "yaxis_id": "EUR",
+                  "type": "line",
+                  "float_precision": 3,
+                  "group_by": {
+                    "duration": "46h",
+                    "func": "min"
+                  }
+                },
+                {
+                  "entity": "sensor.***REMOVED***_strompreis",
+                  "stroke_width": 2,
+                  "show": {
+                    "legend_value": false,
+                    "extremas": true
+                  },
+                  "curve": "smooth",
+                  "attribute": "avg_price",
+                  "name": "avg",
+                  "color": "violet",
+                  "yaxis_id": "EUR",
+                  "type": "line",
+                  "float_precision": 3,
+                  "group_by": {
+                    "duration": "46h",
+                    "func": "avg"
+                  }
+                },
+                {
+                  "entity": "sensor.***REMOVED***_strompreis",
+                  "stroke_width": 2,
+                  "show": {
+                    "legend_value": false,
+                    "extremas": true
+                  },
+                  "curve": "smooth",
+                  "attribute": "max_price",
+                  "name": "Max",
+                  "color": "red",
+                  "yaxis_id": "EUR",
+                  "type": "line",
+                  "float_precision": 3,
+                  "group_by": {
+                    "duration": "46h",
+                    "func": "max"
+                  }
+                }
+              ]
+            },
+            {
               "type": "entities",
               "entities": [
                 {
@@ -22,142 +169,6 @@
                 }
               ],
               "title": "Tibber "
-            },
-            {
-              "type": "custom:apexcharts-card",
-              "apex_config": {
-                "chart": {
-                  "height": "500px"
-                }
-              },
-              "header": {
-                "show": true,
-                "title": "Energy stats",
-                "show_states": true,
-                "colorize_states": true
-              },
-              "now": {
-                "show": true,
-                "color": "white",
-                "label": "NOW"
-              },
-              "hours_12": false,
-              "graph_span": "36h",
-              "span": {
-                "start": "day"
-              },
-              "yaxis": [
-                {
-                  "id": "kWh",
-                  "decimals": 0,
-                  "opposite": true,
-                  "max": 500,
-                  "apex_config": {
-                    "tickAmount": 4
-                  }
-                },
-                {
-                  "id": "EUR"
-                }
-              ],
-              "series": [
-                {
-                  "entity": "sensor.total_energy_in",
-                  "type": "column",
-                  "show": {
-                    "extremas": true
-                  },
-                  "name": "Usage",
-                  "stroke_width": 2,
-                  "color": "#64511c",
-                  "opacity": 0.3,
-                  "yaxis_id": "kWh",
-                  "group_by": {
-                    "func": "avg",
-                    "duration": "15min"
-                  }
-                },
-                {
-                  "entity": "sensor.tibber_preis",
-                  "stroke_width": 2,
-                  "color": "blue",
-                  "curve": "smooth",
-                  "show": {
-                    "legend_value": false,
-                    "extremas": true,
-                    "in_header": false
-                  },
-                  "extend_to": "now",
-                  "yaxis_id": "EUR",
-                  "name": "Predicted all",
-                  "data_generator": "return entity.attributes.today.map((entry) => {\n  return [new Date(entry.startsAt), entry.total];\n});\nreturn entity.attributes.tomorrow.map((entry) => {\n  return [new Date(entry.startsAt), entry.total];\n});\n"
-                },
-                {
-                  "entity": "sensor.***REMOVED***_strompreis",
-                  "extend_to": "now",
-                  "show": {
-                    "extremas": true
-                  },
-                  "color": "pink",
-                  "stroke_width": 5,
-                  "yaxis_id": "EUR",
-                  "name": "price"
-                },
-                {
-                  "entity": "sensor.***REMOVED***_strompreis",
-                  "stroke_width": 2,
-                  "show": {
-                    "legend_value": false,
-                    "extremas": true
-                  },
-                  "curve": "smooth",
-                  "attribute": "min_price",
-                  "name": "MIN",
-                  "color": "green",
-                  "yaxis_id": "EUR",
-                  "type": "line",
-                  "group_by": {
-                    "duration": "24hours",
-                    "func": "min"
-                  }
-                },
-                {
-                  "entity": "sensor.***REMOVED***_strompreis",
-                  "stroke_width": 2,
-                  "yaxis_id": "EUR",
-                  "name": "AVG",
-                  "attribute": "avg_price",
-                  "color": "violet",
-                  "curve": "smooth",
-                  "type": "line",
-                  "show": {
-                    "legend_value": false,
-                    "extremas": true
-                  },
-                  "group_by": {
-                    "duration": "24hours",
-                    "func": "avg"
-                  }
-                },
-                {
-                  "entity": "sensor.***REMOVED***_strompreis",
-                  "attribute": "max_price",
-                  "stroke_width": 2,
-                  "curve": "smooth",
-                  "show": {
-                    "legend_value": false,
-                    "extremas": true
-                  },
-                  "name": "MAX",
-                  "color": "red",
-                  "yaxis_id": "EUR",
-                  "type": "line",
-                  "group_by": {
-                    "duration": "24hours",
-                    "func": "max"
-                  }
-                }
-              ]
             }
           ]
         }

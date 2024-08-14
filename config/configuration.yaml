@@ -62,6 +62,8 @@ recorder:
     entity_globs:
       - sensor.jk_bms*
       - sensor.openweather
+      - sensor.tibber_pulse_*_energie
+      - sensor.tibber_pulse_*_stromerzeugung
     entities:
       - sensor.power_consumption
       - sensor.soyo_power_demand

@@ -35,7 +35,7 @@
       light_switch:
         device_id: 326b48d4842bd6579edde4ce6988419e
       include_sun: sun_enabled
-      sun_elevation: 0
+      sun_elevation: -0.5
 - id: '1678299190989'
   alias: Send Notification
   trigger:
@@ -183,14 +183,14 @@
       ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
       ambient_light_options: ambient_light_option_disabled
       time_delay: 2
-      include_light_control: use_brightness
+      include_light_control: dont_use_brightness
       include_ambient: ambient_enabled
       ambient_light_value: 190
       light_switch:
         entity_id:
         - light.gartenhauslampe
       include_sun: sun_enabled
-      sun_elevation: 1
+      sun_elevation: -2
 - id: '1712585051298'
   alias: Strompreis hoch
   description: ''
@@ -198,7 +198,7 @@
   - platform: numeric_state
     entity_id:
     - sensor.***REMOVED***_strompreis
-    above: 0.3
+    above: 0.29
   condition: []
   action:
   - type: turn_on
