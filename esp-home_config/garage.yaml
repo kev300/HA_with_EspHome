@@ -307,6 +307,7 @@ esp32_ble_tracker:
   scan_parameters:
     interval: 640ms
     continuous: false
+    active: false
   on_ble_advertise:
     then:
       - lambda: |-
