@@ -140,36 +140,26 @@
       above: sensor.***REMOVED***_strompreis
       attribute: avg_price
     then:
-    - type: turn_off
-      device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-      entity_id: cc555d3977f22d6b46b4bd50e25f08e3
-      domain: switch
     - if:
       - condition: numeric_state
         entity_id: sensor.pv_batt_soc
         below: 40
       then:
-      - type: turn_on
-        device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        entity_id: 1fb3fc353abb9ba067c9f31679ac738a
-        domain: switch
       - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        domain: number
-        entity_id: 91eadeddacef5e14eb747595b1cef699
-        type: set_value
-        value: 0
+        domain: select
+        entity_id: 3cc4373b7e175794d7b8714f014f49aa
+        type: select_option
+        option: chargeOnly
       else:
-      - type: turn_off
-        device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        entity_id: 1fb3fc353abb9ba067c9f31679ac738a
-        domain: switch
+      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+        domain: select
+        entity_id: 3cc4373b7e175794d7b8714f014f49aa
+        type: select_option
+        option: usePV
     else:
-    - type: turn_on
-      device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-      entity_id: cc555d3977f22d6b46b4bd50e25f08e3
-      domain: switch
-    - type: turn_off
-      device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-      entity_id: 1fb3fc353abb9ba067c9f31679ac738a
-      domain: switch
+    - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+      domain: select
+      entity_id: 3cc4373b7e175794d7b8714f014f49aa
+      type: select_option
+      option: useBattery
   mode: single
