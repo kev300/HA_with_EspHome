@@ -744,25 +744,26 @@ sensor:
     unit_of_measurement: W
     lambda: |-
 
-      auto demand = id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
+      auto solar_power = id(solar_power_only).raw_state + id(solar_power_onlyOW).state;
+      auto demand = solar_power - id(soyo_power).raw_state;
       auto chargingW = demand;
 
       switch (id(operationMode)) {
         case 1:
           //no api connection, only solar above 60W, else charging
 
-          if (id(solar_power_only).raw_state < 70) {
-            demand = id(soyo_buffer).state -20; //get's to 0W demand slowly
+          if (solar_power < 70) {
+            demand = -20; //get's to 0W demand slowly
           }
           break;
         case 2:
-          if (id(solar_power_only).raw_state > 70) {
+          if (solar_power > 70) {
             if (demand > id(powermeter0).state) {
               demand = id(powermeter0).state;
             }
           }
           else {
-            demand = id(soyo_buffer).state -20; //get's to 0W demand slowly
+            demand = -20; //get's to 0W demand slowly
           }
           break;
         case 3:
@@ -774,7 +775,7 @@ sensor:
         case 0:
         default:
           //protect battery, no charging
-          if (id(solar_power_only).raw_state > 7) {
+          if (solar_power > 7) {
             return demand;
           }
           else {
