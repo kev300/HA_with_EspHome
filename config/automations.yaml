@@ -14,10 +14,10 @@
       ambient_light_options: ambient_light_option_disabled
       time_delay: 1
       include_light_control: use_brightness
-      include_ambient: ambient_enabled
+      include_ambient: ambient_disabled
       ambient_light_value: 90
       include_sun: sun_enabled
-      sun_elevation: 0
+      sun_elevation: 0.5
 - id: '1677505658484'
   alias: 'Garagenlicht Bewegungsmelder '
   description: ''
@@ -30,12 +30,12 @@
       ambient_light_options: ambient_light_option_disabled
       time_delay: 1
       include_light_control: use_brightness
-      include_ambient: ambient_enabled
+      include_ambient: ambient_disabled
       ambient_light_value: 120
       light_switch:
         device_id: 326b48d4842bd6579edde4ce6988419e
       include_sun: sun_enabled
-      sun_elevation: -0.5
+      sun_elevation: 0.5
 - id: '1678299190989'
   alias: Send Notification
   trigger:
@@ -106,72 +106,6 @@
     entity_id: light.leos_lampe
     type: brightness_decrease
   mode: single
-- id: '1698329760687'
-  alias: 'Inverter einschalten '
-  description: ''
-  trigger:
-  - platform: sun
-    event: sunrise
-    offset: -01:00:00
-  condition: []
-  action:
-  - wait_for_trigger:
-    - platform: numeric_state
-      entity_id: sensor.soyo_power_demand
-      for:
-        hours: 0
-        minutes: 0
-        seconds: 0
-      above: 0
-    timeout:
-      hours: 4
-      minutes: 0
-      seconds: 0
-      milliseconds: 0
-  - repeat:
-      sequence:
-      - type: turn_on
-        device_id: 7c261a60cb0dd9f9f4e79f728d8524d3
-        entity_id: 8cca7c1e062ad863f4a8ef4f1e284c56
-        domain: switch
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 10
-          milliseconds: 0
-      until:
-      - condition: state
-        entity_id: switch.stecker_2
-        state: 'on'
-  mode: single
-- id: '1698329979950'
-  alias: 'Inverter ausschalten '
-  description: ''
-  trigger:
-  - platform: sun
-    event: sunset
-    offset: 0
-  condition:
-  - condition: numeric_state
-    entity_id: sensor.soyo_power
-    below: 2
-  action:
-  - repeat:
-      sequence:
-      - type: turn_off
-        device_id: 7c261a60cb0dd9f9f4e79f728d8524d3
-        entity_id: 8cca7c1e062ad863f4a8ef4f1e284c56
-        domain: switch
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 10
-          milliseconds: 0
-      until:
-      - condition: state
-        entity_id: switch.stecker_2
-        state: 'off'
-  mode: single
 - id: '1699372497889'
   alias: 'Gartenhaus Bewegungsmelder '
   description: ''
@@ -183,83 +117,59 @@
       ambient_light_sensor: sensor.bewegungsmelder_haustur_illuminance_lux
       ambient_light_options: ambient_light_option_disabled
       time_delay: 2
-      include_light_control: dont_use_brightness
+      include_light_control: use_brightness
       include_ambient: ambient_enabled
-      ambient_light_value: 190
+      ambient_light_value: 500
       light_switch:
         entity_id:
         - light.gartenhauslampe
       include_sun: sun_enabled
-      sun_elevation: -2
-- id: '1712585051298'
-  alias: Strompreis hoch
+      sun_elevation: 0
+- id: '1728248640573'
+  alias: TibberToGarage
   description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
+  triggers:
+  - entity_id:
     - sensor.***REMOVED***_strompreis
-    above: 0.29
-  condition: []
-  action:
-  - type: turn_on
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: cc555d3977f22d6b46b4bd50e25f08e3
-    domain: switch
-  - type: turn_off
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: 1fb3fc353abb9ba067c9f31679ac738a
-    domain: switch
-  mode: single
-- id: '1712585167918'
-  alias: Strompreis ok
-  description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
-    - sensor.***REMOVED***_strompreis
-    below: 0.28
-  - platform: numeric_state
-    entity_id:
-    - sensor.***REMOVED***_strompreis
-    above: 0.2
-  condition: []
-  action:
-  - type: turn_off
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: cc555d3977f22d6b46b4bd50e25f08e3
-    domain: switch
-  - type: turn_off
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: 1fb3fc353abb9ba067c9f31679ac738a
-    domain: switch
-  mode: single
-- id: '1712585326909'
-  alias: Strompreis niedrig
-  description: ''
-  trigger:
-  - platform: numeric_state
-    entity_id:
-    - sensor.***REMOVED***_strompreis
-    below: 0.18
-  condition:
-  - type: is_battery_level
-    condition: device
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: 38777fed0f725b8ac3776036351ae205
-    domain: sensor
-    below: 65
-  action:
-  - type: turn_off
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: cc555d3977f22d6b46b4bd50e25f08e3
-    domain: switch
-  - type: turn_on
-    device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    entity_id: 1fb3fc353abb9ba067c9f31679ac738a
-    domain: switch
-  - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-    domain: number
-    entity_id: 91eadeddacef5e14eb747595b1cef699
-    type: set_value
-    value: 0
+    trigger: state
+  conditions: []
+  actions:
+  - if:
+    - condition: numeric_state
+      entity_id: sensor.***REMOVED***_strompreis
+      above: sensor.***REMOVED***_strompreis
+      attribute: avg_price
+    then:
+    - type: turn_off
+      device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+      entity_id: cc555d3977f22d6b46b4bd50e25f08e3
+      domain: switch
+    - if:
+      - condition: numeric_state
+        entity_id: sensor.pv_batt_soc
+        below: 40
+      then:
+      - type: turn_on
+        device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+        entity_id: 1fb3fc353abb9ba067c9f31679ac738a
+        domain: switch
+      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+        domain: number
+        entity_id: 91eadeddacef5e14eb747595b1cef699
+        type: set_value
+        value: 0
+      else:
+      - type: turn_off
+        device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+        entity_id: 1fb3fc353abb9ba067c9f31679ac738a
+        domain: switch
+    else:
+    - type: turn_on
+      device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+      entity_id: cc555d3977f22d6b46b4bd50e25f08e3
+      domain: switch
+    - type: turn_off
+      device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+      entity_id: 1fb3fc353abb9ba067c9f31679ac738a
+      domain: switch
   mode: single

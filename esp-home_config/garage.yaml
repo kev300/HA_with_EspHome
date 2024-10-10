@@ -91,6 +91,7 @@ substitutions:
   pinGarageOpenedH: GPIO35
   
   #Right Side
+  pinMpptPWM: GPIO01
   pinSoyoDispTx: GPIO16
   pinSoyoDispRx: GPIO17
   pinSoyoTx: GPIO18
@@ -299,6 +300,7 @@ interval:
   - interval: 50ms
     startup_delay: 1s
     then:
+      - component.update: mpptSensorOW
       - component.update: mpptSensor
       - component.update: soyoSensor
 
@@ -330,6 +332,17 @@ jk_bms_ble:
     protocol_version: ${protocol_version}
     throttle: 0s
     id: bms0
+
+output:
+  - platform: ledc
+    pin: ${pinMpptPWM}
+    id: mpptVoltLimit
+
+fan:
+  - platform: speed
+    output: mpptVoltLimit
+    id: mpptVoltLimitControl
+    name: "Charger Voltage Limit"
 
 i2c:
   sda: ${pinSda}
@@ -674,6 +687,8 @@ sensor:
       on_value:
         then:
           - component.update: solar_power_only
+          #temporary fixme!
+          - component.update: solar_power_onlyOW
     bus_voltage:
       id: batt_voltage
       #name: bvv
@@ -684,6 +699,25 @@ sensor:
           - 0.0 -> 0.0
           - 23.46 -> 47.04
 
+  - platform: ina226
+    address: 0x42
+    shunt_resistance: 0.0015 ohm
+    max_current: 50A
+    adc_time:
+      voltage: 140us
+      current: 588us
+    adc_averaging: 64
+    update_interval: never
+    id: mpptSensorOW
+    current:
+      id: charging_ampsOW
+      filters:
+        - exponential_moving_average:
+           send_every: 5
+        - multiply: -1
+      on_value:
+        then:
+          - component.update: solar_power_onlyOW
 
 # import smartmeter reading from homeassistant
 #   # requires the "api" component see above
@@ -700,7 +734,7 @@ sensor:
     unit_of_measurement: W
     lambda: |-
 
-      auto demand = id(solar_power_only).raw_state - id(soyo_power).raw_state;
+      auto demand = id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
       auto chargingW = demand;
 
       switch (id(operationMode)) {
@@ -762,11 +796,25 @@ sensor:
     device_class: power
     state_class: measurement
     lambda: |-
-      return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state) * id(charging_amps).state;
+      return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state) 
+      * (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state);
     update_interval: never #updated by batt_voltage
     on_value:
       then:
         - component.update: solar_power_positive
+
+  - platform: template
+    id: solar_power_onlyOW
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+    lambda: |-
+      return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state)
+        * (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state);
+    update_interval: never #updated by batt_voltage
+    on_value:
+      then:
+        - component.update: solar_power_positiveOW
 
   - platform: template
     id: solar_power_positive
@@ -777,10 +825,18 @@ sensor:
     update_interval: never
 
   - platform: template
+    id: solar_power_positiveOW
+    lambda: return id(solar_power_onlyOW).state;
+    filters:    
+      - clamp:  
+          min_value: 0
+    update_interval: never
+
+  - platform: template
     id: charging_power
     unit_of_measurement: W
     lambda: |-
-      auto w = id(solar_power_only).raw_state - id(soyo_power).raw_state;
+      auto w = id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
       return w < 0 ? 0 : w;
     update_interval: never
 
@@ -788,7 +844,7 @@ sensor:
     id: discharging_power
     unit_of_measurement: W
     lambda: |-
-       auto w = id(soyo_power).raw_state - id(solar_power_only).raw_state;
+       auto w = id(soyo_power).raw_state - id(solar_power_only).raw_state + id(solar_power_onlyOW).state;
        return w < 0 ? 0 : w;
     update_interval: never
 
@@ -811,13 +867,13 @@ sensor:
             - number.set:
                 id: soyo_buffer
                 value: -2
-        - above: 44.7
+        - above: 44.4
           then:
             - number.set:
                 id: soyo_max_demand
                 value: !lambda |-
                   return id(max_demand);
-        - below: 44.2
+        - below: 43.8
           then:
             - number.set:
                 id: soyo_max_demand
@@ -826,11 +882,13 @@ sensor:
   - platform: template
     id: combinedAmps
     lambda: |-
-      auto a = id(charging_amps).state - id(inverter_amps).state;
-      if (a > 12) {
+      auto a = (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
+                + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
+                - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
+      if (a > 1) {
         return a * 0.997; // reduce SOC drift by efficency loss of battery
       }
-      return a;
+      return a; 
     update_interval: never
 
   - platform: integration
@@ -871,7 +929,7 @@ sensor:
     state_class: measurement
     accuracy_decimals: 2
     update_interval: 5s
-    lambda: return id(solar_power_only).raw_state - id(soyo_power).raw_state;
+    lambda: return id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
 
   - platform: template
     name: "solarstrom power"
@@ -882,6 +940,17 @@ sensor:
     accuracy_decimals: 2
     icon: mdi:solar-power-variant
     lambda: return id(solar_power_only).state;
+    update_interval: 5s
+
+  - platform: template
+    name: "solarstrom powerOW"
+    unit_of_measurement: W
+    device_class: power
+    state_class: measurement
+    entity_category: diagnostic
+    accuracy_decimals: 2
+    icon: mdi:solar-power-variant
+    lambda: return id(solar_power_onlyOW).state;
     update_interval: 5s
 
   - platform: template
@@ -939,6 +1008,18 @@ sensor:
       - multiply: 0.925 #dc -> ac conversion 92,5%
       - multiply: 0.001 #Wh -> kWh
 
+  - platform: total_daily_energy
+    name: "solarstrom energy OW"
+    id: solar_energy_todayOW
+    icon: mdi:counter
+    power_id: solar_power_positiveOW
+    accuracy_decimals: 3
+    unit_of_measurement: kWh
+    restore: true
+    filters:
+      - throttle: 120s
+      - multiply: 0.925 #dc -> ac conversion 92,5%
+      - multiply: 0.001 #Wh -> kWh
 
   - platform: ads1115
     multiplexer: 'A0_GND'
