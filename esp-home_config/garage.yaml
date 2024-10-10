@@ -124,10 +124,6 @@ globals:
     type: short
     restore_value: no
     initial_value: '0'
-  - id: useBattery
-    type: bool
-    restore_value: yes
-    initial_value: 'false'
   - id: garageDoorState
     type: short
     initial_value: '-1'
@@ -179,12 +175,15 @@ interval:
           }
 
 
-          if (id(useBattery) || id(batt_soc).state > 57) {
+          if (id(userOpMode).state == "useBattery" || id(batt_soc).state > 75) {
             //use powermeter for demand
             id(operationMode) = 3;
-          } else {
+          } else if (id(userOpMode).state == "usePV") {
             //PV -> demand, but charge when PV > power consumption
             id(operationMode) = 2;
+          } else {
+            //charge Battery only
+            id(operationMode) = 4;
           }
 
       - lambda: |-
@@ -600,6 +599,17 @@ select:
         1: "PV"
         2: "Battery Constant Power"
         16: "Battery Limit"
+
+  - platform: template
+    name: "operationMode"
+    id: userOpMode
+    optimistic: true
+    initial_option: usePV
+    restore_value: true
+    options: 
+      - chargeOnly
+      - usePV
+      - useBattery
 
 #debug:
 #  update_interval: 5s
@@ -1261,18 +1271,6 @@ sensor:
       - throttle: 5s
 
 switch:
-  - platform: template
-    name: "useBattery"
-    lambda: "return id(useBattery);"
-    turn_on_action:
-      - globals.set:
-          id: useBattery
-          value: "true"
-    turn_off_action:
-      - globals.set:
-          id: useBattery
-          value: "false"
-
   - platform: soyosource_virtual_meter
     soyosource_virtual_meter_id: virtualmeter0
     manual_mode:
