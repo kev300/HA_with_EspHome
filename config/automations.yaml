@@ -17,7 +17,7 @@
       include_ambient: ambient_disabled
       ambient_light_value: 90
       include_sun: sun_enabled
-      sun_elevation: 0.5
+      sun_elevation: 0
 - id: '1677505658484'
   alias: 'Garagenlicht Bewegungsmelder '
   description: ''
@@ -35,7 +35,7 @@
       light_switch:
         device_id: 326b48d4842bd6579edde4ce6988419e
       include_sun: sun_enabled
-      sun_elevation: 0.5
+      sun_elevation: 0
 - id: '1678299190989'
   alias: Send Notification
   trigger:
@@ -118,13 +118,13 @@
       ambient_light_options: ambient_light_option_disabled
       time_delay: 2
       include_light_control: use_brightness
-      include_ambient: ambient_enabled
+      include_ambient: ambient_disabled
       ambient_light_value: 500
       light_switch:
         entity_id:
         - light.gartenhauslampe
       include_sun: sun_enabled
-      sun_elevation: 0
+      sun_elevation: 1
 - id: '1728248640573'
   alias: TibberToGarage
   description: ''

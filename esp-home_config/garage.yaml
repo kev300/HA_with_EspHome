@@ -84,6 +84,7 @@ substitutions:
   pinNtcVccH: GPIO13
   pinSda: GPIO14
   
+  pinMpptCtrl: GPIO25
   pinDHT: GPIO26
   pinScl: GPIO27
   
@@ -91,7 +92,6 @@ substitutions:
   pinGarageOpenedH: GPIO35
   
   #Right Side
-  pinMpptPWM: GPIO01
   pinSoyoDispTx: GPIO16
   pinSoyoDispRx: GPIO17
   pinSoyoTx: GPIO18
@@ -122,6 +122,10 @@ globals:
     initial_value: '0'
   - id: maxChargeW
     type: short
+    restore_value: no
+    initial_value: '0'
+  - id: overchargingPower
+    type: int
     restore_value: no
     initial_value: '0'
   - id: garageDoorState
@@ -262,6 +266,30 @@ interval:
           ESP_LOGW("CPU", "CPU freq: %d", esp_clk_cpu_freq());
 
 
+  - interval: 2s
+    startup_delay: 6s
+    then:
+      - lambda: |-
+
+          auto c = id(mpptVoltLimitControl).turn_on();
+          auto speed = id(mpptVoltLimitControl).speed;
+          auto volt = id(batt_voltage).state;
+
+          if (volt > 53 && (speed < 70 || !id(mpptVoltLimitControl).state)) {
+            c.set_speed(70);
+            c.perform();
+          }
+
+          if (speed < 99 && (volt > 53.23 || id(overchargingPower) > 105)) {
+            c.set_speed(speed + 1);
+            c.perform();
+          }
+          else if (speed > 77 && (volt < 53.2 && id(overchargingPower) < 30)) {
+            c.set_speed(speed - 1);
+            c.perform();
+          }
+
+
 #display settings of the soyo to set automatically:
   - interval: 101s
     startup_delay: 19s
@@ -333,15 +361,18 @@ jk_bms_ble:
     id: bms0
 
 output:
-  - platform: ledc
-    pin: ${pinMpptPWM}
+  - platform: esp32_dac
+    pin: ${pinMpptCtrl}
     id: mpptVoltLimit
+    min_power: 0.5
+    max_power: 0.67
 
 fan:
   - platform: speed
     output: mpptVoltLimit
     id: mpptVoltLimitControl
     name: "Charger Voltage Limit"
+    restore_mode: RESTORE_DEFAULT_ON
 
 i2c:
   sda: ${pinSda}
@@ -669,13 +700,13 @@ sensor:
           - component.update: combinedAmps
 
     bus_voltage:
-      id: pv_voltage
+      id: batt_voltage
       filters:
         - exponential_moving_average:
-           send_every: 10
+           send_every: 5
         - calibrate_linear:
           - 0.0 -> 0.0
-          - 16.98 -> 53.47
+          - 23.46 -> 47.04
 
   - platform: ina226
     address: 0x41
@@ -693,24 +724,12 @@ sensor:
       filters:
         - exponential_moving_average:
            send_every: 5
-        - multiply: -1
       on_value:
         then:
           - component.update: solar_power_only
-          #temporary fixme!
-          - component.update: solar_power_onlyOW
-    bus_voltage:
-      id: batt_voltage
-      #name: bvv
-      filters:
-        - exponential_moving_average:
-           send_every: 5
-        - calibrate_linear:
-          - 0.0 -> 0.0
-          - 23.46 -> 47.04
 
   - platform: ina226
-    address: 0x42
+    address: 0x44
     shunt_resistance: 0.0015 ohm
     max_current: 50A
     adc_time:
@@ -724,7 +743,6 @@ sensor:
       filters:
         - exponential_moving_average:
            send_every: 5
-        - multiply: -1
       on_value:
         then:
           - component.update: solar_power_onlyOW
@@ -784,8 +802,11 @@ sensor:
       }
 
       if (chargingW - demand > id(maxChargeW)) {
-        return chargingW - id(maxChargeW);
+        auto p = chargingW - id(maxChargeW);
+        id(overchargingPower) = p;
+        return p;
       }
+      id(overchargingPower) = 0;
       return demand;
 
 
@@ -897,7 +918,7 @@ sensor:
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
       if (a > 1) {
-        return a * 0.997; // reduce SOC drift by efficency loss of battery
+        return a * 0.988; // reduce SOC drift by efficency loss of battery
       }
       return a; 
     update_interval: never

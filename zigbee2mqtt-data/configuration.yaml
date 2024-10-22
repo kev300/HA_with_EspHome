@@ -41,9 +41,6 @@ devices:
     occupancy_timeout: 30
     illuminance_lux_calibration: ''
     illuminance_calibration: ''
-  '0x00158d00031d2a62':
-    friendly_name: 'Leos Lampe '
-    transition: 0
   '0xa4c138d64ce6279f':
     friendly_name: Haustür Lampe 1
   '0xa4c138edecb090d8':
@@ -78,4 +75,6 @@ devices:
     friendly_name: GartenhausPV
   '0x00124b0029295963':
     friendly_name: Kellertemp 2
+  '0x00158d00031d2a62':
+    friendly_name: Leos Lampe
 groups: {}
