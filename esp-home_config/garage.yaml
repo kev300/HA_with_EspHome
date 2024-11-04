@@ -50,7 +50,8 @@ time:
 esphome:
   name: garage-controller
   comment: "ESP32 in der Garage"
-  includes: clk.h
+  includes:
+    - clk.h
 #  platformio_options:
 #    board_build.f_cpu: 240000000L
   project:
@@ -222,7 +223,7 @@ interval:
             }
           }
 
-          if (id(min_batt_temp).state > 14.5 && id(max_batt_temp).state < 39) {
+          if (id(min_batt_temp).state > 14 && id(max_batt_temp).state < 39) {
             id(maxChargeW) = 2300;
           }
           else if (id(min_batt_temp).state < 7) {
@@ -275,17 +276,16 @@ interval:
           auto speed = id(mpptVoltLimitControl).speed;
           auto volt = id(batt_voltage).state;
 
-          if (volt > 53 && (speed < 70 || !id(mpptVoltLimitControl).state)) {
-            c.set_speed(70);
-            c.perform();
-          }
-
-          if (speed < 99 && (volt > 53.23 || id(overchargingPower) > 105)) {
+          if (speed < 99 && (volt > 53.23 || id(overchargingPower) > 150)) {
             c.set_speed(speed + 1);
             c.perform();
           }
-          else if (speed > 77 && (volt < 53.2 && id(overchargingPower) < 30)) {
+          else if (speed > 75 && (volt < 53.2 && id(overchargingPower) < 101)) {
             c.set_speed(speed - 1);
+            c.perform();
+          }
+          else if (speed > 74 && volt < 50 && id(overchargingPower) < 101) {
+            c.set_speed(5);
             c.perform();
           }
 
@@ -362,7 +362,13 @@ jk_bms_ble:
 
 output:
   - platform: esp32_dac
-    pin: ${pinMpptCtrl}
+    pin:
+      number: ${pinMpptCtrl}
+      mode:
+        output: true
+        input: true
+        pullup: false
+        pulldown: false
     id: mpptVoltLimit
     min_power: 0.5
     max_power: 0.67
@@ -765,6 +771,7 @@ sensor:
       auto solar_power = id(solar_power_only).raw_state + id(solar_power_onlyOW).state;
       auto demand = solar_power - id(soyo_power).raw_state;
       auto chargingW = demand;
+      auto max_inverter_power = id(max_demand) - id(soyo_power_demand).state;
 
       switch (id(operationMode)) {
         case 1:
@@ -793,17 +800,19 @@ sensor:
         case 0:
         default:
           //protect battery, no charging
-          if (solar_power > 7) {
-            return demand;
+          if (solar_power < 8) {
+            demand = -7;
           }
-          else {
-            return -1;
-          }
+      }
+
+      //make sure demand number cannot be higher than possible inverter output (for overcharge calculation)
+      if (demand > max_inverter_power) {
+        demand = max_inverter_power;
       }
 
       if (chargingW - demand > id(maxChargeW)) {
         auto p = chargingW - id(maxChargeW);
-        id(overchargingPower) = p;
+        id(overchargingPower) = p - demand;
         return p;
       }
       id(overchargingPower) = 0;
@@ -829,7 +838,7 @@ sensor:
     state_class: measurement
     lambda: |-
       return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state) 
-      * (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state);
+        * (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state);
     update_interval: never #updated by batt_voltage
     on_value:
       then:
@@ -876,7 +885,7 @@ sensor:
     id: discharging_power
     unit_of_measurement: W
     lambda: |-
-       auto w = id(soyo_power).raw_state - id(solar_power_only).raw_state + id(solar_power_onlyOW).state;
+       auto w = id(soyo_power).raw_state - (id(solar_power_only).raw_state + id(solar_power_onlyOW).state);
        return w < 0 ? 0 : w;
     update_interval: never
 
@@ -998,6 +1007,7 @@ sensor:
     soyosource_virtual_meter_id: virtualmeter0
     power_demand:
       name: "${name_soyo} power demand"
+      id: soyo_power_demand
       unit_of_measurement: W
       device_class: power
       state_class: measurement
