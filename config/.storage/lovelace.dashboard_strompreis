@@ -162,6 +162,9 @@
                   "entity": "sensor.***REMOVED***_strompreis"
                 },
                 {
+                  "entity": "sensor.tibber_preis_jetzt"
+                },
+                {
                   "entity": "sensor.tibber_pulse_***REMOVED***_energie"
                 },
                 {
