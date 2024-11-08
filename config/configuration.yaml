@@ -88,3 +88,20 @@ lovelace:
   resources:
     - url: /local/apexcharts-card.js?v=2.1.2
       type: module
+
+
+template:
+  - trigger:
+      - platform: time_pattern
+        minutes: '/1'
+    sensor:
+      - name: tibber_preis_jetzt
+        state: >-
+          {% set preise = state_attr('sensor.tibber_preis', 'today') %}
+          {{ preise | selectattr('startsAt', 'ge', utcnow().isoformat()) | sort(attribute = 'startsAt') | map(attribute='total') | first }}
+        unit_of_measurement: €/kWh
+        device_class: monetary
+        icon: mdi:currency-eur
+        unique_id: tibber_preis_jetzt
+
+
