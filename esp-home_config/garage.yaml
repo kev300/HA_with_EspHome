@@ -125,10 +125,6 @@ globals:
     type: short
     restore_value: no
     initial_value: '0'
-  - id: overchargingPower
-    type: int
-    restore_value: no
-    initial_value: '0'
   - id: garageDoorState
     type: short
     initial_value: '-1'
@@ -167,7 +163,7 @@ interval:
 
       - lambda: |-
 
-          if (id(min_batt_temp).state < 6 || id(max_batt_temp).state > 45) {
+          if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
             id(operationMode) = 0; //PV in -> Soyo out
             
             return;
@@ -193,7 +189,7 @@ interval:
 
       - lambda: |-
 
-          if (id(operationMode) == 0 || id(operationMode) == 1) {
+          if (id(operationMode) == 0 || id(operationMode) == 1 || id(operationMode) == 4) {
             auto prevLatency = id(soyo_latency).state;
             if (prevLatency > 3000) {
               auto l = id(soyo_latency).make_call();
@@ -226,8 +222,11 @@ interval:
           if (id(min_batt_temp).state > 14 && id(max_batt_temp).state < 39) {
             id(maxChargeW) = 2300;
           }
-          else if (id(min_batt_temp).state < 7) {
+          else if (id(min_batt_temp).state < 6) {
             id(maxChargeW) = 100;
+          }
+          else if (id(min_batt_temp).state < 7) {
+            id(maxChargeW) = 150;
           }
           else if (id(min_batt_temp).state < 8 || id(max_batt_temp).state > 43) {
             id(maxChargeW) = 200;
@@ -276,15 +275,20 @@ interval:
           auto speed = id(mpptVoltLimitControl).speed;
           auto volt = id(batt_voltage).state;
 
-          if (speed < 99 && (volt > 53.23 || id(overchargingPower) > 150)) {
-            c.set_speed(speed + 1);
+          if (speed < 99 && (volt > 53.23 || id(overchargingPower).state > 50)) {
+            if (speed < 70) {
+              c.set_speed(74);
+            }
+            else {
+              c.set_speed(speed + 1);
+            }
             c.perform();
           }
-          else if (speed > 75 && (volt < 53.2 && id(overchargingPower) < 101)) {
+          else if (speed > 75 && (volt < 53.2 && id(overchargingPower).state < 30)) {
             c.set_speed(speed - 1);
             c.perform();
           }
-          else if (speed > 74 && volt < 50 && id(overchargingPower) < 101) {
+          else if (speed > 5 && volt < 50 && id(overchargingPower).state < 1) {
             c.set_speed(5);
             c.perform();
           }
@@ -805,17 +809,14 @@ sensor:
           }
       }
 
-      //make sure demand number cannot be higher than possible inverter output (for overcharge calculation)
+      //make sure demand number cannot be higher than possible inverter output
       if (demand > max_inverter_power) {
         demand = max_inverter_power;
       }
 
       if (chargingW - demand > id(maxChargeW)) {
-        auto p = chargingW - id(maxChargeW);
-        id(overchargingPower) = p - demand;
-        return p;
+        return chargingW - id(maxChargeW);
       }
-      id(overchargingPower) = 0;
       return demand;
 
 
@@ -890,6 +891,22 @@ sensor:
     update_interval: never
 
   - platform: template
+    id: overchargingPower
+    unit_of_measurement: W
+    update_interval: 1s
+    lambda: |-
+      auto w = id(charging_power).state - id(maxChargeW);
+      if (w > 0) {
+        return w;
+      }
+      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -200) {
+        return (id(powermeter0).state + 200) * -1;
+      }
+      return 0;
+    filters:
+      - throttle_average: 5s
+
+  - platform: template
     id: batt_voltage_avg
     update_interval: 60s
     lambda: return id(batt_voltage).state;
@@ -926,7 +943,7 @@ sensor:
       auto a = (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
-      if (a > 1) {
+      if (a > 0.1) {
         return a * 0.988; // reduce SOC drift by efficency loss of battery
       }
       return a; 
