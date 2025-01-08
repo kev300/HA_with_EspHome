@@ -40,7 +40,7 @@ wifi:
     static_ip: 192.168.1.20
     gateway: 192.168.1.1
     subnet: 255.255.255.0
-    dns1: 192.168.1.25
+      #    dns1: 192.168.1.1
 
 time:
   - platform: sntp
@@ -896,7 +896,7 @@ sensor:
     update_interval: 1s
     lambda: |-
       auto w = id(charging_power).state - id(maxChargeW);
-      if (w > 0) {
+      if (w > 10) {
         return w;
       }
       if (!isnan(id(powermeter0).state) && id(powermeter0).state < -200) {
@@ -944,14 +944,13 @@ sensor:
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
       if (a > 0.1) {
-        return a * 0.988; // reduce SOC drift by efficency loss of battery
+        return a * 0.97; // reduce SOC drift by efficency loss of battery
       }
       return a; 
     update_interval: never
 
   - platform: integration
     id: coulomb_counter
-      #name: cc
     sensor: combinedAmps
     accuracy_decimals: 0
     time_unit: s
