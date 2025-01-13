@@ -163,11 +163,11 @@ interval:
 
       - lambda: |-
 
-          if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
-            id(operationMode) = 0; //PV in -> Soyo out
-            
-            return;
-          }
+          //if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
+          //    id(operationMode) = 0; //PV in -> Soyo out
+          //    
+          //    return;
+          //  }
 
           if (!id(api_connection) || isnan(id(powermeter0).state)) {
             //goal: Only use solar power, 0W to or from battery. Disable below 50W because of bad efficency.
@@ -221,6 +221,9 @@ interval:
 
           if (id(min_batt_temp).state > 14 && id(max_batt_temp).state < 39) {
             id(maxChargeW) = 2300;
+          }
+          else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
+            id(maxChargeW) = 6;
           }
           else if (id(min_batt_temp).state < 6) {
             id(maxChargeW) = 100;
