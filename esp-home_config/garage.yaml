@@ -78,7 +78,7 @@ substitutions:
   #external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
   external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@overshoot_compensation
 
-  maxBattVoltage: "53.3"
+  maxBattVoltage: "53.25"
 
   #GPIO
   #  H = High; L = Low (voltage / signal) when active
@@ -126,6 +126,10 @@ globals:
     restore_value: no
     initial_value: '0'
   - id: maxChargeW
+    type: short
+    restore_value: no
+    initial_value: '0'
+  - id: maxChargeWReduction
     type: short
     restore_value: no
     initial_value: '0'
@@ -180,7 +184,7 @@ interval:
           }
 
 
-          if (id(userOpMode).state == "useBattery" || id(batt_soc).state > 75) {
+          if (id(userOpMode).state == "useBattery") {
             //use powermeter for demand
             id(operationMode) = 3;
           } else if (id(userOpMode).state == "usePV") {
@@ -223,8 +227,8 @@ interval:
             }
           }
 
-          if (id(min_batt_temp).state > 14 && id(max_batt_temp).state < 39) {
-            id(maxChargeW) = 2300;
+          if (id(min_batt_temp).state > 18 && id(max_batt_temp).state < 39) {
+            id(maxChargeW) = 1400;
           }
           else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
             id(maxChargeW) = 6;
@@ -239,20 +243,37 @@ interval:
             id(maxChargeW) = 200;
           }
           else if (id(min_batt_temp).state < 9) {
-            id(maxChargeW) = 300;
+            id(maxChargeW) = 250;
           }
           else if (id(min_batt_temp).state < 10) {
-            id(maxChargeW) = 400;
+            id(maxChargeW) = 350;
           }
           else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
-            id(maxChargeW) = 550;
+            id(maxChargeW) = 450;
           }
           else if (id(min_batt_temp).state < 12) {
-            id(maxChargeW) = 750;
+            id(maxChargeW) = 600;
+          }
+          else if (id(min_batt_temp).state < 13) {
+            id(maxChargeW) = 700;
+          }
+          else if (id(min_batt_temp).state < 14) {
+            id(maxChargeW) = 800;
           }
           else {
-            id(maxChargeW) = 900;
+            id(maxChargeW) = 1200;
           }
+
+          if (id(maxCellVolt).raw_state > 4.12 && id(maxChargeW) > id(maxChargeWReduction)) {
+            id(maxChargeWReduction) += 100;
+          }
+          else if (id(maxCellVolt).raw_state < 4.1 && id(maxChargeWReduction) > 0) {
+            id(maxChargeWReduction) -= 25;
+          }
+          
+          id(maxChargeW) -= id(maxChargeWReduction);
+          
+
 
       - lambda: |-
           if (id(soyo_operation_mode).state == "PV") {
@@ -677,15 +698,6 @@ sensor:
           - component.update: discharging_power
           - component.update: combinedAmps
 
-    bus_voltage:
-      id: batt_voltage
-      filters:
-        - exponential_moving_average:
-           send_every: 5
-        - calibrate_linear:
-          - 0.0 -> 0.0
-          - 23.46 -> 47.04
-
   - platform: ina226
     address: 0x41
     shunt_resistance: 0.0015 ohm
@@ -724,6 +736,21 @@ sensor:
       on_value:
         then:
           - component.update: solar_power_onlyOW
+    bus_voltage:
+      id: batt_voltage
+      filters:
+        - exponential_moving_average:
+           send_every: 5
+        - calibrate_linear:
+          - 0 -> 0
+          - 28.68 -> 60
+      on_value_range:
+        - above: ${maxBattVoltage}
+          then:
+            - lambda: |-
+               auto c=id(mpptVoltLimitControl).turn_on();
+               c.set_speed(99);
+               c.perform();
 
 # import smartmeter reading from homeassistant
 #   # requires the "api" component see above
@@ -825,6 +852,13 @@ sensor:
     on_value:
       then:
         - component.update: solar_power_positiveOW
+          #workaround for too high standby consumption of mppt. Value is changed back by the other control loop in overchargingPower.
+        - lambda: |-
+            if (x < -1.1) {
+              auto c = id(mpptVoltLimitControl).turn_on();
+              c.set_speed(99);
+              c.perform();
+            }
 
   - platform: template
     id: solar_power_positive
@@ -878,20 +912,20 @@ sensor:
             auto speed = id(mpptVoltLimitControl).speed;
             auto volt = id(batt_voltage).state;
 
-            if (speed < 99 && (volt > ${maxBattVoltage} -0.02 || x > 60)) {
-              if (speed < 70) {
-                c.set_speed(74);
+            if (speed < 95 && (volt > ${maxBattVoltage} -0.05 || x > 60)) {
+              if (speed < 75) {
+                c.set_speed(79);
               }
               else {
                 c.set_speed(speed + 1);
               }
               c.perform();
             }
-            else if (speed > 75 && (volt < ${maxBattVoltage} -0.06 && x < 20)) {
+            else if (speed > 78 && (volt < ${maxBattVoltage} -0.1 && x < 20)) {
               c.set_speed(speed - 1);
               c.perform();
             }
-            else if (speed > 5 && volt < 51 && x < 1) {
+            else if (speed > 5 && volt < 51.5 && x < 5) {
               c.set_speed(5);
               c.perform();
             }
@@ -931,13 +965,9 @@ sensor:
   - platform: template
     id: combinedAmps
     lambda: |-
-      auto a = (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
+       return (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
-      if (a > 0.1) {
-        return a * 0.97; // reduce SOC drift by efficency loss of battery
-      }
-      return a; 
     update_interval: never
 
   - platform: integration
@@ -963,7 +993,7 @@ sensor:
     state_class: measurement
     filters:
       - calibrate_linear:
-          - -288000 -> 0 #80Ah *60 *60 -> As
+          - -252000 -> 0 #70Ah *60 *60 -> As
           - 0 -> 100
       - clamp:
           min_value: 0
@@ -979,16 +1009,16 @@ sensor:
           window_size: 12
           send_every: 12
     on_value_range:
-      - below: 5
-        above: -5
+      - below: 10
+        above: -10
         then:
           - lambda: |-
 
               auto volt = id(batt_voltage_avg).state;
-              int maxC = 288000;
+              int maxC = 252000;
 
               if(volt >= 46.5 && volt < 52) {
-                auto vRange = ${maxBattVoltage} - 44;
+                auto vRange = ${maxBattVoltage} - 43.8;
                 auto invVolt = volt - ${maxBattVoltage};
                 auto C = maxC / vRange * invVolt;
                 id(coulomb_counter).publish_and_save(C);
@@ -1221,6 +1251,7 @@ sensor:
       - throttle: 10s
     max_cell_voltage:
       name: "${name} max cell voltage"
+      id: maxCellVolt
       filters:
       - throttle: 10s
     min_voltage_cell:
