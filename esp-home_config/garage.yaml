@@ -2,9 +2,9 @@ esp32:
   board: nodemcu-32s
   framework:
     type: esp-idf
-    sdkconfig_options:
-      CONFIG_ESP32_DEFAULT_CPU_FREQ_240: "y"
-      CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ: "240"
+    #sdkconfig_options:
+    #  CONFIG_ESP32_DEFAULT_CPU_FREQ_240: "y"
+    #  CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ: "240"
 
 # Enable logging
 logger:
@@ -63,7 +63,7 @@ esphome:
       - switch.turn_off: ble_jk
 
 preferences:
-  flash_write_interval: 10min
+  flash_write_interval: 30min
 
 
 substitutions:
@@ -78,7 +78,7 @@ substitutions:
   #external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
   external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@overshoot_compensation
 
-  maxBattVoltage: "53.25"
+  maxBattVoltage: "53.3"
 
   #GPIO
   #  H = High; L = Low (voltage / signal) when active
@@ -388,7 +388,7 @@ fan:
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 100kHz
+  frequency: 200kHz
 
 ads1115:
   - address: 0x4A
@@ -965,9 +965,13 @@ sensor:
   - platform: template
     id: combinedAmps
     lambda: |-
-       return (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
+       auto a = (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
+       if (a > 2) {
+         return a * 0.985; // reduce SOC drift by efficency loss of battery
+       }
+       return a;
     update_interval: never
 
   - platform: integration
@@ -1006,7 +1010,7 @@ sensor:
     update_interval: 5min
     filters: 
       - sliding_window_moving_average:
-          window_size: 12
+          window_size: 5
           send_every: 12
     on_value_range:
       - below: 10
