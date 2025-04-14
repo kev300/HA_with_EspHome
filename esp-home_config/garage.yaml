@@ -388,7 +388,7 @@ fan:
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 200kHz
+  frequency: 137.5kHz
 
 ads1115:
   - address: 0x4A
@@ -912,7 +912,7 @@ sensor:
             auto speed = id(mpptVoltLimitControl).speed;
             auto volt = id(batt_voltage).state;
 
-            if (speed < 95 && (volt > ${maxBattVoltage} -0.05 || x > 60)) {
+            if (speed < 95 && (volt > ${maxBattVoltage} -0.1 || x > 60)) {
               if (speed < 75) {
                 c.set_speed(79);
               }
@@ -921,7 +921,7 @@ sensor:
               }
               c.perform();
             }
-            else if (speed > 78 && (volt < ${maxBattVoltage} -0.1 && x < 20)) {
+            else if (speed > 78 && (volt < ${maxBattVoltage} -0.15 && x < 20)) {
               c.set_speed(speed - 1);
               c.perform();
             }
@@ -1256,6 +1256,15 @@ sensor:
     max_cell_voltage:
       name: "${name} max cell voltage"
       id: maxCellVolt
+      on_raw_value:
+        then:
+          - lambda: |-
+              if (x > 4.15) {
+                auto c=id(mpptVoltLimitControl).turn_on();
+                c.set_speed(99);
+                c.perform();
+              }
+
       filters:
       - throttle: 10s
     min_voltage_cell:
