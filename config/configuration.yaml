@@ -54,6 +54,7 @@ recorder:
       - sensor.jk_bms_current
       - sensor.jk_bms_bms_temperature
       - sensor.jk_bms_state_of_charge
+      - sensor.jk_bms_delta_cell_voltage
       - sensor.openwathermap_humidity
       - sensor.openwathermap_temperature
       - sensor.openwathermap_pressure
