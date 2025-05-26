@@ -63,7 +63,7 @@ esphome:
       - switch.turn_off: ble_jk
 
 preferences:
-  flash_write_interval: 30min
+  flash_write_interval: 10min
 
 
 substitutions:
@@ -87,7 +87,7 @@ substitutions:
   pinNtcVccH: GPIO13
   pinSda: GPIO14
   
-  pinMpptCtrl: GPIO25
+  #pinMpptCtrl: GPIO25
   pinDHT: GPIO26
   pinScl: GPIO27
   
@@ -95,13 +95,17 @@ substitutions:
   pinGarageOpenedH: GPIO35
   
   #Right Side
-  pinSoyoDispTx: GPIO16
-  pinSoyoDispRx: GPIO17
+  pinSoyoDispTx: GPIO04
+  pinSoyoDispRx: GPIO16
   pinSoyoTx: GPIO18
   pinSoyoRx: GPIO19
   
   pinGarageTiltL: GPIO22
-  pinGarageToggleL: GPIO23    
+  pinGarageToggleL: GPIO23
+
+  pinBattFan: GPIO01
+  pinMpptCtrl: GPIO17
+  pinBattHeater: GPIO21   
   
   
 external_components:
@@ -228,7 +232,7 @@ interval:
           }
 
           if (id(min_batt_temp).state > 18 && id(max_batt_temp).state < 39) {
-            id(maxChargeW) = 1400;
+            id(maxChargeW) = 1000;
           }
           else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
             id(maxChargeW) = 6;
@@ -249,19 +253,19 @@ interval:
             id(maxChargeW) = 350;
           }
           else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
-            id(maxChargeW) = 450;
+            id(maxChargeW) = 400;
           }
           else if (id(min_batt_temp).state < 12) {
-            id(maxChargeW) = 600;
+            id(maxChargeW) = 500;
           }
           else if (id(min_batt_temp).state < 13) {
-            id(maxChargeW) = 700;
+            id(maxChargeW) = 600;
           }
           else if (id(min_batt_temp).state < 14) {
-            id(maxChargeW) = 800;
+            id(maxChargeW) = 700;
           }
           else {
-            id(maxChargeW) = 1200;
+            id(maxChargeW) = 850;
           }
 
           if (id(maxCellVolt).raw_state > 4.12 && id(maxChargeW) > id(maxChargeWReduction)) {
@@ -366,17 +370,29 @@ jk_bms_ble:
     id: bms0
 
 output:
-  - platform: esp32_dac
-    pin:
+  - platform: ledc
+    pin: 
       number: ${pinMpptCtrl}
-      mode:
-        output: true
-        input: true
-        pullup: false
-        pulldown: false
     id: mpptVoltLimit
-    min_power: 0.5
-    max_power: 0.66
+    min_power: 0.3
+    frequency: 555Hz
+    zero_means_zero: true
+
+  - platform: ledc
+    pin: 
+      number: ${pinBattFan}
+    id: battFanPwm
+    inverted: true
+    frequency: 500Hz
+    min_power: 0.2
+    zero_means_zero: true
+
+  - platform: ledc
+    pin: 
+      number: ${pinBattHeater}
+    id: battHeaterPwm
+    inverted: true
+    frequency: 100Hz
 
 fan:
   - platform: speed
@@ -385,10 +401,38 @@ fan:
     name: "Charger Voltage Limit"
     restore_mode: RESTORE_DEFAULT_ON
 
+  - platform: speed
+    output: battFanPwm
+    id: battFan
+    name: batteryFan
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: speed
+    output: battHeaterPwm
+    id: battHeater
+    name: batteryHeater
+    restore_mode: RESTORE_DEFAULT_OFF
+    on_turn_on:
+      - lambda: |-
+          auto c=id(battFan).turn_on();
+          c.set_speed(id(battHeater).speed);
+          c.perform();
+
+    on_turn_off:
+      - delay: 3s
+      - lambda: |-
+          auto c=id(battFan).turn_off();
+          c.perform();
+
+    on_speed_set:
+      - lambda: |-
+          id(battFan).make_call().set_speed(x).perform();
+
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 137.5kHz
+  frequency: 133.5kHz
+  timeout: 5ms
 
 ads1115:
   - address: 0x4A
@@ -749,7 +793,7 @@ sensor:
           then:
             - lambda: |-
                auto c=id(mpptVoltLimitControl).turn_on();
-               c.set_speed(99);
+               c.set_speed(100);
                c.perform();
 
 # import smartmeter reading from homeassistant
@@ -856,7 +900,7 @@ sensor:
         - lambda: |-
             if (x < -1.1) {
               auto c = id(mpptVoltLimitControl).turn_on();
-              c.set_speed(99);
+              c.set_speed(100);
               c.perform();
             }
 
@@ -911,18 +955,26 @@ sensor:
             auto c = id(mpptVoltLimitControl).turn_on();
             auto speed = id(mpptVoltLimitControl).speed;
             auto volt = id(batt_voltage).state;
+            auto OWpower = id(solar_power_onlyOW).state;
 
-            if (speed < 95 && (volt > ${maxBattVoltage} -0.1 || x > 60)) {
-              if (speed < 75) {
-                c.set_speed(79);
+            //fallback if sensors aren't working. OWpower == exactly 0 is basically NaN.
+            if (isnan(volt) || OWpower == 0) {
+              c.set_speed(100);
+              c.perform();
+              return;
+            }
+
+            if (speed < 100 && (OWpower > 1 && (volt > ${maxBattVoltage} -0.1 || x > 60))) {
+              if (speed < 30) {
+                c.set_speed(35);
               }
               else {
-                c.set_speed(speed + 1);
+                c.set_speed(speed + 3);
               }
               c.perform();
             }
-            else if (speed > 78 && (volt < ${maxBattVoltage} -0.15 && x < 20)) {
-              c.set_speed(speed - 1);
+            else if (speed > 20 && (volt < ${maxBattVoltage} -0.2 && x < 5)) {
+              c.set_speed(speed - 2);
               c.perform();
             }
             else if (speed > 5 && volt < 51.5 && x < 5) {
@@ -1009,12 +1061,10 @@ sensor:
     lambda: return id(system_power).state;
     update_interval: 5min
     filters: 
-      - sliding_window_moving_average:
-          window_size: 5
-          send_every: 12
+      - throttle_average: 1h
     on_value_range:
-      - below: 10
-        above: -10
+      - below: 50
+        above: -30
         then:
           - lambda: |-
 
@@ -1030,6 +1080,10 @@ sensor:
               else if(volt < 43.5) {
                 //0%
                 id(coulomb_counter).publish_and_save(maxC * -1);
+              }
+              else if(volt > ${maxBattVoltage} - 0.12) {
+                //100%
+                id(coulomb_counter).publish_and_save(0);
               }
 
 
@@ -1261,7 +1315,7 @@ sensor:
           - lambda: |-
               if (x > 4.15) {
                 auto c=id(mpptVoltLimitControl).turn_on();
-                c.set_speed(99);
+                c.set_speed(100);
                 c.perform();
               }
 
