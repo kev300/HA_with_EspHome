@@ -374,9 +374,10 @@ output:
     pin: 
       number: ${pinMpptCtrl}
     id: mpptVoltLimit
-    min_power: 0.3
-    frequency: 555Hz
-    zero_means_zero: true
+    min_power: 0.4
+    max_power: 0.7
+    frequency: 1200Hz
+    channel: 0
 
   - platform: ledc
     pin: 
@@ -386,6 +387,7 @@ output:
     frequency: 500Hz
     min_power: 0.2
     zero_means_zero: true
+    channel: 2
 
   - platform: ledc
     pin: 
@@ -393,6 +395,7 @@ output:
     id: battHeaterPwm
     inverted: true
     frequency: 100Hz
+    channel: 4
 
 fan:
   - platform: speed
@@ -405,13 +408,11 @@ fan:
     output: battFanPwm
     id: battFan
     name: batteryFan
-    restore_mode: RESTORE_DEFAULT_OFF
 
   - platform: speed
     output: battHeaterPwm
     id: battHeater
     name: batteryHeater
-    restore_mode: RESTORE_DEFAULT_OFF
     on_turn_on:
       - lambda: |-
           auto c=id(battFan).turn_on();
@@ -965,20 +966,16 @@ sensor:
             }
 
             if (speed < 100 && (OWpower > 1 && (volt > ${maxBattVoltage} -0.1 || x > 60))) {
-              if (speed < 30) {
-                c.set_speed(35);
+              if (x > 120 || volt > ${maxBattVoltage}) {
+                c.set_speed(speed + 20);
               }
               else {
                 c.set_speed(speed + 3);
               }
               c.perform();
             }
-            else if (speed > 20 && (volt < ${maxBattVoltage} -0.2 && x < 5)) {
+            else if (volt < ${maxBattVoltage} -0.2 && x < 5) {
               c.set_speed(speed - 2);
-              c.perform();
-            }
-            else if (speed > 5 && volt < 51.5 && x < 5) {
-              c.set_speed(5);
               c.perform();
             }
 
@@ -1064,9 +1061,12 @@ sensor:
       - throttle_average: 1h
     on_value_range:
       - below: 50
-        above: -30
+        above: -50
         then:
           - lambda: |-
+
+              if(abs(x) > 20)
+                return;
 
               auto volt = id(batt_voltage_avg).state;
               int maxC = 252000;
