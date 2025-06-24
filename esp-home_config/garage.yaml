@@ -1016,7 +1016,7 @@ sensor:
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
        if (a > 2) {
-         return a * 0.985; // reduce SOC drift by efficency loss of battery
+         return a * 0.99; // reduce SOC drift by efficency loss of battery
        }
        return a;
     update_interval: never
@@ -1056,14 +1056,17 @@ sensor:
     lambda: return id(system_power).state;
     update_interval: 5min
     filters: 
-      - throttle_average: 1h
+      - sliding_window_moving_average:
+          window_size: 12
+          send_every: 12
+          send_first_at: 12
     on_value_range:
       - below: 50
         above: -50
         then:
           - lambda: |-
 
-              if(abs(x) > 20)
+              if(abs(x) > 30)
                 return;
 
               auto volt = id(batt_voltage_avg).state;
