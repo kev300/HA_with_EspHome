@@ -6,6 +6,7 @@ logger:
 # Enable Home Assistant API
 api:
   password: ""
+  batch_delay: 25ms
 
 ota:
   platform: esphome
@@ -32,9 +33,10 @@ mqtt:
 esphome:
   name: smartmeter
   comment: "Smartmeter"
-  platform: esp8266
+
+esp8266:
   board: esp01_1m
-  esp8266_restore_from_flash: false
+  restore_from_flash: false
 preferences:
   flash_write_interval: 60min
 
