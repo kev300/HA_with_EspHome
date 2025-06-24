@@ -87,7 +87,6 @@ substitutions:
   pinNtcVccH: GPIO13
   pinSda: GPIO14
   
-  #pinMpptCtrl: GPIO25
   pinDHT: GPIO26
   pinScl: GPIO27
   
@@ -374,8 +373,8 @@ output:
     pin: 
       number: ${pinMpptCtrl}
     id: mpptVoltLimit
-    min_power: 0.4
-    max_power: 0.7
+    min_power: 0.55
+    max_power: 0.75
     frequency: 1200Hz
     channel: 0
 
@@ -420,12 +419,13 @@ fan:
           c.perform();
 
     on_turn_off:
-      - delay: 3s
+      - delay: 4s
       - lambda: |-
           auto c=id(battFan).turn_off();
           c.perform();
 
     on_speed_set:
+      - delay: 1s
       - lambda: |-
           id(battFan).make_call().set_speed(x).perform();
 
@@ -802,8 +802,6 @@ sensor:
   - platform: homeassistant
     id: powermeter0
     entity_id: sensor.power_consumption
-    filters:
-      - lambda: if (x < -700) return -700; return x; #sometimes the meter reports very low values!? + slow down ramp down
 
   - platform: template
     id: powermeter_with_fallback
@@ -946,7 +944,7 @@ sensor:
       if (w > 10) {
         return w;
       }
-      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -200) {
+      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -200 && w > -100) {
         return (id(powermeter0).state + 200) * -1;
       }
       return 0;
@@ -966,16 +964,16 @@ sensor:
             }
 
             if (speed < 100 && (OWpower > 1 && (volt > ${maxBattVoltage} -0.1 || x > 60))) {
-              if (x > 120 || volt > ${maxBattVoltage}) {
-                c.set_speed(speed + 20);
+              if (x > 150 || volt > ${maxBattVoltage}) {
+                c.set_speed(speed + 15);
               }
               else {
-                c.set_speed(speed + 3);
+                c.set_speed(speed + 2);
               }
               c.perform();
             }
             else if (volt < ${maxBattVoltage} -0.2 && x < 5) {
-              c.set_speed(speed - 2);
+              c.set_speed(speed - 1);
               c.perform();
             }
 
@@ -1256,6 +1254,16 @@ sensor:
       - source: batt_temp2
       - source: batt_temp3
       - source: batt_temp4
+    on_value_range:
+      - above: 30
+        then:
+          - fan.turn_on:
+              id: battFan
+              speed: 100
+      - below: 28
+        then:
+          - fan.turn_off: battFan
+
 
   - platform: soyosource_display
     error_bitmask:
