@@ -231,7 +231,7 @@ interval:
           }
 
           if (id(min_batt_temp).state > 18 && id(max_batt_temp).state < 39) {
-            id(maxChargeW) = 1000;
+            id(maxChargeW) = 1500;
           }
           else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
             id(maxChargeW) = 6;
@@ -261,10 +261,10 @@ interval:
             id(maxChargeW) = 600;
           }
           else if (id(min_batt_temp).state < 14) {
-            id(maxChargeW) = 700;
+            id(maxChargeW) = 750;
           }
           else {
-            id(maxChargeW) = 850;
+            id(maxChargeW) = 1100;
           }
 
           if (id(maxCellVolt).raw_state > 4.12 && id(maxChargeW) > id(maxChargeWReduction)) {
@@ -878,7 +878,7 @@ sensor:
     lambda: |-
       return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state) 
         * (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state);
-    update_interval: never #updated by batt_voltage
+    update_interval: 1s
     on_value:
       then:
         - component.update: solar_power_positive
@@ -891,7 +891,7 @@ sensor:
     lambda: |-
       return (isnan(id(batt_voltage).state) ? 0 : id(batt_voltage).state)
         * (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state);
-    update_interval: never #updated by batt_voltage
+    update_interval: 1s
     on_value:
       then:
         - component.update: solar_power_positiveOW
