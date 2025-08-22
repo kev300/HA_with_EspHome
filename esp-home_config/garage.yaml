@@ -63,7 +63,7 @@ esphome:
       - switch.turn_off: ble_jk
 
 preferences:
-  flash_write_interval: 10min
+  flash_write_interval: 20min
 
 
 substitutions:
@@ -76,7 +76,7 @@ substitutions:
   name_soyo: soyo
   device_description_soyo: "Soyosource GTN control the power output on demand both via RS485"
   #external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
-  external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@overshoot_compensation
+  external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@main
 
   maxBattVoltage: "53.3"
 
@@ -432,7 +432,7 @@ fan:
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 133.5kHz
+  frequency: 233.5kHz
   timeout: 5ms
 
 ads1115:
@@ -1054,25 +1054,19 @@ sensor:
   - platform: template
     id: slow_system_power
     lambda: return id(system_power).state;
-    update_interval: 5min
+    update_interval: 1min
     filters: 
-      - sliding_window_moving_average:
-          window_size: 12
-          send_every: 12
-          send_first_at: 12
+      - exponential_moving_average:
+          send_every: 20
     on_value_range:
-      - below: 50
-        above: -50
+      - below: 20
+        above: -20
         then:
           - lambda: |-
-
-              if(abs(x) > 30)
-                return;
-
               auto volt = id(batt_voltage_avg).state;
               int maxC = 252000;
 
-              if(volt >= 46.5 && volt < 52) {
+              if(volt >= 46 && volt < 52) {
                 auto vRange = ${maxBattVoltage} - 43.8;
                 auto invVolt = volt - ${maxBattVoltage};
                 auto C = maxC / vRange * invVolt;
@@ -1258,12 +1252,12 @@ sensor:
       - source: batt_temp3
       - source: batt_temp4
     on_value_range:
-      - above: 30
+      - above: 35
         then:
           - fan.turn_on:
               id: battFan
               speed: 100
-      - below: 28
+      - below: 32
         then:
           - fan.turn_off: battFan
 
