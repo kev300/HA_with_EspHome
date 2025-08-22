@@ -805,7 +805,7 @@ sensor:
 
   - platform: template
     id: powermeter_with_fallback
-    update_interval: never
+    update_interval: 1s
     internal: true
     unit_of_measurement: W
     lambda: |-
@@ -866,7 +866,7 @@ sensor:
     state_class: measurement
     lambda: |-
       return id(batt_voltage).state * id(inverter_amps).state;
-    update_interval: never
+    update_interval: 1s
     filters:
       - throttle_average: 5s
 
@@ -925,7 +925,7 @@ sensor:
     lambda: |-
       auto w = id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
       return w < 0 ? 0 : w;
-    update_interval: never
+    update_interval: 1s
 
   - platform: template
     id: discharging_power
@@ -933,7 +933,7 @@ sensor:
     lambda: |-
        auto w = id(soyo_power).raw_state - (id(solar_power_only).raw_state + id(solar_power_onlyOW).state);
        return w < 0 ? 0 : w;
-    update_interval: never
+    update_interval: 1s
 
   - platform: template
     id: overchargingPower
@@ -1019,7 +1019,7 @@ sensor:
          return a * 0.99; // reduce SOC drift by efficency loss of battery
        }
        return a;
-    update_interval: never
+    update_interval: 1s
 
   - platform: integration
     id: coulomb_counter
