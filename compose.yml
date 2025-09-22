@@ -7,9 +7,11 @@ services:
     restart: unless-stopped
     volumes:
       - ./config:/config
+      - /home/kevin/Recordings:/Recordings
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    privileged: true
+    privileged: false
+    user: 1000:1000
     network_mode: host
     logging:
       driver: "json-file"
@@ -39,7 +41,6 @@ services:
   zigbee2mqtt:
     container_name: zigbee2mqtt
     restart: unless-stopped
-      #    image: koenkk/zigbee2mqtt:1.35.2
     image: koenkk/zigbee2mqtt:latest
     network_mode: host
     volumes:

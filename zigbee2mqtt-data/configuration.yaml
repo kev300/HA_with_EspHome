@@ -1,13 +1,14 @@
-permit_join: false
 mqtt:
   base_topic: zigbee2mqtt
-  server: mqtt://192.168.1.25
+  server: mqtt://127.0.0.1
   user: hass
   password: dummY
-homeassistant: true
+homeassistant:
+  enabled: true
 serial:
   port: /dev/ttyACM0
 frontend:
+  enabled: true
   port: 8080
 advanced:
   network_key:
@@ -27,7 +28,7 @@ advanced:
     - 156
     - 105
     - 154
-  log_level: warn
+  log_level: warning
 devices:
   '0xa4c138aa6a05118d':
     friendly_name: Stecker 2
@@ -69,12 +70,21 @@ devices:
     friendly_name: GartenhausLampe
   '0xa4c13878aad5d7a1':
     friendly_name: BueroStecker
-  '0x00124b0029294c0a':
-    friendly_name: Kellertemp
   '0xa4c138318aad9ff1':
     friendly_name: GartenhausPV
-  '0x00124b0029295963':
-    friendly_name: Kellertemp 2
   '0x00158d00031d2a62':
     friendly_name: Leos Lampe
+  '0xa4c138991960f8e6':
+    friendly_name: Weihnachtsbaum
+  '0xa4c138dc6de95b53':
+    friendly_name: 'Lichterkette Küche '
+  '0xa4c138c393eecf57':
+    friendly_name: Buero2
+  '0x00124b0029294c0a':
+    friendly_name: Kellertemp
+  '0x00124b0029295963':
+    friendly_name: Kellertemp 2
 groups: {}
+version: 4
+availability:
+  enabled: false

@@ -71,6 +71,8 @@ recorder:
 
 
 homeassistant:
+  allowlist_external_dirs:
+    - /Recordings
   customize_glob:
     sensor.total_energy_in:
       last_reset: 2023-01-01T00:00:00+00:00

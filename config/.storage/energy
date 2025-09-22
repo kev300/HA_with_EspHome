@@ -59,6 +59,18 @@
         "type": "solar",
         "stat_energy_from": "sensor.gartenhauspv_energy",
         "config_entry_solar_forecast": null
+      },
+      {
+        "type": "solar",
+        "stat_energy_from": "sensor.solarstrom_energy_ow",
+        "config_entry_solar_forecast": null
+      },
+      {
+        "type": "water",
+        "stat_energy_from": "sensor.watermeter_value",
+        "stat_cost": null,
+        "entity_energy_price": null,
+        "number_energy_price": null
       }
     ],
     "device_consumption": [
@@ -69,7 +81,14 @@
         "stat_consumption": "sensor.buerostecker_energy"
       },
       {
-        "stat_consumption": "sensor.tesla_wall_connector_energie"
+        "stat_consumption": "sensor.tesla_wall_connector_energie",
+        "name": "Tesla"
+      },
+      {
+        "stat_consumption": "sensor.buero2_energy"
+      },
+      {
+        "stat_consumption": "sensor.solarheizung_energy"
       }
     ]
   }
