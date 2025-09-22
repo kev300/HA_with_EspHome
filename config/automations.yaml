@@ -33,7 +33,7 @@
       include_ambient: ambient_disabled
       ambient_light_value: 120
       light_switch:
-        device_id: 326b48d4842bd6579edde4ce6988419e
+        entity_id: light.garagenlampe_1
       include_sun: sun_enabled
       sun_elevation: 0
 - id: '1678299190989'
@@ -121,10 +121,9 @@
       include_ambient: ambient_disabled
       ambient_light_value: 500
       light_switch:
-        entity_id:
-        - light.gartenhauslampe
+        entity_id: light.gartenhauslampe
       include_sun: sun_enabled
-      sun_elevation: 1
+      sun_elevation: 5
 - id: '1728248640573'
   alias: TibberToGarage
   description: ''
@@ -158,9 +157,123 @@
         type: select_option
         option: usePV
     else:
-    - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-      domain: select
-      entity_id: 3cc4373b7e175794d7b8714f014f49aa
-      type: select_option
-      option: useBattery
+    - if:
+      - condition: numeric_state
+        entity_id: sensor.pv_batt_soc
+        above: 20
+      then:
+      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+        domain: select
+        entity_id: 3cc4373b7e175794d7b8714f014f49aa
+        type: select_option
+        option: useBattery
+      else:
+      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
+        domain: select
+        entity_id: 3cc4373b7e175794d7b8714f014f49aa
+        type: select_option
+        option: usePV
+  mode: single
+- id: '1739988302242'
+  alias: GaragentorLangeOffen
+  description: ''
+  triggers:
+  - trigger: time_pattern
+    minutes: /30
+  conditions:
+  - condition: state
+    entity_id: cover.garagentor
+    state: open
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  - condition: numeric_state
+    entity_id: cover.garagentor
+    attribute: current_position
+    above: 51
+  actions:
+  - action: notify.mobile_app_pixel_6
+    metadata: {}
+    data:
+      message: Garagentor lange geöffnet!
+  - action: notify.mobile_app_pixel_7a
+    metadata: {}
+    data:
+      message: Garagentor lange geöffnet!
+  mode: single
+- id: '1742507943698'
+  alias: 'Batterie Benachrichtigung '
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.batt_temp_3
+    - sensor.batt_temp_4
+    - sensor.jk_bms_temperature_sensor_1
+    - sensor.jk_bms_temperature_sensor_2
+    - sensor.garage_temperatur
+    above: 38
+  - trigger: numeric_state
+    entity_id:
+    - sensor.jk_bms_max_cell_voltage
+    above: 4.15
+  - trigger: numeric_state
+    entity_id:
+    - sensor.batt_volt
+    above: 53.5
+  - trigger: numeric_state
+    entity_id:
+    - sensor.batt_volt
+    below: 42
+  - trigger: numeric_state
+    entity_id:
+    - sensor.jk_bms_min_cell_voltage
+    below: 2.95
+  conditions: []
+  actions:
+  - action: notify.mobile_app_pixel_6
+    metadata: {}
+    data:
+      message: 'Batterie in Garage prüfen. Schlechte Werte '
+  - action: notify.mobile_app_pixel_7a
+    metadata: {}
+    data:
+      message: 'Batterie in Garage prüfen. Schlechte Werte '
+  mode: single
+- id: '1751743825772'
+  alias: Pixel 6 Bluetooth disable
+  description: ''
+  triggers:
+  - type: pressure
+    device_id: b091683c68d856a62c4b2ebab7a0b1db
+    entity_id: 5aced91fdfb8b6c50ade9130de8532b6
+    domain: sensor
+    trigger: device
+    above: 900
+  conditions: []
+  actions:
+  - action: notify.mobile_app_pixel_6
+    data:
+      message: command_bluetooth
+      data:
+        command: turn_off
+  mode: single
+- id: '1757929505256'
+  alias: 'Überwachungskamera Meldung '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - event.folder_watcher_recordings
+    attribute: event_type
+    to: created
+  conditions: []
+  actions:
+  - action: notify.mobile_app_pixel_6
+    metadata: {}
+    data:
+      message: Person vor {{ trigger.to_state.attributes.file.split("_")[0] }}
+      data:
+        file: '{{ trigger.to_state.attributes.file }}'
   mode: single
