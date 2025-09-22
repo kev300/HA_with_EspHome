@@ -130,13 +130,13 @@
   triggers:
   - entity_id:
     - sensor.tibber_preis_jetzt
-    - sensor.***REMOVED***_strompreis
+    - sensor.**REMOVED**
     trigger: state
   conditions: []
   actions:
   - if:
     - condition: numeric_state
-      entity_id: sensor.***REMOVED***_strompreis
+      entity_id: sensor.**REMOVED**
       above: sensor.tibber_preis_jetzt
       attribute: avg_price
     then:
