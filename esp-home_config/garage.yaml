@@ -432,7 +432,7 @@ fan:
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 333.5kHz
+  frequency: 400kHz
   timeout: 5ms
 
 ads1115:
@@ -732,7 +732,7 @@ sensor:
       id: inverter_amps
       filters:
         - exponential_moving_average:
-           send_every: 4
+           send_every: 5
            alpha: 0.079
         - offset: 0.001526
       on_value:
@@ -758,7 +758,7 @@ sensor:
       #name: cargingAmps
       filters:
         - exponential_moving_average:
-           send_every: 4
+           send_every: 5
       on_value:
         then:
           - component.update: solar_power_only
@@ -777,7 +777,7 @@ sensor:
       id: charging_ampsOW
       filters:
         - exponential_moving_average:
-           send_every: 4
+           send_every: 5
       on_value:
         then:
           - component.update: solar_power_onlyOW
@@ -785,7 +785,7 @@ sensor:
       id: batt_voltage
       filters:
         - exponential_moving_average:
-           send_every: 4
+           send_every: 5
         - calibrate_linear:
           - 0 -> 0
           - 28.68 -> 60
@@ -802,15 +802,18 @@ sensor:
   - platform: homeassistant
     id: powermeter0
     entity_id: sensor.power_consumption
+    on_value:
+      then:
+        - component.update: powermeter_with_fallback
 
   - platform: template
     id: powermeter_with_fallback
-    update_interval: 5s
+    update_interval: 5s #minimal intervall
     internal: true
     unit_of_measurement: W
     lambda: |-
 
-      auto solar_power = id(solar_power_only).raw_state + id(solar_power_onlyOW).state;
+      auto solar_power = id(solar_power_only).state + id(solar_power_onlyOW).state;
       auto demand = solar_power - id(soyo_power).raw_state;
       auto chargingW = demand;
       auto max_inverter_power = id(max_demand) - id(soyo_power_demand).state;
