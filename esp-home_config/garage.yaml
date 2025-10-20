@@ -174,12 +174,6 @@ interval:
 
       - lambda: |-
 
-          //if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
-          //    id(operationMode) = 0; //PV in -> Soyo out
-          //    
-          //    return;
-          //  }
-
           if (!id(api_connection) || isnan(id(powermeter0).state)) {
             //goal: Only use solar power, 0W to or from battery. Disable below 50W because of bad efficency.
             id(operationMode) = 1;
@@ -230,7 +224,7 @@ interval:
             }
           }
 
-          if (id(min_batt_temp).state > 18 && id(max_batt_temp).state < 39) {
+          if (id(min_batt_temp).state > 15 && id(max_batt_temp).state < 39) {
             id(maxChargeW) = 1500;
           }
           else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
@@ -246,25 +240,25 @@ interval:
             id(maxChargeW) = 200;
           }
           else if (id(min_batt_temp).state < 9) {
-            id(maxChargeW) = 250;
+            id(maxChargeW) = 300;
           }
           else if (id(min_batt_temp).state < 10) {
-            id(maxChargeW) = 350;
-          }
-          else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
             id(maxChargeW) = 400;
           }
+          else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
+            id(maxChargeW) = 650;
+          }
           else if (id(min_batt_temp).state < 12) {
-            id(maxChargeW) = 500;
-          }
-          else if (id(min_batt_temp).state < 13) {
-            id(maxChargeW) = 600;
-          }
-          else if (id(min_batt_temp).state < 14) {
             id(maxChargeW) = 750;
           }
+          else if (id(min_batt_temp).state < 13) {
+            id(maxChargeW) = 900;
+          }
+          else if (id(min_batt_temp).state < 14) {
+            id(maxChargeW) = 1050;
+          }
           else {
-            id(maxChargeW) = 1100;
+            id(maxChargeW) = 1300;
           }
 
           if (id(maxCellVolt).raw_state > 4.12 && id(maxChargeW) > id(maxChargeWReduction)) {
@@ -393,8 +387,9 @@ output:
       number: ${pinBattHeater}
     id: battHeaterPwm
     inverted: true
-    frequency: 100Hz
+    frequency: 50Hz
     channel: 4
+    max_power: 0.85
 
 fan:
   - platform: speed
@@ -943,12 +938,53 @@ sensor:
     unit_of_measurement: W
     update_interval: 3s
     lambda: |-
+      if (id(battHeater).state && (isnan(id(min_batt_temp).state) || id(min_batt_temp).state > 15 || id(max_batt_temp).state >= 22)) {
+        auto h = id(battHeater).turn_off();
+        h.set_speed(0);
+        h.perform();
+      }
+
+      //fallback if sensors aren't working. OWpower == exactly 0 is basically NaN.
+      if (isnan(id(batt_voltage).state) || id(solar_power_onlyOW).state == 0) {
+        auto c = id(mpptVoltLimitControl).turn_on();
+        c.set_speed(100);
+        c.perform();
+      }
+
       auto w = id(charging_power).state - id(maxChargeW);
-      if (w > 10) {
+      if (w > 50) {
+        if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
+          auto h = id(battHeater).turn_on();
+          auto hs = id(battHeater).speed;
+          h.set_speed(w / 4);
+          h.perform();
+          if (hs < 75) {
+            return 5;
+          }
+        }
         return w;
       }
-      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -200 && w > -100) {
-        return (id(powermeter0).state + 200) * -1;
+      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -150 && w > -100) {
+        auto power = id(powermeter0).state * -1;
+        if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
+          auto h = id(battHeater).turn_on();
+          auto hs = id(battHeater).speed;
+          h.set_speed((power -50) / 4);
+          h.perform();
+        }
+        return power -200;
+      }
+      else if (id(battHeater).state && (isnan(id(powermeter0).state) || id(powermeter0).state > -30)) {
+        auto h = id(battHeater).turn_on();
+        auto hs = id(battHeater).speed;
+        if (hs < 16) {
+          auto heater = id(battHeater).turn_off();
+          heater.perform();
+        }
+        else {
+          h.set_speed(hs - 15);
+          h.perform();
+        }
       }
       return 0;
     on_value:
@@ -958,13 +994,6 @@ sensor:
             auto speed = id(mpptVoltLimitControl).speed;
             auto volt = id(batt_voltage).state;
             auto OWpower = id(solar_power_onlyOW).state;
-
-            //fallback if sensors aren't working. OWpower == exactly 0 is basically NaN.
-            if (isnan(volt) || OWpower == 0) {
-              c.set_speed(100);
-              c.perform();
-              return;
-            }
 
             if (speed < 100 && (OWpower > 1 && (volt > ${maxBattVoltage} -0.1 || x > 60))) {
               if (x > 150 || volt > ${maxBattVoltage}) {
