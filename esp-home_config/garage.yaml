@@ -1076,7 +1076,7 @@ sensor:
     state_class: measurement
     filters:
       - calibrate_linear:
-          - -252000 -> 0 #70Ah *60 *60 -> As
+          - -248400 -> 0 #69Ah *60 *60 -> As
           - 0 -> 100
       - clamp:
           min_value: 0
@@ -1096,15 +1096,9 @@ sensor:
         then:
           - lambda: |-
               auto volt = id(batt_voltage_avg).state;
-              int maxC = 252000;
+              int maxC = 248400;
 
-              if(volt >= 46 && volt < 52) {
-                auto vRange = ${maxBattVoltage} - 43.8;
-                auto invVolt = volt - ${maxBattVoltage};
-                auto C = maxC / vRange * invVolt;
-                id(coulomb_counter).publish_and_save(C);
-              }
-              else if(volt < 43.5) {
+              if(volt < 43.5) {
                 //0%
                 id(coulomb_counter).publish_and_save(maxC * -1);
               }
