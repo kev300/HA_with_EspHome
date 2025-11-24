@@ -389,7 +389,7 @@ output:
     inverted: true
     frequency: 50Hz
     channel: 4
-    max_power: 0.85
+    max_power: 0.95
 
 fan:
   - platform: speed
@@ -414,7 +414,7 @@ fan:
           c.perform();
 
     on_turn_off:
-      - delay: 4s
+      - delay: 2s
       - lambda: |-
           auto c=id(battFan).turn_off();
           c.perform();
@@ -422,12 +422,14 @@ fan:
     on_speed_set:
       - delay: 1s
       - lambda: |-
-          id(battFan).make_call().set_speed(x).perform();
+          auto c=id(battFan).turn_on();
+          c.set_speed(x);
+          c.perform();
 
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 400kHz
+  frequency: 333kHz
   timeout: 5ms
 
 ads1115:
@@ -952,37 +954,42 @@ sensor:
       }
 
       auto w = id(charging_power).state - id(maxChargeW);
-      if (w > 50) {
+      if (w > 40) {
         if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
           auto h = id(battHeater).turn_on();
           auto hs = id(battHeater).speed;
-          h.set_speed(w / 4);
+          h.set_speed(hs + 10);
           h.perform();
-          if (hs < 75) {
+          if (hs < 80 && w < 100) {
             return 5;
           }
         }
         return w;
       }
-      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -150 && w > -100) {
+      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -50 && w > -50) {
         auto power = id(powermeter0).state * -1;
         if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
           auto h = id(battHeater).turn_on();
           auto hs = id(battHeater).speed;
-          h.set_speed((power -50) / 4);
+          if (power > 100) {
+            h.set_speed(hs + 30);
+          } else {
+            h.set_speed(hs + 10);
+          }
           h.perform();
+          return power -200;
         }
-        return power -200;
+        return power -150;
       }
-      else if (id(battHeater).state && (isnan(id(powermeter0).state) || id(powermeter0).state > -30)) {
+      else if (id(battHeater).state && (isnan(id(powermeter0).state) && w < -100 || id(powermeter0).state > -10)) {
         auto h = id(battHeater).turn_on();
         auto hs = id(battHeater).speed;
-        if (hs < 16) {
+        if (hs <= 10) {
           auto heater = id(battHeater).turn_off();
           heater.perform();
         }
         else {
-          h.set_speed(hs - 15);
+          h.set_speed(hs - 10);
           h.perform();
         }
       }
