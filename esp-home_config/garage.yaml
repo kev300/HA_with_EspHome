@@ -322,8 +322,11 @@ interval:
     startup_delay: 3s
     then:
       - switch.turn_on: ntc_vcc
+      - delay: 20ms
       - component.update: adc1
+      - delay: 20ms
       - component.update: adc2
+      - delay: 10ms
       - switch.turn_off: ntc_vcc
 
   - interval: 50ms
@@ -414,22 +417,24 @@ fan:
           c.perform();
 
     on_turn_off:
-      - delay: 2s
-      - lambda: |-
-          auto c=id(battFan).turn_off();
-          c.perform();
+      - delay: 1s
+      - fan.turn_off: battFan
 
     on_speed_set:
-      - delay: 1s
       - lambda: |-
-          auto c=id(battFan).turn_on();
-          c.set_speed(x);
-          c.perform();
+          id(battFan).make_call().set_speed(x).perform();
+
+          if (id(battHeater).state) {
+            id(battFan).turn_on().perform();
+          }
+          else {
+            id(battFan).turn_off().perform();
+          }
 
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 333kHz
+  frequency: 333.3kHz
   timeout: 5ms
 
 ads1115:
