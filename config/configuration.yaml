@@ -89,22 +89,82 @@ http:
 
 lovelace:
   resources:
-    - url: /local/apexcharts-card.js?v=2.1.2
+    - url: /local/apexcharts-card.js
       type: module
+    - url: /local/light-entity-card.js
+      type: module
+
+sql:
+  - name: DB size
+    db_url: postgresql://hass:hassPw321@127.0.0.1/smart_home
+    query: "SELECT (pg_database_size('hass')/1024/1024) as db_size;"
+    column: "db_size"
+    unit_of_measurement: MB
 
 
 template:
-  - trigger:
-      - platform: time_pattern
-        minutes: '/1'
-    sensor:
-      - name: tibber_preis_jetzt
-        state: >-
-          {% set preise = state_attr('sensor.tibber_preis', 'today') %}
-          {{ preise | selectattr('startsAt', 'ge', utcnow().isoformat()) | sort(attribute = 'startsAt') | map(attribute='total') | first }}
-        unit_of_measurement: €/kWh
-        device_class: monetary
-        icon: mdi:currency-eur
-        unique_id: tibber_preis_jetzt
+  - sensor:
+    - name: 'abs. Feuchtigkeit draußen'
+      unit_of_measurement: 'g/m³'
+      default_entity_id: sensor.hum_abs_outside
+      state: "{% set h, t = states('sensor.openweathermap_humidity') | float, states('sensor.openweathermap_temperature') %}
+              {% if not h or t == 'unknown' or t == 'unavailable' -%}
+                'unknown'
+              {%- else %}
+               {% set t = t | float %}
+               {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+              {% endif %}"
+
+    - name: 'abs. Feuchtigkeit Garage'
+      unit_of_measurement: 'g/m³'
+      default_entity_id: sensor.hum_abs_garage
+      state: "{% set h, t = states('sensor.garage_feuchtigkeit') | float, states('sensor.garage_temperatur') %}
+           {% if not h or t == 'unknown' or t == 'unavailable' -%}
+             'unknown'
+           {%- else %}
+            {% set t = t | float %}
+            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+           {% endif %}"
+    - name: 'abs. Feuchtigkeit Keller'
+      unit_of_measurement: 'g/m³'
+      default_entity_id: sensor.hum_abs_keller
+      state: "{% set h, t = states('sensor.kellertemp_humidity') | float, states('sensor.kellertemp_temperature') %}
+           {% if not h or t == 'unknown' or t == 'unavailable' -%}
+             'unknown'
+           {%- else %}
+            {% set t = t | float %}
+            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+           {% endif %}"
+
+    - unique_id: gasverbrauch_m3
+      default_entity_id: sensor.gasverbrauch_m3
+      name: gasverbrauch_m3
+      state: "{{ states ('counter.gaszaehler') | float*0.001 }}"
+      icon: mdi:fire
+      unit_of_measurement: m³
+      device_class: gas
+
+    - unique_id: gasverbrauch_kwh
+      default_entity_id: sensor.gasverbrauch_kwh
+      name: gasverbrauch_kwh
+      state: "{{ states ('counter.gaszaehler') | float*0.001 }}"
+      icon: mdi:fire
+      unit_of_measurement: kwh
+      device_class: gas
+
+
+#template:
+  #  - trigger:
+  #    - platform: time_pattern
+  #      minutes: '/1'
+  #  sensor:
+  #    - name: tibber_preis_jetzt
+  #      state: >-
+  #        {% set preise = state_attr('sensor.tibber_preis', 'today') %}
+  #        {{ preise | selectattr('startsAt', 'ge', utcnow().isoformat()) | sort(attribute = 'startsAt') | map(attribute='total') | first }}
+  #      unit_of_measurement: €/kWh
+  #      device_class: monetary
+  #      icon: mdi:currency-eur
+  #      unique_id: tibber_preis_jetzt
 
 

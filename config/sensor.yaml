@@ -1,11 +1,4 @@
 
-  - platform: sql
-    sql:
-      name: DB size
-      db_url: postgresql://hass:hassPw321@192.168.1.25/smart_home
-      query: "SELECT (pg_database_size('hass')/1024/1024) as db_size;"
-      column: "db_size"
-      unit_of_measurement: MB
 
   - platform: filter
     name: "filtered power consumption"
@@ -16,83 +9,20 @@
       - filter: time_throttle
         window_size: "00:00:07"
 
-          #  - platform: filter
-          #    name: "filtered solarstrom power"
-          #    entity_id: sensor.solarstrom_power
-          #    filters:
-      #      - filter: outlier
-      #        window_size: 5
-      #        radius: 50.0
-      #        precision: 0
-      #      - filter: time_simple_moving_average
-      #        window_size: "00:00:10"
-      #
-      #
-  - platform: rest
-    name: "Tibber Preis"
-    resource: https://api.tibber.com/v1-beta/gql
-    method: POST
-    scan_interval: 100
-    payload: '{ "query": "{ viewer { homes { currentSubscription { priceInfo { today { total startsAt } tomorrow { total startsAt }}}}}}" }'
-    json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
-    json_attributes:
-      - today
-      - tomorrow
-    value_template: Ok
-    headers:
-      Authorization: apiKeyHere
-      Content-Type: application/json
-      User-Agent: REST
-
-  - platform: template
-    sensors:
-       hum_abs_outside:
-         value_template: >-
-           {% set h, t = states('sensor.openweathermap_humidity') | float, states('sensor.openweathermap_temperature') %}
-           {% if not h or t == 'unknown' or t == 'unavailable' -%}
-             'unknown'
-           {%- else %}
-            {% set t = t | float %}
-            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
-           {% endif %}
-         unit_of_measurement: 'g/m³'
-         friendly_name: 'abs. Feuchtigkeit draußen'
-
-       hum_abs_garage:
-         value_template: >-
-           {% set h, t = states('sensor.garage_feuchtigkeit') | float, states('sensor.garage_temperatur') %}
-           {% if not h or t == 'unknown' or t == 'unavailable' -%}
-             'unknown'
-           {%- else %}
-            {% set t = t | float %}
-            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
-           {% endif %}
-         unit_of_measurement: 'g/m³'
-         friendly_name: 'abs. Feuchtigkeit Garage'
-       hum_abs_keller:
-         value_template: >-
-           {% set h, t = states('sensor.kellertemp_humidity') | float, states('sensor.kellertemp_temperature') %}
-           {% if not h or t == 'unknown' or t == 'unavailable' -%}
-             'unknown'
-           {%- else %}
-            {% set t = t | float %}
-            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
-           {% endif %}
-         unit_of_measurement: 'g/m³'
-         friendly_name: 'abs. Feuchtigkeit Keller'
-
-       gasverbrauch_m3:
-         unique_id: gasverbrauch_m3
-         value_template: "{{ states ('counter.gaszaehler') | float*0.001 }}"
-         icon_template: mdi:fire
-         unit_of_measurement: m³
-         device_class: gas
-
-       gasverbrauch_kwh:
-         unique_id: gasverbrauch_kwh
-         value_template: "{{ states ('counter.gaszaehler') | float*0.01 }}"
-         icon_template: mdi:fire
-         unit_of_measurement: kWh
-         device_class: energy
-
+#  - platform: rest
+#    name: "Tibber Preis"
+#    unique_id: tibber_preis
+#    resource: https://api.tibber.com/v1-beta/gql
+#    method: POST
+#    scan_interval: 100
+#    payload: '{ "query": "{ viewer { homes { currentSubscription { priceInfo { today { total startsAt } tomorrow { total startsAt }}}}}}" }'
+#    json_attributes_path: "$.data.viewer.homes[0].currentSubscription.priceInfo"
+#    json_attributes:
+#      - today
+#      - tomorrow
+#    value_template: Ok
+#    headers:
+#      Authorization: 6yj8PciGvmRRVXSIY8cxIa4DQ229PWSx_phEgdA9lRw
+#      Content-Type: application/json
+#      User-Agent: REST
 
