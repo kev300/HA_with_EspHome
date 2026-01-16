@@ -79,6 +79,8 @@ substitutions:
   external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@main
 
   maxBattVoltage: "53.3"
+  battCapacityAh: 69
+  battCapacityAs: "${battCapacityAh * 60 * 60 * -1}" #negative for 0% SOC
 
   #GPIO
   #  H = High; L = Low (voltage / signal) when active
@@ -243,7 +245,7 @@ interval:
             id(maxChargeW) = 300;
           }
           else if (id(min_batt_temp).state < 10) {
-            id(maxChargeW) = 400;
+            id(maxChargeW) = 450;
           }
           else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
             id(maxChargeW) = 650;
@@ -434,8 +436,8 @@ fan:
 i2c:
   sda: ${pinSda}
   scl: ${pinScl}
-  frequency: 333.3kHz
-  timeout: 5ms
+  frequency: 300kHz
+  timeout: 10ms
 
 ads1115:
   - address: 0x4A
@@ -943,7 +945,7 @@ sensor:
   - platform: template
     id: overchargingPower
     unit_of_measurement: W
-    update_interval: 3s
+    update_interval: 5s
     lambda: |-
       if (id(battHeater).state && (isnan(id(min_batt_temp).state) || id(min_batt_temp).state > 15 || id(max_batt_temp).state >= 22)) {
         auto h = id(battHeater).turn_off();
@@ -976,11 +978,7 @@ sensor:
         if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
           auto h = id(battHeater).turn_on();
           auto hs = id(battHeater).speed;
-          if (power > 100) {
-            h.set_speed(hs + 30);
-          } else {
-            h.set_speed(hs + 10);
-          }
+          h.set_speed(hs + 10);
           h.perform();
           return power -200;
         }
@@ -1059,11 +1057,19 @@ sensor:
        auto a = (isnan(id(charging_amps).state) ? 0 : id(charging_amps).state)
                 + (isnan(id(charging_ampsOW).state) ? 0 : id(charging_ampsOW).state)
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
-       if (a > 2) {
-         return a * 0.99; // reduce SOC drift by efficency loss of battery
+
+       // reduce SOC drift by efficency loss of battery
+       if (a > 0) {
+         auto ce = a * 0.998 - 0.002 / (a / ${battCapacityAh});
+         if (ce > 0) { 
+           return ce; 
+         }
+         else {
+           return 0;
+         }
        }
        return a;
-    update_interval: 1s
+    update_interval: 250ms
 
   - platform: integration
     id: coulomb_counter
@@ -1081,14 +1087,14 @@ sensor:
     name: PV Batt SOC
     id: batt_soc
     lambda: return id(coulomb_counter).state;
-    update_interval: 180s
+    update_interval: 60s
     unit_of_measurement: '%'
     accuracy_decimals: 0
     device_class: battery
     state_class: measurement
     filters:
       - calibrate_linear:
-          - -248400 -> 0 #69Ah *60 *60 -> As
+          - ${battCapacityAs} -> 0 
           - 0 -> 100
       - clamp:
           min_value: 0
