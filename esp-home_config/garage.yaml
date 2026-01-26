@@ -394,7 +394,6 @@ output:
     inverted: true
     frequency: 50Hz
     channel: 4
-    max_power: 0.95
 
 fan:
   - platform: speed
@@ -973,7 +972,7 @@ sensor:
         }
         return w;
       }
-      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -50 && w > -50) {
+      if (!isnan(id(powermeter0).state) && id(powermeter0).state < -50 && w > -30) {
         auto power = id(powermeter0).state * -1;
         if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
           auto h = id(battHeater).turn_on();
@@ -984,7 +983,7 @@ sensor:
         }
         return power -150;
       }
-      else if (id(battHeater).state && (isnan(id(powermeter0).state) && w < -100 || id(powermeter0).state > -10)) {
+      else if (id(battHeater).state && w < -40 || (isnan(id(powermeter0).state) && id(powermeter0).state > -10)) {
         auto h = id(battHeater).turn_on();
         auto hs = id(battHeater).speed;
         if (hs <= 10) {
@@ -1059,8 +1058,8 @@ sensor:
                 - (isnan(id(inverter_amps).state) ? 0 : id(inverter_amps).state);
 
        // reduce SOC drift by efficency loss of battery
-       if (a > 0) {
-         auto ce = a * 0.998 - 0.002 / (a / ${battCapacityAh});
+       if (a > 0.1) {
+         auto ce = a * 0.996 - 0.0008 / (a / ${battCapacityAh});
          if (ce > 0) { 
            return ce; 
          }
