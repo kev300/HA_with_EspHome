@@ -227,7 +227,7 @@ interval:
           }
 
           if (id(min_batt_temp).state > 15 && id(max_batt_temp).state < 39) {
-            id(maxChargeW) = 1500;
+            id(maxChargeW) = 1600;
           }
           else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
             id(maxChargeW) = 6;
@@ -239,25 +239,25 @@ interval:
             id(maxChargeW) = 150;
           }
           else if (id(min_batt_temp).state < 8 || id(max_batt_temp).state > 43) {
-            id(maxChargeW) = 200;
+            id(maxChargeW) = 250;
           }
           else if (id(min_batt_temp).state < 9) {
-            id(maxChargeW) = 300;
+            id(maxChargeW) = 350;
           }
           else if (id(min_batt_temp).state < 10) {
-            id(maxChargeW) = 450;
+            id(maxChargeW) = 500;
           }
           else if (id(min_batt_temp).state < 11 || id(max_batt_temp).state > 40) {
-            id(maxChargeW) = 650;
+            id(maxChargeW) = 700;
           }
           else if (id(min_batt_temp).state < 12) {
-            id(maxChargeW) = 750;
+            id(maxChargeW) = 850;
           }
           else if (id(min_batt_temp).state < 13) {
-            id(maxChargeW) = 900;
+            id(maxChargeW) = 950;
           }
           else if (id(min_batt_temp).state < 14) {
-            id(maxChargeW) = 1050;
+            id(maxChargeW) = 1150;
           }
           else {
             id(maxChargeW) = 1300;
@@ -741,9 +741,6 @@ sensor:
       on_value:
         then:
           - component.update: soyo_power
-          - component.update: powermeter_with_fallback
-          - component.update: charging_power
-          - component.update: discharging_power
           - component.update: combinedAmps
 
   - platform: ina226
@@ -758,7 +755,6 @@ sensor:
     id: mpptSensor
     current:
       id: charging_amps
-      #name: cargingAmps
       filters:
         - exponential_moving_average:
            send_every: 5
@@ -811,7 +807,7 @@ sensor:
 
   - platform: template
     id: powermeter_with_fallback
-    update_interval: 5s #minimal intervall
+    update_interval: 2s #minimal intervall
     internal: true
     unit_of_measurement: W
     lambda: |-
@@ -872,6 +868,11 @@ sensor:
     state_class: measurement
     lambda: |-
       return id(batt_voltage).state * id(inverter_amps).state;
+    on_raw_value: 
+      then:
+        - component.update: powermeter_with_fallback
+        - component.update: charging_power
+        - component.update: discharging_power
     update_interval: 5s
     filters:
       - throttle_average: 5s
@@ -929,7 +930,7 @@ sensor:
     id: charging_power
     unit_of_measurement: W
     lambda: |-
-      auto w = id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
+      auto w = id(solar_power_only).state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
       return w < 0 ? 0 : w;
     update_interval: 5s
 
@@ -937,7 +938,7 @@ sensor:
     id: discharging_power
     unit_of_measurement: W
     lambda: |-
-       auto w = id(soyo_power).raw_state - (id(solar_power_only).raw_state + id(solar_power_onlyOW).state);
+       auto w = id(soyo_power).raw_state - (id(solar_power_only).state + id(solar_power_onlyOW).state);
        return w < 0 ? 0 : w;
     update_interval: 5s
 
@@ -1354,7 +1355,7 @@ sensor:
     min_cell_voltage:
       name: "${name} min cell voltage"
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     max_cell_voltage:
       name: "${name} max cell voltage"
       id: maxCellVolt
@@ -1368,88 +1369,88 @@ sensor:
               }
 
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     min_voltage_cell:
       name: "${name} min voltage cell"
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     max_voltage_cell:
       name: "${name} max voltage cell"
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     delta_cell_voltage:
       name: "${name} delta cell voltage"
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     average_cell_voltage:
       name: "${name} average cell voltage"
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_1:
       name: "${name} cell voltage 1"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_2:
       name: "${name} cell voltage 2"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_3:
       name: "${name} cell voltage 3"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_4:
       name: "${name} cell voltage 4"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_5:
       name: "${name} cell voltage 5"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_6:
       name: "${name} cell voltage 6"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_7:
       name: "${name} cell voltage 7"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_8:
       name: "${name} cell voltage 8"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_9:
       name: "${name} cell voltage 9"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_10:
       name: "${name} cell voltage 10"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_11:
       name: "${name} cell voltage 11"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_12:
       name: "${name} cell voltage 12"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     cell_voltage_13:
       name: "${name} cell voltage 13"
       icon: mdi:battery-charging
       filters:
-      - throttle: 10s
+      - throttle_average: 10s
     power_tube_temperature:
       name: "${name} BMS temperature"
       filters:
