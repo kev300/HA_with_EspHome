@@ -22,7 +22,6 @@ logger:
 
 # Enable Home Assistant API
 api:
-  password: ""
   reboot_timeout: 2h
 
 ota:
@@ -1231,6 +1230,7 @@ sensor:
   - platform: ads1115
     multiplexer: 'A0_GND'
     gain: 4.096
+    sample_rate: 64
     id: adc1
     update_interval: never
 
@@ -1511,7 +1511,7 @@ switch:
 
   - platform: gpio
     pin: ${pinGarageToggleL}
-    name: "Garagentor auf/zu"
+    name: "Garagentor auf_zu"
     id: garage_toggle_switch
     inverted: true
     internal: true

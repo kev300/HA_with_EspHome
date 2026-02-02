@@ -120,60 +120,10 @@
       include_light_control: use_brightness
       include_ambient: ambient_disabled
       ambient_light_value: 500
-      light_switch:
-        entity_id: light.gartenhauslampe
       include_sun: sun_enabled
       sun_elevation: 5
-- id: '1728248640573'
-  alias: TibberToGarage
-  description: ''
-  triggers:
-  - entity_id:
-    - sensor.tibber_preis_jetzt
-    - sensor.**REMOVED**
-    trigger: state
-  conditions: []
-  actions:
-  - if:
-    - condition: numeric_state
-      entity_id: sensor.**REMOVED**
-      above: sensor.tibber_preis_jetzt
-      attribute: avg_price
-    then:
-    - if:
-      - condition: numeric_state
-        entity_id: sensor.pv_batt_soc
-        below: 40
-      then:
-      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        domain: select
-        entity_id: 3cc4373b7e175794d7b8714f014f49aa
-        type: select_option
-        option: chargeOnly
-      else:
-      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        domain: select
-        entity_id: 3cc4373b7e175794d7b8714f014f49aa
-        type: select_option
-        option: usePV
-    else:
-    - if:
-      - condition: numeric_state
-        entity_id: sensor.pv_batt_soc
-        above: 20
-      then:
-      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        domain: select
-        entity_id: 3cc4373b7e175794d7b8714f014f49aa
-        type: select_option
-        option: useBattery
-      else:
-      - device_id: 4aa3fe777c6e7ab927681f22403d1c8e
-        domain: select
-        entity_id: 3cc4373b7e175794d7b8714f014f49aa
-        type: select_option
-        option: usePV
-  mode: single
+      light_switch:
+        entity_id: light.gartenhauslampe
 - id: '1739988302242'
   alias: GaragentorLangeOffen
   description: ''
@@ -241,24 +191,6 @@
     data:
       message: 'Batterie in Garage prüfen. Schlechte Werte '
   mode: single
-- id: '1751743825772'
-  alias: Pixel 6 Bluetooth disable
-  description: ''
-  triggers:
-  - type: pressure
-    device_id: b091683c68d856a62c4b2ebab7a0b1db
-    entity_id: 5aced91fdfb8b6c50ade9130de8532b6
-    domain: sensor
-    trigger: device
-    above: 900
-  conditions: []
-  actions:
-  - action: notify.mobile_app_pixel_6
-    data:
-      message: command_bluetooth
-      data:
-        command: turn_off
-  mode: single
 - id: '1757929505256'
   alias: 'Überwachungskamera Meldung '
   description: ''
@@ -276,4 +208,38 @@
       message: Person vor {{ trigger.to_state.attributes.file.split("_")[0] }}
       data:
         file: '{{ trigger.to_state.attributes.file }}'
+  mode: single
+- id: '1761660784691'
+  alias: UseBatteryOn
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.pv_batt_soc
+    above: 50
+  conditions: []
+  actions:
+  - action: select.select_option
+    metadata: {}
+    data:
+      option: useBattery
+    target:
+      entity_id: select.operationmode
+  mode: single
+- id: '1761661020488'
+  alias: UsePV on
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.pv_batt_soc
+    below: 45
+  conditions: []
+  actions:
+  - action: select.select_option
+    metadata: {}
+    data:
+      option: usePV
+    target:
+      entity_id: select.operationmode
   mode: single
