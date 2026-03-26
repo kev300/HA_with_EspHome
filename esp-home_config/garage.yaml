@@ -78,7 +78,7 @@ substitutions:
   external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@main
 
   maxBattVoltage: "53.3"
-  battCapacityAh: 69
+  battCapacityAh: 67
   battCapacityAs: "${battCapacityAh * 60 * 60 * -1}" #negative for 0% SOC
 
   #GPIO
@@ -262,7 +262,7 @@ interval:
             id(maxChargeW) = 1300;
           }
 
-          if (id(maxCellVolt).raw_state > 4.12 && id(maxChargeW) > id(maxChargeWReduction)) {
+          if (id(maxCellVolt).raw_state > 4.13 && id(maxChargeW) > id(maxChargeWReduction)) {
             id(maxChargeWReduction) += 100;
           }
           else if (id(maxCellVolt).raw_state < 4.1 && id(maxChargeWReduction) > 0) {
@@ -1004,7 +1004,7 @@ sensor:
             auto volt = id(batt_voltage).state;
             auto OWpower = id(solar_power_onlyOW).state;
 
-            if (speed < 100 && (OWpower > 1 && (volt > ${maxBattVoltage} -0.1 || x > 60))) {
+            if (speed < 100 && (OWpower > 1 && (volt > ${maxBattVoltage} -0.05 || x > 60))) {
               if (x > 150 || volt > ${maxBattVoltage}) {
                 c.set_speed(speed + 15);
               }
@@ -1013,7 +1013,7 @@ sensor:
               }
               c.perform();
             }
-            else if (volt < ${maxBattVoltage} -0.2 && x < 5) {
+            else if (volt < ${maxBattVoltage} -0.15 && x < 5) {
               c.set_speed(speed - 1);
               c.perform();
             }
@@ -1059,7 +1059,7 @@ sensor:
 
        // reduce SOC drift by efficency loss of battery
        if (a > 0.1) {
-         auto ce = a * 0.996 - 0.0008 / (a / ${battCapacityAh});
+         auto ce = a * 0.992 - (0.0006 / (a / ${battCapacityAh}));
          if (ce > 0) { 
            return ce; 
          }
@@ -1118,10 +1118,6 @@ sensor:
               if(volt < 43.5) {
                 //0%
                 id(coulomb_counter).publish_and_save(maxC * -1);
-              }
-              else if(volt > ${maxBattVoltage} - 0.12) {
-                //100%
-                id(coulomb_counter).publish_and_save(0);
               }
 
 
