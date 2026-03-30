@@ -182,10 +182,10 @@ interval:
           }
 
 
-          if (id(userOpMode).state == "useBattery") {
+          if (id(userOpMode).current_option() == "useBattery") {
             //use powermeter for demand
             id(operationMode) = 3;
-          } else if (id(userOpMode).state == "usePV") {
+          } else if (id(userOpMode).current_option() == "usePV") {
             //PV -> demand, but charge when PV > power consumption
             id(operationMode) = 2;
           } else {
