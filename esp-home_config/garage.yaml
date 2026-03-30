@@ -1324,12 +1324,18 @@ sensor:
       - source: batt_temp3
       - source: batt_temp4
     on_value_range:
-      - above: 35
+      - above: 24
         then:
-          - fan.turn_on:
-              id: battFan
-              speed: 100
-      - below: 32
+          - if:
+              condition:
+                lambda: "return (x > 32 || x > 24 && x - id(garage_temp).state > 5);"
+              then:
+                - fan.turn_on:
+                    id: battFan
+                    speed: 100
+              else:
+                - fan.turn_off: battFan
+      - below: 23
         then:
           - fan.turn_off: battFan
 
