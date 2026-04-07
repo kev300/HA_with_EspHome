@@ -77,7 +77,7 @@ substitutions:
   #external_components_source_soyo: github://syssi/esphome-soyosource-gtn-virtual-meter@main
   external_components_source_soyo: github://kev300/esphome-soyosource-gtn-virtual-meter@main
 
-  maxBattVoltage: "53.3"
+  maxBattVoltage: 53.3
   battCapacityAh: 67
   battCapacityAs: "${battCapacityAh * 60 * 60 * -1}" #negative for 0% SOC
 
@@ -113,8 +113,6 @@ external_components:
     refresh: 0s
   - source: ${external_components_source_soyo}
     refresh: 0s
-  - source: github://kev300/esphome@integration_with_setValue
-    components: [ integration ]
 
 globals:
   - id: api_connection
@@ -225,7 +223,7 @@ interval:
             }
           }
 
-          if (id(min_batt_temp).state > 15 && id(max_batt_temp).state < 39) {
+          if (id(min_batt_temp).state > 15 && id(max_batt_temp).state < 36) {
             id(maxChargeW) = 1600;
           }
           else if (id(min_batt_temp).state < 5 || id(max_batt_temp).state > 45) {
@@ -237,7 +235,7 @@ interval:
           else if (id(min_batt_temp).state < 7) {
             id(maxChargeW) = 150;
           }
-          else if (id(min_batt_temp).state < 8 || id(max_batt_temp).state > 43) {
+          else if (id(min_batt_temp).state < 8 || id(max_batt_temp).state > 40) {
             id(maxChargeW) = 250;
           }
           else if (id(min_batt_temp).state < 9) {
@@ -935,7 +933,7 @@ sensor:
         - component.update: solar_power_positiveOW
           #workaround for too high standby consumption of mppt. Value is changed back by the other control loop in overchargingPower.
         - lambda: |-
-            if (x < -1.1) {
+            if (x < -1.2) {
               auto c = id(mpptVoltLimitControl).turn_on();
               c.set_speed(100);
               c.perform();
@@ -978,7 +976,7 @@ sensor:
     unit_of_measurement: W
     update_interval: 5s
     lambda: |-
-      if (id(battHeater).state && (isnan(id(min_batt_temp).state) || id(min_batt_temp).state > 15 || id(max_batt_temp).state >= 22)) {
+      if (id(battHeater).state && (isnan(id(min_batt_temp).state) || id(min_batt_temp).state > 15 || id(max_batt_temp).state >= 20)) {
         auto h = id(battHeater).turn_off();
         h.set_speed(0);
         h.perform();
@@ -993,7 +991,7 @@ sensor:
 
       auto w = id(charging_power).state - id(maxChargeW);
       if (w > 40) {
-        if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
+        if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 20) {
           auto h = id(battHeater).turn_on();
           auto hs = id(battHeater).speed;
           h.set_speed(hs + 10);
@@ -1006,7 +1004,7 @@ sensor:
       }
       if (!isnan(id(powermeter0).state) && id(powermeter0).state < -50 && w > -30) {
         auto power = id(powermeter0).state * -1;
-        if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 22) {
+        if (id(min_batt_temp).state < 15 && id(max_batt_temp).state < 20) {
           auto h = id(battHeater).turn_on();
           auto hs = id(battHeater).speed;
           h.set_speed(hs + 10);
@@ -1091,7 +1089,7 @@ sensor:
 
        // reduce SOC drift by efficency loss of battery
        if (a > 0.1) {
-         auto ce = a * 0.992 - (0.0006 / (a / ${battCapacityAh}));
+         auto ce = a * 0.992 - (0.0008 / (a / ${battCapacityAh}));
          if (ce > 0) { 
            return ce; 
          }
@@ -1149,7 +1147,7 @@ sensor:
 
               if(volt < 43.5) {
                 //0%
-                id(coulomb_counter).publish_and_save(maxC * -1);
+                id(coulomb_counter).set_value(maxC * -1);
               }
 
 
@@ -1323,22 +1321,15 @@ sensor:
       - source: batt_temp2
       - source: batt_temp3
       - source: batt_temp4
-    on_value_range:
-      - above: 24
-        then:
-          - if:
-              condition:
-                lambda: "return (x > 32 || x > 24 && x - id(garage_temp).state > 5);"
-              then:
-                - fan.turn_on:
-                    id: battFan
-                    speed: 100
-              else:
-                - fan.turn_off: battFan
-      - below: 23
-        then:
-          - fan.turn_off: battFan
-
+    on_value:
+      then:
+        - lambda: |-
+            if (x > 31 || x > 24 && x - id(garage_temp).state > 5) {
+              id(battFan).turn_on().set_speed(100).perform();
+            }
+            else if (id(battFan).state && !id(battHeater).state && x < 23) {
+              id(battFan).turn_off().perform();
+            }
 
   - platform: soyosource_display
     error_bitmask:
