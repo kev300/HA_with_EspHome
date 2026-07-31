@@ -9,16 +9,15 @@ esp32:
 # Enable logging
 logger:
   baud_rate: 0
-  level: INFO
-  logs:
-#    api.service: WARN
+  level: WARN
+#  logs:
+#    api.service: INFO
 #    sensor: WARN
 #    homeassistant.sensor: WARN
 #    text_sensor: WARN
-    jk_bms_ble: WARN
-    soyosource_display: WARN
+#    jk_bms_ble: INFO
+#    soyosource_display: WARN
 #    soyosource_virtual_meter: WARN
-#    ads1115: WARN
 
 # Enable Home Assistant API
 api:
@@ -49,8 +48,8 @@ time:
 esphome:
   name: garage-controller
   comment: "ESP32 in der Garage"
-  includes:
-    - clk.h
+#  includes:
+#    - clk.h
 #  platformio_options:
 #    board_build.f_cpu: 240000000L
   project:
@@ -260,10 +259,10 @@ interval:
             id(maxChargeW) = 1300;
           }
 
-          if (id(maxCellVolt).raw_state > 4.13 && id(maxChargeW) > id(maxChargeWReduction)) {
+          if (id(maxCellVolt).get_raw_state() > 4.13 && id(maxChargeW) > id(maxChargeWReduction)) {
             id(maxChargeWReduction) += 100;
           }
-          else if (id(maxCellVolt).raw_state < 4.1 && id(maxChargeWReduction) > 0) {
+          else if (id(maxCellVolt).get_raw_state() < 4.1 && id(maxChargeWReduction) > 0) {
             id(maxChargeWReduction) -= 25;
           }
           
@@ -666,7 +665,7 @@ number:
       name: "${name} cell voltage undervoltage protection"
     cell_voltage_undervoltage_recovery:
       name: "${name} cell voltage undervoltage recovery"
-    balance_starting_voltage:
+    balancing_start_voltage:
       name: "${name} balance starting voltage"
     power_off_voltage:
       name: "${name} power off voltage"
@@ -704,10 +703,10 @@ number:
       name: "${name} discharge undertemperature protection"
     discharge_undertemperature_protection_recovery:
       name: "${name} discharge undertemperature protection recovery"
-    power_tube_overtemperature_protection:
-      name: "${name} power tube overtemperature protection"
-    power_tube_overtemperature_protection_recovery:
-      name: "${name} power tube overtemperature protection recovery"
+    mosfet_overtemperature_protection:
+      name: "${name} mosfet overtemperature protection"
+    mosfet_overtemperature_protection_recovery:
+      name: "${name} mosfet overtemperature protection recovery"
 
 select:
   - platform: soyosource_display
@@ -842,7 +841,7 @@ sensor:
     lambda: |-
 
       auto solar_power = id(solar_power_only).state + id(solar_power_onlyOW).state;
-      auto demand = solar_power - id(soyo_power).raw_state;
+      auto demand = solar_power - id(soyo_power).get_raw_state();
       auto chargingW = demand;
       auto max_inverter_power = id(max_demand) - id(soyo_power_demand).state;
 
@@ -959,7 +958,7 @@ sensor:
     id: charging_power
     unit_of_measurement: W
     lambda: |-
-      auto w = id(solar_power_only).state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
+      auto w = id(solar_power_only).state + id(solar_power_onlyOW).state - id(soyo_power).get_raw_state();
       return w < 0 ? 0 : w;
     update_interval: 5s
 
@@ -967,7 +966,7 @@ sensor:
     id: discharging_power
     unit_of_measurement: W
     lambda: |-
-       auto w = id(soyo_power).raw_state - (id(solar_power_only).state + id(solar_power_onlyOW).state);
+       auto w = id(soyo_power).get_raw_state() - (id(solar_power_only).state + id(solar_power_onlyOW).state);
        return w < 0 ? 0 : w;
     update_interval: 5s
 
@@ -1013,7 +1012,7 @@ sensor:
         }
         return power -150;
       }
-      else if (id(battHeater).state && w < -40 || (isnan(id(powermeter0).state) && id(powermeter0).state > -10)) {
+      else if ((id(battHeater).state && w < -40) || (isnan(id(powermeter0).state) && id(powermeter0).state > -10)) {
         auto h = id(battHeater).turn_on();
         auto hs = id(battHeater).speed;
         if (hs <= 10) {
@@ -1160,7 +1159,7 @@ sensor:
     state_class: measurement
     accuracy_decimals: 2
     update_interval: 5s
-    lambda: return id(solar_power_only).raw_state + id(solar_power_onlyOW).state - id(soyo_power).raw_state;
+    lambda: return id(solar_power_only).state + id(solar_power_onlyOW).state - id(soyo_power).get_raw_state();
 
   - platform: template
     name: "solarstrom power"
@@ -1324,7 +1323,7 @@ sensor:
     on_value:
       then:
         - lambda: |-
-            if (x > 31 || x > 24 && x - id(garage_temp).state > 5) {
+            if (x > 31 || (x > 24 && x - id(garage_temp).state > 5)) {
               id(battFan).turn_on().set_speed(100).perform();
             }
             else if (id(battFan).state && !id(battHeater).state && x < 23) {
@@ -1476,7 +1475,7 @@ sensor:
       icon: mdi:battery-charging
       filters:
       - throttle_average: 10s
-    power_tube_temperature:
+    mosfet_temperature:
       name: "${name} BMS temperature"
       filters:
       - throttle: 10s
