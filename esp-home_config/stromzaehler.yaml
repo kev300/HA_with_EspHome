@@ -22,12 +22,12 @@ wifi:
     gateway: 192.168.1.1
     subnet: 255.255.255.0
 
-mqtt:
- id: mqttclient 
- broker: 192.168.1.25
- username: hass
- password: dummY
- reboot_timeout: "0s"
+#mqtt:
+# id: mqttclient 
+# broker: 192.168.1.25
+# username: hass
+# password: dummY
+# reboot_timeout: "0s"
    # topic_prefix: smartmeter
 
 esphome:
@@ -41,11 +41,6 @@ preferences:
   flash_write_interval: 60min
 
 
-    #external_components:
-    #  - source: github://alengwenus/esphome_components@main
-    #    refresh: 0s
-    #    components: [sml]
-
 uart:
   id: uart_bus
   tx_pin: GPIO01
@@ -56,14 +51,14 @@ uart:
   stop_bits: 1
   rx_buffer_size: 512
 
-sml:
-  id: mysml
-  uart_id: uart_bus
-  on_data:
-    - lambda: !lambda |-
-        if (valid) {
-          id(mqttclient).publish("smartmeter/sensor/sml/state", format_hex(bytes));
-        }
+#sml:
+#  id: mysml
+#  uart_id: uart_bus
+#  on_data:
+#    - lambda: !lambda |-
+#        if (valid) {
+#          id(mqttclient).publish("smartmeter/sensor/sml/state", format_hex(bytes));
+#        }
 
 sensor:
   - platform: sml
@@ -102,22 +97,5 @@ sensor:
     accuracy_decimals: 0
     device_class: power
     state_class: measurement
-
-
-      #  - platform: pulse_counter
-      #    pin: 
-      #      number: GPIO00
-#      mode: INPUT_PULLUP
-#    name: "Gasverbrauch"
-#    update_interval : 60s
-#    internal_filter: 100ms
-#    filters:
-#      - lambda: |-
-#          static float total_value = 0.0;
-#          total_value += x * 0.01;
-#          return total_value;
-#    unit_of_measurement: "m³"
-#    accuracy_decimals: 2
-#    icon: 'mdi:fire'
 
 

@@ -29,6 +29,8 @@ advanced:
     - 105
     - 154
   log_level: warning
+  last_seen: ISO_8601
+  transmit_power: 127
 devices:
   '0xa4c138aa6a05118d':
     friendly_name: Stecker 2
@@ -67,24 +69,49 @@ devices:
   '0xa4c138b9d085911c':
     friendly_name: Bewegungsmelder Gartenhaus
   '0xa4c138a948c281a7':
-    friendly_name: GartenhausLampe
+    friendly_name: Leos Lampe
   '0xa4c13878aad5d7a1':
     friendly_name: BueroStecker
   '0xa4c138318aad9ff1':
     friendly_name: GartenhausPV
   '0x00158d00031d2a62':
-    friendly_name: Leos Lampe
+    friendly_name: GartenhausLampe
   '0xa4c138991960f8e6':
     friendly_name: Weihnachtsbaum
   '0xa4c138dc6de95b53':
     friendly_name: 'Lichterkette Küche '
   '0xa4c138c393eecf57':
     friendly_name: Buero2
+    measurement_poll_interval: 60
+  '0x180df9fffe840d72':
+    friendly_name: Rolläden Nähzimmer
+  '0x00124b0029295963':
+    friendly_name: Kellertemp Heizung
+  '0x385cfbfffec544c4':
+    friendly_name: Nässesensor Heizkeller
+  '0x206ef1fffe05055c':
+    friendly_name: Rolläden Kinderzimmer
+  '0x206ef1fffe017194':
+    friendly_name: Rolläden Badezimmer
+  '0x20a716fffe41b48e':
+    friendly_name: Rolläden Spielzimmer
+  '0xc09b9efffed13e14':
+    friendly_name: Rolläden Arbeitszimmer
+  '0xccba97fffeefa274':
+    friendly_name: Rolläden Küche
   '0x00124b0029294c0a':
     friendly_name: Kellertemp
-  '0x00124b0029295963':
-    friendly_name: Kellertemp 2
+  '0xccba97fffeef99e4':
+    friendly_name: Rolläden Sofa
+  '0xccba97fffeef99f0':
+    friendly_name: Rolläden Essecke
+  '0xccba97fffeef8b5c':
+    friendly_name: Rolläden Terrasse
+  '0xd885acfffee9107c':
+    friendly_name: Nässesensor Keller
+  '0xc09b9efffeeee3c9':
+    friendly_name: Rolläden Schlafzimmer
 groups: {}
-version: 4
+version: 5
 availability:
-  enabled: false
+  enabled: true
