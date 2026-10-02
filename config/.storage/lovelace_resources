@@ -8,6 +8,11 @@
         "id": "a993e61b7d05414cac0df28b2ff1a7ec",
         "url": "/hacsfiles/apexcharts-card/apexcharts-card.js?hacstag=331701152212",
         "type": "module"
+      },
+      {
+        "id": "fc91e13eb9e54cdaa44ee84dc15ee1dd",
+        "url": "/hacsfiles/light-entity-card/light-entity-card.js?hacstag=168744428631",
+        "type": "module"
       }
     ]
   }

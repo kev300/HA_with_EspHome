@@ -96,53 +96,50 @@ sql:
 
 template:
   - sensor:
-    - name: 'abs. Feuchtigkeit draußen'
-      unit_of_measurement: 'g/m³'
+    - name: "abs. Feuchtigkeit draußen"
+      unit_of_measurement: "g/m³"
       default_entity_id: sensor.hum_abs_outside
-      state: "{% set h, t = states('sensor.openweathermap_humidity') | float, states('sensor.openweathermap_temperature') %}
-              {% if not h or t == 'unknown' or t == 'unavailable' -%}
-                'unknown'
-              {%- else %}
-               {% set t = t | float %}
-               {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
-              {% endif %}"
-
-    - name: 'abs. Feuchtigkeit Garage'
-      unit_of_measurement: 'g/m³'
+      state_class: measurement
+      availability: >
+        {{ has_value('sensor.openweathermap_humidity')
+           and has_value('sensor.openweathermap_temperature') }}
+      state: >
+        {% set h = states('sensor.openweathermap_humidity') | float %}
+        {% set t = states('sensor.openweathermap_temperature') | float %}
+        {{ (h * 6.112 * 2.1674 * e ** ((t * 17.67) / (t + 243.5)) / (t + 273.15)) | round(2) }}
+    - name: "abs. Feuchtigkeit Garage"
+      unit_of_measurement: "g/m³"
       default_entity_id: sensor.hum_abs_garage
-      state: "{% set h, t = states('sensor.garage_feuchtigkeit') | float, states('sensor.garage_temperatur') %}
-           {% if not h or t == 'unknown' or t == 'unavailable' -%}
-             'unknown'
-           {%- else %}
-            {% set t = t | float %}
-            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
-           {% endif %}"
-    - name: 'abs. Feuchtigkeit Keller'
-      unit_of_measurement: 'g/m³'
+      state_class: measurement
+      availability: >
+        {{ has_value('sensor.garage_feuchtigkeit')
+           and has_value('sensor.garage_temperatur') }}
+      state: >
+        {% set h = states('sensor.garage_feuchtigkeit') | float %}
+        {% set t = states('sensor.garage_temperatur') | float %}
+        {{ (h * 6.112 * 2.1674 * e ** ((t * 17.67) / (t + 243.5)) / (t + 273.15)) | round(2) }}
+    - name: "abs. Feuchtigkeit Keller"
+      unit_of_measurement: "g/m³"
       default_entity_id: sensor.hum_abs_keller
-      state: "{% set h, t = states('sensor.kellertemp_humidity') | float, states('sensor.kellertemp_temperature') %}
-           {% if not h or t == 'unknown' or t == 'unavailable' -%}
-             'unknown'
-           {%- else %}
-            {% set t = t | float %}
-            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
-           {% endif %}"
-
-    - unique_id: gasverbrauch_m3
-      default_entity_id: sensor.gasverbrauch_m3
-      name: gasverbrauch_m3
-      state: "{{ states ('counter.gaszaehler') | float*0.001 }}"
-      icon: mdi:fire
-      unit_of_measurement: m³
-      device_class: gas
-
-    - unique_id: gasverbrauch_kwh
-      default_entity_id: sensor.gasverbrauch_kwh
-      name: gasverbrauch_kwh
-      state: "{{ states ('counter.gaszaehler') | float*0.001 }}"
-      icon: mdi:fire
-      unit_of_measurement: kwh
-      device_class: gas
+      state_class: measurement
+      availability: >
+        {{ has_value('sensor.kellertemp_humidity')
+           and has_value('sensor.kellertemp_temperature') }}
+      state: >
+        {% set h = states('sensor.kellertemp_humidity') | float %}
+        {% set t = states('sensor.kellertemp_temperature') | float %}
+        {{ (h * 6.112 * 2.1674 * e ** ((t * 17.67) / (t + 243.5)) / (t + 273.15)) | round(2) }}
+    - name: "abs. Feuchtigkeit Heizungskeller"
+      unit_of_measurement: "g/m³"
+      default_entity_id: sensor.hum_abs_keller_heizung
+      state_class: measurement
+      availability: >
+        {{ has_value('sensor.kellertemp_heizung_humidity')
+           and has_value('sensor.kellertemp_heizung_temperature') }}
+      state: >
+        {% set h = states('sensor.kellertemp_heizung_humidity') | float %}
+        {% set t = states('sensor.kellertemp_heizung_temperature') | float %}
+        {{ (h * 6.112 * 2.1674 * e ** ((t * 17.67) / (t + 243.5)) / (t + 273.15)) | round(2) }}
 
 
 #template:

@@ -1,71 +1,112 @@
 {
   "version": 1,
-  "minor_version": 6,
+  "minor_version": 9,
   "key": "core.area_registry",
   "data": {
     "areas": [
       {
         "aliases": [],
-        "name": "Wohnzimmer",
-        "id": "wohnzimmer",
-        "picture": null,
-        "icon": null,
         "floor_id": null,
-        "labels": []
-      },
-      {
-        "aliases": [],
-        "name": "Küche",
-        "id": "kuche",
-        "picture": null,
+        "humidity_entity_id": null,
         "icon": null,
-        "floor_id": null,
-        "labels": []
-      },
-      {
-        "aliases": [],
-        "name": "Schlafzimmer",
-        "id": "schlafzimmer",
-        "picture": null,
-        "icon": null,
-        "floor_id": null,
-        "labels": []
-      },
-      {
-        "aliases": [],
-        "name": "Büro",
         "id": "buro",
+        "labels": [],
+        "name": "Büro",
         "picture": null,
-        "icon": null,
-        "floor_id": null,
-        "labels": []
+        "temperature_entity_id": null,
+        "created_at": "1970-01-01T00:00:00+00:00",
+        "modified_at": "1970-01-01T00:00:00+00:00"
       },
       {
         "aliases": [],
-        "name": "Keller",
-        "id": "keller",
-        "picture": null,
-        "icon": null,
         "floor_id": null,
-        "labels": []
-      },
-      {
-        "aliases": [],
-        "name": "Eingang",
+        "humidity_entity_id": null,
+        "icon": null,
         "id": "eingang",
+        "labels": [],
+        "name": "Eingang",
         "picture": null,
-        "icon": null,
-        "floor_id": null,
-        "labels": []
+        "temperature_entity_id": null,
+        "created_at": "1970-01-01T00:00:00+00:00",
+        "modified_at": "1970-01-01T00:00:00+00:00"
       },
       {
         "aliases": [],
-        "name": "Garage ",
-        "id": "garage",
-        "picture": null,
-        "icon": null,
         "floor_id": null,
-        "labels": []
+        "humidity_entity_id": "sensor.garage_feuchtigkeit",
+        "icon": "mdi:garage",
+        "id": "garage",
+        "labels": [],
+        "name": "Garage",
+        "picture": null,
+        "temperature_entity_id": "sensor.garage_temperatur",
+        "created_at": "1970-01-01T00:00:00+00:00",
+        "modified_at": "2025-11-07T09:24:19.571336+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:greenhouse",
+        "id": "gartenhaus",
+        "labels": [],
+        "name": "Gartenhaus",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2025-11-07T09:26:59.629331+00:00",
+        "modified_at": "2025-11-07T09:26:59.629342+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": "sensor.kellertemp_humidity",
+        "icon": null,
+        "id": "keller",
+        "labels": [],
+        "name": "Keller",
+        "picture": null,
+        "temperature_entity_id": "sensor.kellertemp_temperature",
+        "created_at": "1970-01-01T00:00:00+00:00",
+        "modified_at": "2025-11-07T09:43:19.430522+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": null,
+        "id": "kuche",
+        "labels": [],
+        "name": "Küche",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "1970-01-01T00:00:00+00:00",
+        "modified_at": "1970-01-01T00:00:00+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": null,
+        "id": "leos_zimmer",
+        "labels": [],
+        "name": "Leos Zimmer",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2025-11-07T09:28:27.543776+00:00",
+        "modified_at": "2025-11-07T09:28:27.543787+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": null,
+        "id": "wohnzimmer",
+        "labels": [],
+        "name": "Wohnzimmer",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "1970-01-01T00:00:00+00:00",
+        "modified_at": "1970-01-01T00:00:00+00:00"
       }
     ]
   }

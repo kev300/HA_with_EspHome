@@ -162,51 +162,61 @@
   mode: single
 - id: '1782989990750'
   alias: Rolläden morgens öffnen
-  description: ''
-  triggers:
-  - trigger: time
-    at: 06:50:00
-  conditions: []
-  actions:
-  - device_id: 6243e0d5db8ed7d5f5cbde44694cb6c4
-    domain: cover
-    entity_id: 761f9a953862964635fc3ea7497d01d0
-    type: open
-  - device_id: b24b8cb37875e6273d1bd670de8db726
-    domain: cover
-    entity_id: ef26eba4bc900d182552d186a8d4381e
-    type: open
-  - device_id: 654a86f1f8cff075fb2f291cd154abad
-    domain: cover
-    entity_id: 2d4bf2c31f05fff467c18e9360c7b746
-    type: open
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 6
-      milliseconds: 0
-  - device_id: d6422ab9792177b8ca7efc799269c7a3
-    domain: cover
-    entity_id: c4db4a8960a451e4cb49cbbe092e94a8
-    type: open
-  - device_id: b0c5d1c50ce9d79efaae7e7664a9a39b
-    domain: cover
-    entity_id: 5684232061e10532b96992ea6c3007e7
-    type: open
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 6
-      milliseconds: 0
-  - device_id: 53c5ad24f584e391b98b65a68b346722
-    domain: cover
-    entity_id: bfaae82411f7ca78492dcbb5d0862189
-    type: open
-  - device_id: 7feda29d2d8305998d4503b31942031c
-    domain: cover
-    entity_id: 4b25be4a9d114f2dd50df093977b0579
-    type: open
+  description: 'Öffnet die Rollläden, sobald es hell wird, aber nicht vor 06:50 Uhr.'
   mode: single
+  triggers:
+    # Es wird hell: Die Sonne steigt über -4° (etwa bürgerliche Dämmerung)
+    - trigger: numeric_state
+      entity_id: sun.sun
+      attribute: elevation
+      above: -4
+    # Frühester Zeitpunkt erreicht
+    - trigger: time
+      at: "06:50:00"
+  conditions:
+    # Beides muss erfüllt sein, egal welcher Trigger ausgelöst hat
+    - condition: time
+      after: "06:50:00"
+      before: "12:00:00"
+    - condition: numeric_state
+      entity_id: sun.sun
+      attribute: elevation
+      above: -4
+    # Sonne steigt (verhindert ein Auslösen am Abend)
+    - condition: state
+      entity_id: sun.sun
+      attribute: rising
+      state: true
+  actions:
+  - action: cover.open_cover
+    target:
+      entity_id:
+        - cover.rolladen_kuche
+        - cover.rolladen_sofa
+        - cover.rolladen_essecke
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 7
+      milliseconds: 0
+  - action: cover.open_cover
+    target:
+      entity_id:
+        - cover.rolladen_terrasse
+        - cover.rolladen_spielzimmer
+        - cover.rolladen_arbeitszimmer
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 7 
+      milliseconds: 0
+  - action: cover.open_cover
+    target:
+      entity_id:
+        - cover.rolladen_badezimmer
+        - cover.rolladen_nahzimmer
+        - cover.rolladen_kinderzimmer
+        - cover.rolladen_schlafzimmer
 - id: '1782990796367'
   alias: Rolläden abends schließen
   description: ''

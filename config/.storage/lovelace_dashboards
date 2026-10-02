@@ -48,6 +48,23 @@
         "require_admin": false,
         "mode": "storage",
         "url_path": "dashboard-strompreis"
+      },
+      {
+        "id": "dashboard_zuhause",
+        "show_in_sidebar": true,
+        "title": "Zuhause",
+        "require_admin": false,
+        "mode": "storage",
+        "url_path": "dashboard-zuhause"
+      },
+      {
+        "id": "lovelace",
+        "icon": "mdi:view-dashboard",
+        "title": "Übersicht",
+        "url_path": "lovelace",
+        "mode": "storage",
+        "require_admin": false,
+        "show_in_sidebar": true
       }
     ]
   }

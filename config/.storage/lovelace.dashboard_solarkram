@@ -32,22 +32,35 @@
                   "entity": "sensor.soyo_power_demand"
                 },
                 {
-                  "entity": "sensor.solarstrom_power"
-                },
-                {
                   "entity": "sensor.soyo_power"
                 },
                 {
                   "entity": "sensor.stecker_2_power"
                 },
                 {
+                  "entity": "sensor.solarstrom_power"
+                },
+                {
+                  "entity": "sensor.solarstrom_powerow"
+                },
+                {
                   "entity": "sensor.gartenhauspv_power"
+                },
+                {
+                  "entity": "fan.charger_voltage_limit"
+                },
+                {
+                  "entity": "fan.batteryfan"
+                },
+                {
+                  "entity": "fan.batteryheater"
                 }
               ],
               "title": "Strom",
               "show_header_toggle": false
             },
             {
+              "color": "state",
               "show_name": false,
               "show_icon": true,
               "show_state": true,
@@ -82,10 +95,15 @@
                 },
                 {
                   "entity": "sensor.garage_temperatur"
+                },
+                {
+                  "entity": "sensor.jk_bms_total_voltage"
+                },
+                {
+                  "entity": "sensor.jk_bms_power"
                 }
               ],
-              "title": "Akku",
-              "state_color": true
+              "title": "Akku"
             },
             {
               "type": "entities",
@@ -97,7 +115,7 @@
                   "entity": "sensor.soyo_limiter_operation_mode"
                 },
                 {
-                  "entity": "switch.usebattery"
+                  "entity": "select.operationmode"
                 },
                 {
                   "entity": "switch.soyo_manual_mode"
@@ -255,6 +273,9 @@
                   "entity": "sensor.wifi_signal"
                 },
                 {
+                  "entity": "sensor.garage_controller_loop_time"
+                },
+                {
                   "entity": "sensor.jk_bms_current"
                 },
                 {
@@ -265,6 +286,12 @@
                 },
                 {
                   "entity": "sensor.solarstrom_energy"
+                },
+                {
+                  "entity": "sensor.solarstrom_energy_ow"
+                },
+                {
+                  "entity": "sensor.jk_bms_state_of_charge"
                 }
               ],
               "title": "garage-controller"

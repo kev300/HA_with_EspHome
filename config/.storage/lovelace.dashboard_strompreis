@@ -48,7 +48,7 @@
               ],
               "series": [
                 {
-                  "entity": "sensor.tibber_pulse_***REMOVED***_kumulierter_verbrauch",
+                  "entity": "sensor.tibber_pulse_schwanenweg_4a_kumulierter_verbrauch",
                   "show": {
                     "legend_value": false,
                     "extremas": true
@@ -83,7 +83,7 @@
                   "data_generator": "var a = entity.attributes.today.map((entry) => {\n  return [new Date(entry.startsAt), entry.total];\n}); \nvar b= entity.attributes.tomorrow.map((entry) => {\n  return [new Date(entry.startsAt), entry.total];\n});\nreturn a.concat(b);\n"
                 },
                 {
-                  "entity": "sensor.***REMOVED***_strompreis",
+                  "entity": "sensor.schwanenweg_4a_strompreis",
                   "extend_to": "now",
                   "show": {
                     "legend_value": false,
@@ -97,7 +97,7 @@
                   "float_precision": 3
                 },
                 {
-                  "entity": "sensor.***REMOVED***_strompreis",
+                  "entity": "sensor.schwanenweg_4a_strompreis",
                   "stroke_width": 2,
                   "show": {
                     "legend_value": false,
@@ -116,7 +116,7 @@
                   }
                 },
                 {
-                  "entity": "sensor.***REMOVED***_strompreis",
+                  "entity": "sensor.schwanenweg_4a_strompreis",
                   "stroke_width": 2,
                   "show": {
                     "legend_value": false,
@@ -135,7 +135,7 @@
                   }
                 },
                 {
-                  "entity": "sensor.***REMOVED***_strompreis",
+                  "entity": "sensor.schwanenweg_4a_strompreis",
                   "stroke_width": 2,
                   "show": {
                     "legend_value": false,
@@ -159,13 +159,13 @@
               "type": "entities",
               "entities": [
                 {
-                  "entity": "sensor.***REMOVED***_strompreis"
+                  "entity": "sensor.schwanenweg_4a_strompreis"
                 },
                 {
                   "entity": "sensor.tibber_preis_jetzt"
                 },
                 {
-                  "entity": "sensor.tibber_pulse_***REMOVED***_energie"
+                  "entity": "sensor.tibber_pulse_schwanenweg_4a_energie"
                 },
                 {
                   "entity": "sensor.tibber_preis"
